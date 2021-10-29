@@ -1,0 +1,60 @@
+# Clone zcomet if necessary
+if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
+  command git clone https://github.com/agkozak/zcomet.git ${ZDOTDIR:-${HOME}}/.zcomet/bin
+fi
+
+# Activate Powerlevel10k Instant Prompt.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+source ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh
+export ZSH_CONFIG=${HOME}/.zshconfig # this repo's location
+
+# set options
+ENABLE_CORRECTION="true"
+
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
+# does order matter?
+zcomet load zsh-users/zsh-syntax-highlighting
+zcomet load zsh-users/zsh-history-substring-search
+zcomet load zsh-users/zsh-autosuggestions
+zcomet load romkatv/powerlevel10k
+
+### settings from OMZ
+zcomet snippet OMZ::lib/clipboard.zsh
+# zcomet snippet OMZ::lib/completion.zsh
+# zcomet snippet OMZ::lib/correction.zsh
+# zcomet snippet OMZ::lib/history.zsh
+
+### custom settings
+zcomet snippet $ZSH_CONFIG/lib/autosuggest.zsh
+zcomet snippet $ZSH_CONFIG/lib/completion.zsh
+zcomet snippet $ZSH_CONFIG/lib/correction.zsh
+zcomet snippet $ZSH_CONFIG/lib/history.zsh
+zcomet snippet $ZSH_CONFIG/lib/fzf.zsh
+zcomet snippet $ZSH_CONFIG/lib/options.zsh
+
+### additional plugins
+zcomet load ohmyzsh plugins/colorize           # multilanguage syntax highlighting
+zcomet load esc/conda-zsh-completion           # conda completions
+zcomet load ohmyzsh plugins/direnv             # enable direnv
+
+zcomet load ohmyzsh plugins/fd                 # fd completions
+# zcomet load ohmyzsh plugins/fzf                # fzf completions
+zcomet load ohmyzsh plugins/gitfast            # git completions
+zcomet load ohmyzsh plugins/safe-paste         # prevent pasted code from running
+zcomet load ohmyzsh plugins/terraform          # terraform completions
+
+zcomet load $ZSH_CONFIG/completions            # watch local dir for completions
+
+### must be loaded late after all other modules that provide completion definitions
+zcomet load zsh-users/zsh-completions
+
+### Run compinit and compile its cache
+zcomet compinit
+
+### load p10k config
+# source $ZSH_CACHE_DIR/powerlevel10k/powerlevel10k.zsh-theme
+source ~/.p10k.zsh

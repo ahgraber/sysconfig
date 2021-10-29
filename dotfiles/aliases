@@ -1,0 +1,112 @@
+### Aliases for bash and zsh
+
+alias zconfig='/usr/bin/git --git-dir=$HOME/.zshcfg/ --work-tree=$HOME'
+
+alias aliasconfig="code ~/.aliases"
+alias zshconfig="code ~/.zshrc"
+# alias bashconfig="code ~/.bash_profile"
+[[ -f ~/.p10k.zsh ]] && alias p10kconfig="code ~/.p10k.zsh"
+[[ -f ~/.p10k.zsh ]] && alias codeconfig="code ~/Library/Application\ Support/Code/User/settings.json"
+alias -s {py,pyc,ipynb,yml,yaml}=code
+
+alias c='clear'
+alias clr="clear"
+alias clrbuf="printf '\ec\e[3J'"
+alias clear_buffer="printf '\ec\e[3J'"
+
+if ! command -v exa >/dev/null; then
+  alias ls="ls -Gp"
+  alias la="ls -AGp"
+  alias ll="ls -lAGp"
+  # alias lt="tree -C -L 3"
+else
+  alias l='exa -aF --icons'
+  alias l1='exa -1F --no-icons'
+  alias ls='exa -F'
+  alias la='exa -aF'
+  alias ll='exa -lbGF --git'
+  alias llm='exa -lbGF --git --sort=modified'
+  alias lt='exa --no-icons --tree'
+  alias lit='exa --icons --tree'
+fi
+
+alias h='history'               # Prints your command history
+alias hs='history | grep'       # Use grep to search your command history
+alias hsi='history | grep -i'   # Use grep to case-insensitive earch your command history
+
+# directory history: `d` will show history
+# d# will `cd` into that index
+alias d='dirs -v | head -n10'
+for index ({1..10}) alias "d$index"="cd +${index}"; unset index
+
+if command -v bat >/dev/null; then
+  export BAT_THEME="OneHalfDark" # TwoDark"
+  alias cat='bat -p'
+  alias man='batman'
+fi
+
+[[ $(command -v fd) ]] && alias find="fd"
+[[ $(command -v gdircolors) ]] && alias dircolors="gdircolors"
+
+
+alias showpath="defaults write com.apple.finder _FXShowPosixPathInTitle -bool true; killall Finder"
+alias hidepath="defaults write com.apple.finder _FXShowPosixPathInTitle -bool false; killall Finder"
+
+alias viewHidden="defaults write com.apple.finder AppleShowAllFiles -bool true | killall Finder"
+alias showHidden="defaults write com.apple.finder AppleShowAllFiles -bool true | killall Finder"
+alias hideHidden="defaults write com.apple.finder AppleShowAllFiles -bool false | killall Finder"
+
+alias flush="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
+alias renew="sudo ipconfig set en0 BOOTP && sudo ipconfig set en0 DHCP"
+alias ping="ping -c 3"
+alias whatismyip='curl ifconfig.co'
+alias externalip='curl ifconfig.co'
+
+alias sleepless="pmset -g assertions | egrep '(PreventUserIdleSystemSleep|PreventUserIdleDisplaySleep)'"
+
+# run with nbstrip_jq path/to/metadata.ipynb > path/to/stripped.ipynb
+alias nbstrip_jq="jq --indent 1 \
+    '(.cells[] | select(has(\"outputs\")) | .outputs) = []  \
+    | (.cells[] | select(has(\"execution_count\")) | .execution_count) = null  \
+    | .metadata = {\"language_info\": {\"name\": \"python\", \"pygments_lexer\": \"ipython3\"}} \
+    | .cells[].metadata = {} \
+    '"
+
+# strips metadata from .ipynb files
+function nbstrip_all_cwd {
+    IPYNB_CLEAN_PLACES=${*:-'.'}
+    for nbfile in ${IPYNB_CLEAN_PLACES}/*.ipynb; do
+        echo "$( nbstrip_jq $nbfile )" > $nbfile
+    done
+    unset nbfile
+}
+alias clean_ipynbs="nbstrip_all_cwd"
+
+# Remove python compiled byte-code and mypy/pytest cache in either the current
+# directory or in a list of specified directories (including sub directories).
+function pyclean() {
+    ZSH_PYCLEAN_PLACES=${*:-'.'}
+    find ${ZSH_PYCLEAN_PLACES} -type f -name "*.py[co]" -delete
+    find ${ZSH_PYCLEAN_PLACES} -type d -name "__pycache__" -delete
+    find ${ZSH_PYCLEAN_PLACES} -depth -type d -name ".mypy_cache" -exec rm -r "{}" +
+    find ${ZSH_PYCLEAN_PLACES} -depth -type d -name ".pytest_cache" -exec rm -r "{}" +
+}
+
+function clean_branches {
+  local -r deleteflag=${1:-"-d"}
+  # remove link to nonexistent upstream branch
+  git remote prune origin;
+  # removes LOCAL branches that are deleted on (remote) origin
+  git fetch -p;
+  git branch -vv | grep ': gone]' | grep -v "\*" | awk '{ print $1 }' | xargs git branch ${deleteflag}
+}
+alias cleanbranches=clean_branches
+
+alias docker-clean-all=' \
+  docker container prune -f ; \
+  docker image prune -f ; \
+  docker network prune -f ; \
+  docker volume prune -f '
+
+alias docker-clean-untagged=' \
+  docker rmi $(docker images | grep "^<none>" | awk "{print $3}")'

@@ -1,4 +1,6 @@
 # cache/  # do not include submodule cache in .gitignore
+completions/*
+*.zwc
 !**.gitkeep
 
 # OS Junk
@@ -8,6 +10,3 @@ settings.json
 .vscode
 
 .pytest_cache
-
-*.zwc
-completions/*

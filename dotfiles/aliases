@@ -1,4 +1,6 @@
 ### Aliases for bash and zsh
+### this is symlinked against ahgraber/zshconfig
+### for local aliases, edit ~/.local_aliases
 
 alias zconfig='/usr/bin/git --git-dir=$HOME/.zshcfg/ --work-tree=$HOME'
 
@@ -14,7 +16,7 @@ alias clr="clear"
 alias clrbuf="printf '\ec\e[3J'"
 alias clear_buffer="printf '\ec\e[3J'"
 
-if ! command -v exa >/dev/null; then
+if [[ ! $(command -v exa) ]]; then
   alias ls="ls -Gp"
   alias la="ls -AGp"
   alias ll="ls -lAGp"
@@ -39,7 +41,7 @@ alias hsi='history | grep -i'   # Use grep to case-insensitive earch your comman
 alias d='dirs -v | head -n10'
 for index ({1..10}) alias "d$index"="cd +${index}"; unset index
 
-if command -v bat >/dev/null; then
+if [[ $(command -v bat) ]]; then
   export BAT_THEME="OneHalfDark" # TwoDark"
   alias cat='bat -p'
   alias man='batman'

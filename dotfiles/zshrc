@@ -63,37 +63,33 @@ source ~/.p10k.zsh
 ###                 path configuration                  ###
 ###########################################################
 
-# Standard PATH:
-# export PATH="/usr/bin:/bin:/usr/sbin:/usr/local/bin"
+### Standard PATH: uncomment to force strict path maintenance in shell
+# export PATH="/usr/bin:/bin:/usr/sbin:/sbin"
+# export PATH=/usr/local/bin:$PATH
+# export PATH=/usr/local/sbin:$PATH
 
-# Extend PATH for Z4H
-export PATH=$HOME/bin:$PATH
-
-# Prepend Homebrew's executable directory
-# Set architecture-specific brew share path.
-
+### Prepend Homebrew's executable directory
+### Set architecture-specific brew share path.
 arch_name="$(uname -m)"
 if [ "${arch_name}" = "x86_64" ]; then
     share_path="/usr/local/share"
 elif [ "${arch_name}" = "arm64" ]; then
-    share_path="/opt/homebrew/share"
+    share_path="/opt/homebrew/bin:/opt/homebrew/share"
 else
     echo "Unknown architecture: ${arch_name}"
 fi
-export PATH=/usr/local/bin:$PATH
-export PATH=/usr/local/sbin:$PATH
-export PATH=share_path:$PATH
+export PATH=$share_path:$PATH
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
-# Export environment variables.
+### Export environment variables.
 export GPG_TTY=$TTY
 
-# Source additional local files if they exist.
+### Source additional local files if they exist.
 [[ -f ~/env.zsh ]] && source ~/env.zsh
 [[ -f ~/.aliases ]] && source ~/.aliases
+[[ -f ~/.local_aliases ]] && source ~/.local_aliases
 [[ -d ~/.fonts ]] && source ~/.fonts/*.sh
-
 
 ##########################################################
 ###           additional path configuration             ###
@@ -117,37 +113,37 @@ export GPG_TTY=$TTY
 ###########################################################
 ###                 zsh configuration                   ###
 ###########################################################
-# set your language environment
+### set your language environment
 export LANG=en_US.UTF-8
 # export ARCHFLAGS="-arch x86_64"
 
 ###########################################################
 ###                 User configuration                  ###
 ###########################################################
-# Preferred editor for local and remote sessions
+### Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='nano'
 else
   export EDITOR='code'
 fi
 
-# >>> conda initialize >>>
-# _CONDAPFX="opt/anaconda3"
-# _CONDAPFX="miniconda3"
-# _CONDAPFX="miniforge3"
-_CONDAPFX="mambaforge"
+### >>> conda initialize >>>
+# _conda_pfx="opt/anaconda3"
+# _conda_pfx="miniconda3"
+# _conda_pfx="miniforge3"
+_conda_pfx="mambaforge"
 
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$("/Users/${USERNAME}/${_CONDAPFX}/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$("/Users/${USERNAME}/${_conda_pfx}/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/Users/${USERNAME}/${_CONDAPFX}/etc/profile.d/conda.sh" ]; then
-        . "/Users/${USERNAME}/${_CONDAPFX}/etc/profile.d/conda.sh"  # commented out by conda initialize
+    if [ -f "/Users/${USERNAME}/${_conda_pfx}/etc/profile.d/conda.sh" ]; then
+        . "/Users/${USERNAME}/${_conda_pfx}/etc/profile.d/conda.sh"  # commented out by conda initialize
         # CONDA_CHANGEPS1=false conda activate base
     else
-        export PATH="/Users/${USERNAME}/${_CONDAPFX}/bin:$PATH"
+        export PATH="/Users/${USERNAME}/${_conda_pfx}/bin:$PATH"
     fi
 fi
 unset __conda_setup
-# <<< conda initialize <<<
+### <<< conda initialize <<<

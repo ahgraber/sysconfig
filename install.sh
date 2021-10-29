@@ -5,16 +5,17 @@ export ZSH_CONFIG="${HOME}/.zshconfig"
 [[ -d ${ZSH_CONFIG} ]] || git clone https://github.com/ahgraber/zshconfig.git ${ZSH_CONFIG}
 cd ${ZSH_CONFIG}
 
-# install prerequisites
+echo "Installing prerequisites..."
 . ./scripts/prerequisites.sh
 
-# set zsh as shell
+echo "Prefilling local completions..."
+. ./scripts/completions.sh
+
 echo "Setting zsh as default shell.  This may require your user password"
 zsh_path=$(which zsh)
 [[ ! $(grep "${zsh_path}" /etc/shells) ]] && cat ${zsh_path} >> /etc/shells
 chsh -s ${zsh_path}
 
-# copy dotfiles, making backups if they exist
 echo "Initializing dotfiles..."
 dotfiles=(aliases p10k.zsh zshrc zshenv)
 for file in ${dotfiles[@]}; do
@@ -37,7 +38,3 @@ done
 
 echo "Loading new configuration..."
 exec zsh
-
-# install prerequisites
-echo "Prefilling local completions..."
-. ./scripts/completions.sh

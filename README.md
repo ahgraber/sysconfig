@@ -40,43 +40,22 @@ The following script will autoinstall the default configuration by:
 * [zsh configuration](https://vermaden.wordpress.com/2021/09/19/ghost-in-the-shell-part-7-zsh-setup/)
 * [completion configuration](https://github.com/Phantas0s/.dotfiles/blob/master/zsh/completion.zsh) and [blog](https://thevaluable.dev/zsh-completion-guide-examples/)
 
-### Adding completions
+## Hints & Tips
 
-Add completions to the watched completions folder:
+### aliases
 
-```sh
-# bat
-curl -L https://raw.githubusercontent.com/sharkdp/bat/master/assets/completions/bat.zsh.in \
-   -o $ZSHCONFIG/completions/_bat
+Review `~/.aliases` for an understanding of available functionality and remapping (`bat` → `cat`; `exa` → `ls`)
 
-# docker
-curl -L https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker \
-   -o $ZSHCONFIG/completions/_docker
+### keybinds
 
-# docker-compose
-curl -L https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose \
-   -o $ZSH_CONFIG/completions/_docker-compose
-
-# exa
-curl -L https://raw.githubusercontent.com/ogham/exa/master/completions/zsh/_exa \
-   -o $ZSHCONFIG/completions/_exa
-
-# fd
-curl -L https://github.com/sharkdp/fd/blob/master/contrib/completion/_fd \
-   -o $ZSH_CONFIG/completions/_fd
-
-# flux
-flux completion zsh > _flux
-mv _flux $ZSH_CONFIG/completions/
-
-# helm
-helm completion zsh > _helm
-mv _helm $ZSH_CONFIG/completions/
-
-# kubectl
-kubectl completion zsh > _kubectl
-mv _kubectl $ZSH_CONFIG/completions/
-```
+| icon | keybind | description |
+|:---:|:---:|:---|
+| `^ + c` | `ctrl + c` | break/exit |
+| `➡️` | `tab` | show available completions |
+| `➡➡` | `tab + tab` | enter completion menu |
+| `⌥ + ←` | `opt + left` | move the cursor one word left (including in completions) |
+| `⌥ + ➡` | `opt + right` | move the cursor one word right (including in completions) |
+| `⌥ + w` | `opt + w` | undo last completed word |
 
 ### direnv
 
@@ -95,25 +74,9 @@ mv _kubectl $ZSH_CONFIG/completions/
 
 "Specifying whitelist directives marks specific directory hierarchies or specific directories as “trusted” – direnv will evaluate any matching .envrc files regardless of whether they have been specifically allowed. This feature should be used with great care, as anyone with the ability to write files to that directory (including collaborators on VCS repositories) will be able to execute arbitrary code on your computer."
 
-```toml
-# $HOME/config/direnv/direnv.toml
+```sh
+cat <<EOF > $HOME/.config/direnv/direnv.toml
 [whitelist]
-prefix = [ "$HOME/GitHub" ])
+prefix = [ "$HOME/GitHub" ]) # whitelist `GitHub` dir
+EOF
 ```
-
-## Hints & Tips
-
-### aliases
-
-Review `~/.aliases` for an understanding of available functionality and remapping (`bat` → `cat`; `exa` → `ls`)
-
-### keybinds
-
-| icon | keybind | description |
-|:---:|:---:|:---|
-| `^ + c` | `ctrl + c` | break/exit |
-| `➡️` | `tab` | show available completions |
-| `➡➡` | `tab + tab` | enter completion menu |
-| `⌥ + ←` | `opt + left` | move the cursor one word left (including in completions) |
-| `⌥ + ➡` | `opt + right` | move the cursor one word right (including in completions) |
-| `⌥ + w` | `opt + w` | undo last completed word |

@@ -39,6 +39,7 @@ The following script will autoinstall the default configuration by:
   * [zcomet from benchmark](https://github.com/romkatv/zsh-bench/blob/master/configs/zcomet/skel/.zshrc)
 * [zsh configuration](https://vermaden.wordpress.com/2021/09/19/ghost-in-the-shell-part-7-zsh-setup/)
 * [completion configuration](https://github.com/Phantas0s/.dotfiles/blob/master/zsh/completion.zsh) and [blog](https://thevaluable.dev/zsh-completion-guide-examples/)
+* [zstyle examples](https://gist.github.com/mattmc3/449430b6654aaab0ba7160e8efe8291b0)
 
 ## Hints & Tips
 

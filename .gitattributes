@@ -1,0 +1,2 @@
+./dotfiles/gitconfig filter=gitconfig_email
+./dotfiles/gitconfig filter=gitconfig_name

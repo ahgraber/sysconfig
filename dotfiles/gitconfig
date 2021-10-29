@@ -1,4 +1,6 @@
 [user]
+	email = ahgraber@ninerealmlabs.com
+	name = Alex Graber
 
 [core]
     attributesfile = ~/.gitattributes_global

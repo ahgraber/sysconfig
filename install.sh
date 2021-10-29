@@ -16,7 +16,7 @@ chsh -s ${zsh_path}
 
 # copy dotfiles, making backups if they exist
 echo "Initializing dotfiles..."
-dotfiles=(aliases gitattributes_global gitconfig zshrc zshenv)
+dotfiles=(aliases p10k.zsh zshrc zshenv)
 for file in ${dotfiles[@]}; do
   # if exists as link, relink
   [[ -L ${HOME}/.${file} ]] && unlink ${HOME}/.${file}
@@ -25,6 +25,15 @@ for file in ${dotfiles[@]}; do
   # make link
   ln -sf ${ZSH_CONFIG}/dotfiles/${file} ${HOME}/.${file}
 done
+
+# copy git config files
+[[ -f ${HOME}/.gitconfig ]] \
+  && mv ${HOME}/.gitconfig ${HOME}/.gitconfig.$(date +%Y%m%d) \
+  && cp ${ZSH_CONFIG}/dotfiles/gitconfig ${HOME}/.gitconfig
+
+[[ -f ${HOME}/.gitattributes_global ]] \
+  && mv ${HOME}/.gitattributes_global ${HOME}/.gitattributes_global.$(date +%Y%m%d) \
+  && cp ${ZSH_CONFIG}/dotfiles/gitattributes_global ${HOME}/.gitattributes_global
 
 echo "Loading new configuration..."
 exec zsh

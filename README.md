@@ -12,15 +12,19 @@ The following script will autoinstall the default configuration by:
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ahgraber/zshconfig/HEAD/install.sh)"
 ```
 
-Set up your `.gitconfig`
-
-```sh
-git config --global user.name "Your Name"
-git config --global user.email "youremail@yourdomain.com"
-# git config --global credential.helper osxkeychain
-```
-
 ## Manual Configuration
+
+### Set up git files
+
+1. Set up your `.gitconfig`.  Refer to [gitconfig](./dotfiles/gitconfig)
+
+   ```sh
+   git config --global user.name "Your Name"
+   git config --global user.email "youremail@yourdomain.com"
+   # git config --global credential.helper osxkeychain
+   ```
+
+> Git configuration (`~/.gitconfig` and `~/.gitattributes_global`) are copies (not symlinks) so they will not be synced if you update the git repository
 
 ### Modifying your setup
 

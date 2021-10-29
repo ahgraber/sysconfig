@@ -49,7 +49,7 @@ rm -rf termfont.zip termfont
 
 # install mambaforge
 # brew install --cask mambaforge
-if ! command -v conda >/dev/null; then
+if [[ ! $(command -v conda) ]]; then
   echo "Installing mambaforge..."
   curl -fsSL https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-MacOSX-$(uname -m).sh \
     -o mambaforge3.sh

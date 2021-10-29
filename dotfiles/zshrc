@@ -31,7 +31,7 @@ zcomet snippet OMZ::lib/clipboard.zsh
 ### custom settings
 zcomet snippet $ZSH_CONFIG/lib/autosuggest.zsh
 zcomet snippet $ZSH_CONFIG/lib/completion.zsh
-zcomet snippet $ZSH_CONFIG/lib/correction.zsh
+zcomet snippet $ZSH_CONFIG/lib/corrections.zsh
 zcomet snippet $ZSH_CONFIG/lib/history.zsh
 zcomet snippet $ZSH_CONFIG/lib/fzf.zsh
 zcomet snippet $ZSH_CONFIG/lib/options.zsh
@@ -58,3 +58,96 @@ zcomet compinit
 ### load p10k config
 # source $ZSH_CACHE_DIR/powerlevel10k/powerlevel10k.zsh-theme
 source ~/.p10k.zsh
+
+###########################################################
+###                 path configuration                  ###
+###########################################################
+
+# Standard PATH:
+# export PATH="/usr/bin:/bin:/usr/sbin:/usr/local/bin"
+
+# Extend PATH for Z4H
+export PATH=$HOME/bin:$PATH
+
+# Prepend Homebrew's executable directory
+# Set architecture-specific brew share path.
+
+arch_name="$(uname -m)"
+if [ "${arch_name}" = "x86_64" ]; then
+    share_path="/usr/local/share"
+elif [ "${arch_name}" = "arm64" ]; then
+    share_path="/opt/homebrew/share"
+else
+    echo "Unknown architecture: ${arch_name}"
+fi
+export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/sbin:$PATH
+export PATH=share_path:$PATH
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# Export environment variables.
+export GPG_TTY=$TTY
+
+# Source additional local files if they exist.
+[[ -f ~/env.zsh ]] && source ~/env.zsh
+[[ -f ~/.aliases ]] && source ~/.aliases
+[[ -d ~/.fonts ]] && source ~/.fonts/*.sh
+
+
+##########################################################
+###           additional path configuration             ###
+###########################################################
+# Other Homebrew packages
+# export PATH="/usr/local/opt/gcc/bin:$PATH"
+# export PATH="/usr/local/opt/arm-gcc-bin@8/bin:$PATH"
+# export PATH="/usr/local/opt/avr-gcc@8/bin:$PATH"
+# export PATH="/usr/local/opt/python@3.8/bin:$PATH"
+# export PATH="/usr/local/opt/cmake/bin:$PATH"
+# export PATH="/usr/local/opt/boost-python3/bin:$PATH"
+# export PATH="/usr/local/opt/boost/bin:$PATH"
+# export PATH="/usr/local/opt/sqlite/bin:$PATH"
+# export PATH="/usr/local/opt/sqlite/bin:$PATH"
+
+# # use brew-installed llvm?
+# export PATH="/usr/local/opt/llvm/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/llvm/lib"
+# export CPPFLAGS="-I/usr/local/opt/llvm/include"
+
+###########################################################
+###                 zsh configuration                   ###
+###########################################################
+# set your language environment
+export LANG=en_US.UTF-8
+# export ARCHFLAGS="-arch x86_64"
+
+###########################################################
+###                 User configuration                  ###
+###########################################################
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='nano'
+else
+  export EDITOR='code'
+fi
+
+# >>> conda initialize >>>
+# _CONDAPFX="opt/anaconda3"
+# _CONDAPFX="miniconda3"
+# _CONDAPFX="miniforge3"
+_CONDAPFX="mambaforge"
+
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$("/Users/${USERNAME}/${_CONDAPFX}/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/${USERNAME}/${_CONDAPFX}/etc/profile.d/conda.sh" ]; then
+        . "/Users/${USERNAME}/${_CONDAPFX}/etc/profile.d/conda.sh"  # commented out by conda initialize
+        # CONDA_CHANGEPS1=false conda activate base
+    else
+        export PATH="/Users/${USERNAME}/${_CONDAPFX}/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<

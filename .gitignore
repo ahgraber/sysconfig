@@ -8,3 +8,5 @@ settings.json
 .vscode
 
 .pytest_cache
+
+*.zwc

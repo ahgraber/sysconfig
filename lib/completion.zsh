@@ -5,9 +5,11 @@
 CASE_SENSITIVE="true"
 HYPHEN_INSENSITIVE="true"
 
-# should this be in keybindings?
+zstyle ':completion:::::' completer _expand _complete _ignored _approximate # enable approximate matches for completion
+
 zmodload zsh/complist
 bindkey -M menuselect '^o' accept-and-infer-next-history
+bindkey -M menuselect '^[[Z' reverse-menu-complete
 zstyle ':completion:*:*:*:*:*' menu select
 
 # case insensitive (all), partial-word and substring completion

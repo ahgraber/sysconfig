@@ -37,3 +37,7 @@ done
 
 echo "Loading new configuration..."
 exec zsh
+
+# install prerequisites
+echo "Prefilling local completions..."
+. ./scripts/completions.sh

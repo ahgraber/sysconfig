@@ -1,4 +1,4 @@
-# Dotfile Repository
+# zsh configuration
 
 ## Quickstart
 
@@ -100,3 +100,20 @@ mv _kubectl $ZSH_CONFIG/completions/
 [whitelist]
 prefix = [ "$HOME/GitHub" ])
 ```
+
+## Hints & Tips
+
+### aliases
+
+Review `~/.aliases` for an understanding of available functionality and remapping (`bat` → `cat`; `exa` → `ls`)
+
+### keybinds
+
+| icon | keybind | description |
+|:---:|:---:|:---|
+| `^ + c` | `ctrl + c` | break/exit |
+| `➡️` | `tab` | show available completions |
+| `➡➡` | `tab + tab` | enter completion menu |
+| `⌥ + ←` | `opt + left` | move the cursor one word left (including in completions) |
+| `⌥ + ➡` | `opt + right` | move the cursor one word right (including in completions) |
+| `⌥ + w` | `opt + w` | undo last completed word |

@@ -11,7 +11,11 @@ fi
 source ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh
 export ZSH_CONFIG=${HOME}/.zshconfig # this repo's location
 
-# set options
+### set options
+# completion
+CASE_SENSITIVE="true"
+HYPHEN_INSENSITIVE="true"
+# correction
 ENABLE_CORRECTION="true"
 
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1

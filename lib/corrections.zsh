@@ -2,6 +2,7 @@
 # ref: https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/correction.zsh
 
 if [[ "$ENABLE_CORRECTION" == "true" ]]; then
+  # echo "DEBUG: ENABLE_CORRECTION set to 'true' in .zshrc"
   alias cp='nocorrect cp'
   alias ebuild='nocorrect ebuild'
   alias gist='nocorrect gist'

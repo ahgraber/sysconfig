@@ -1,11 +1,7 @@
-# set your language environment
-export LANG=en_US.UTF-8
-# export ARCHFLAGS="-arch x86_64"
-
 # Set options `man zshoptions`
 setopt chase_dots               # do not follow symlinks when using '..'
 setopt interactive_comments     # allow comments in interactive shells
-setopt no_clobber               # Force '>!' to truncate / overwrite an existing file
+setopt no_clobber               # Force using `>!` to truncate / overwrite an existing file
 setopt no_mail_warning          # Don't print warning if mail has been accessed.
 # setopt path_dirs                # Perform path search even on command names with slashes
 

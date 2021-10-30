@@ -33,6 +33,8 @@ The following script will autoinstall the default configuration by:
 
 ### References
 
+* [zsh guide](https://zsh.sourceforge.io/Guide/zshguide.html)
+* [completion utilities](https://zv.github.io/a-review-of-zsh-completion-utilities)
 * [zcomet](https://github.com/agkozak/zcomet)
 * [Benchmarks & conclusions](https://github.com/romkatv/zsh-bench)
   * [diy++ from benchmark](https://github.com/romkatv/zsh-bench/blob/master/configs/diy%2B%2B/skel/.zshrc)

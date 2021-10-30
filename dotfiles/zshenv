@@ -1,7 +1,7 @@
 ###########################################################
 ###                 zsh configuration                   ###
 ###########################################################
-setopt rcs  # `norcs` would disable all .z<file>s
+setopt rcs  # `no_rcs` would disable all .z<file>s
 
 ### Ubuntu-specific: Don't run compinit in /etc/zshrc; run it later
 # skip_global_compinit=1
@@ -10,51 +10,47 @@ setopt rcs  # `norcs` would disable all .z<file>s
 export LANG=en_US.UTF-8
 # export ARCHFLAGS="-arch x86_64"
 
+### Export environment variables.
+export GPG_TTY=$TTY
 
-###########################################################
-###                 path configuration                  ###
-### `.zshenv` is always sourced, so set path here       ###
-### load order: `.zshenv` → `.zprofile` → `.zshrc`      ###
-###              → `.zlogin` → `.zlogout`               ###
-###########################################################
+#####################################################################
+###                  path configuration                           ###
+###  `.zshenv` is always sourced first, so set path here          ###
+###  `.zshenv` → `.zprofile` → `.zshrc` → `.zlogin` → `.zlogout`  ###
+#####################################################################
 
-### Standard PATH: uncomment to force strict path mgmt in shell
-# export PATH="/usr/bin:/bin:/usr/sbin:/sbin"
-# export PATH=/usr/local/bin:$PATH
-# export PATH=/usr/local/sbin:$PATH
+### Standard path: uncomment to force strict path mgmt in shell
+typeset -U path  # keep only unique, left-most occurrence
+# export path=(/usr/bin /bin /usr/sbin /sbin)
+# export path=(/usr/local/bin $path)
+# export path=(/usr/local/sbin $path)
 
 ### Prepend Homebrew's executable directory
 ### Set architecture-specific brew share path.
 arch_name="$(uname -m)"
 if [ "${arch_name}" = "x86_64" ]; then
-    share_path="/usr/local/share"
+    export path=(/usr/local/share $path)
 elif [ "${arch_name}" = "arm64" ]; then
-    share_path="/opt/homebrew/bin:/opt/homebrew/share"
+    export path=(/opt/homebrew/bin /opt/homebrew/share $path)
 else
     echo "Unknown architecture: ${arch_name}"
 fi
-export PATH=$share_path:$PATHa
 
-# export MANPATH="/usr/local/man:$MANPATH"
-
-### Export environment variables.
-export GPG_TTY=$TTY
-
-##########################################################
+###########################################################
 ###           additional path configuration             ###
 ###########################################################
 ### Other Homebrew packages
-# export PATH="/usr/local/opt/gcc/bin:$PATH"
-# export PATH="/usr/local/opt/arm-gcc-bin@8/bin:$PATH"
-# export PATH="/usr/local/opt/avr-gcc@8/bin:$PATH"
-# export PATH="/usr/local/opt/python@3.8/bin:$PATH"
-# export PATH="/usr/local/opt/cmake/bin:$PATH"
-# export PATH="/usr/local/opt/boost-python3/bin:$PATH"
-# export PATH="/usr/local/opt/boost/bin:$PATH"
-# export PATH="/usr/local/opt/sqlite/bin:$PATH"
-# export PATH="/usr/local/opt/sqlite/bin:$PATH"
+# export path=(/usr/local/opt/gcc/bin $path)
+# export path=(/usr/local/opt/arm-gcc-bin@8/bin $path)
+# export path=(/usr/local/opt/avr-gcc@8/bin $path)
+# export path=(/usr/local/opt/python@3.8/bin $path)
+# export path=(/usr/local/opt/cmake/bin $path)
+# export path=(/usr/local/opt/boost-python3/bin $path)
+# export path=(/usr/local/opt/boost/bin $path)
+# export path=(/usr/local/opt/sqlite/bin $path)
+# export path=(/usr/local/opt/sqlite/bin $path)
 
 ### use brew-installed llvm?
-# export PATH="/usr/local/opt/llvm/bin:$PATH"
+# export path=(/usr/local/opt/llvm/bin $path)
 # export LDFLAGS="-L/usr/local/opt/llvm/lib"
 # export CPPFLAGS="-I/usr/local/opt/llvm/include"

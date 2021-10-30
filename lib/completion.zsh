@@ -1,11 +1,7 @@
 # source: https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/completion.zsh
 # ref: https://thevaluable.dev/zsh-completion-guide-examples/
 
-### set options
-CASE_SENSITIVE="true"
-HYPHEN_INSENSITIVE="true"
-
-zstyle ':completion:::::' completer _expand _complete _ignored _approximate # enable approximate matches for completion
+zstyle ':completion:::::' completer _expand _complete _ignored _match _approximate # enable approximate matches for completion
 
 zmodload zsh/complist
 bindkey -M menuselect '^o' accept-and-infer-next-history
@@ -14,9 +10,11 @@ zstyle ':completion:*:*:*:*:*' menu select
 
 # case insensitive (all), partial-word and substring completion
 if [[ "$CASE_SENSITIVE" = true ]]; then
+  # echo "DEBUG: CASE_SENSITIVE set to 'true' in .zshrc"
   zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'
 else
   if [[ "$HYPHEN_INSENSITIVE" = true ]]; then
+    # echo "DEBUG: HYPHEN_INSENSITIVE set to 'true' in .zshrc"
     zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
   else
     zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'

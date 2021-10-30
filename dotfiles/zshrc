@@ -36,6 +36,7 @@ zcomet snippet OMZ::lib/clipboard.zsh
 zcomet snippet $ZSH_CONFIG/lib/autosuggest.zsh
 zcomet snippet $ZSH_CONFIG/lib/completion.zsh
 zcomet snippet $ZSH_CONFIG/lib/corrections.zsh
+zcomet snippet $ZSH_CONFIG/lib/highlight.zsh
 zcomet snippet $ZSH_CONFIG/lib/history.zsh
 zcomet snippet $ZSH_CONFIG/lib/fzf.zsh
 zcomet snippet $ZSH_CONFIG/lib/options.zsh

@@ -36,6 +36,9 @@ else
     echo "Unknown architecture: ${arch_name}"
 fi
 
+# fpath=($fpath $HOME/.zshconfig
+typeset -U fpath
+
 ###########################################################
 ###           additional path configuration             ###
 ###########################################################

@@ -47,6 +47,8 @@ The following script will autoinstall the default configuration by:
 
 Review `~/.aliases` for an understanding of available functionality and remapping (`bat` → `cat`; `exa` → `ls`)
 
+> `~/.aliases` is synced to the git repo.  For local configuration, use `~/.aliases.local`
+
 ### keybinds
 
 | icon | keybind | description |

@@ -59,63 +59,11 @@ zcomet compinit
 # source $ZSH_CACHE_DIR/powerlevel10k/powerlevel10k.zsh-theme
 source ~/.p10k.zsh
 
-###########################################################
-###                 path configuration                  ###
-###########################################################
-
-### Standard PATH: uncomment to force strict path maintenance in shell
-# export PATH="/usr/bin:/bin:/usr/sbin:/sbin"
-# export PATH=/usr/local/bin:$PATH
-# export PATH=/usr/local/sbin:$PATH
-
-### Prepend Homebrew's executable directory
-### Set architecture-specific brew share path.
-arch_name="$(uname -m)"
-if [ "${arch_name}" = "x86_64" ]; then
-    share_path="/usr/local/share"
-elif [ "${arch_name}" = "arm64" ]; then
-    share_path="/opt/homebrew/bin:/opt/homebrew/share"
-else
-    echo "Unknown architecture: ${arch_name}"
-fi
-export PATH=$share_path:$PATH
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-### Export environment variables.
-export GPG_TTY=$TTY
-
 ### Source additional local files if they exist.
 [[ -f ~/env.zsh ]] && source ~/env.zsh
 [[ -f ~/.aliases ]] && source ~/.aliases
-[[ -f ~/.local_aliases ]] && source ~/.local_aliases
+[[ -f ~/.aliases.local ]] && source ~/.aliases.local
 [[ -d ~/.fonts ]] && source ~/.fonts/*.sh
-
-##########################################################
-###           additional path configuration             ###
-###########################################################
-# Other Homebrew packages
-# export PATH="/usr/local/opt/gcc/bin:$PATH"
-# export PATH="/usr/local/opt/arm-gcc-bin@8/bin:$PATH"
-# export PATH="/usr/local/opt/avr-gcc@8/bin:$PATH"
-# export PATH="/usr/local/opt/python@3.8/bin:$PATH"
-# export PATH="/usr/local/opt/cmake/bin:$PATH"
-# export PATH="/usr/local/opt/boost-python3/bin:$PATH"
-# export PATH="/usr/local/opt/boost/bin:$PATH"
-# export PATH="/usr/local/opt/sqlite/bin:$PATH"
-# export PATH="/usr/local/opt/sqlite/bin:$PATH"
-
-# # use brew-installed llvm?
-# export PATH="/usr/local/opt/llvm/bin:$PATH"
-# export LDFLAGS="-L/usr/local/opt/llvm/lib"
-# export CPPFLAGS="-I/usr/local/opt/llvm/include"
-
-###########################################################
-###                 zsh configuration                   ###
-###########################################################
-### set your language environment
-export LANG=en_US.UTF-8
-# export ARCHFLAGS="-arch x86_64"
 
 ###########################################################
 ###                 User configuration                  ###

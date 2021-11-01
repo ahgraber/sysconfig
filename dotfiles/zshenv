@@ -22,8 +22,8 @@ export GPG_TTY=$TTY
 ### Standard path: uncomment to force strict path mgmt in shell
 typeset -U path  # keep only unique, left-most occurrence
 # export path=(/usr/bin /bin /usr/sbin /sbin)
-# export path=(/usr/local/bin $path)
-# export path=(/usr/local/sbin $path)
+export path=(/usr/local/bin $path)
+export path=(/usr/local/sbin $path)
 
 ### Prepend Homebrew's executable directory
 ### Set architecture-specific brew share path.

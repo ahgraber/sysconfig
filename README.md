@@ -60,7 +60,12 @@ Review `~/.aliases` for an understanding of available functionality and remappin
 | `➡➡` | `tab + tab` | enter completion menu |
 | `⌥ + ←` | `opt + left` | move the cursor one word left (including in completions) |
 | `⌥ + →` | `opt + right` | move the cursor one word right (including in completions) |
-| `⌥ + w` | `opt + w` | undo last completed word |
+<!-- | `⌥ + w` | `opt + w` | undo last completed word | -->
+| `^ + w` | `ctrl + w` | delete prior word |
+| `^ + u` | `ctrl + u` | delete entire line |
+| `^ + q` | `ctrl + q` | reject autosuggestion |
+
+> hint: run `bindkey` to see defaults
 
 ### direnv
 

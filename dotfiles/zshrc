@@ -11,6 +11,9 @@ fi
 source ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh
 export ZSH_CONFIG=${HOME}/.zshconfig # this repo's location
 
+# fpath=($fpath $HOME/.zshconfig
+typeset -U fpath
+
 ### set options
 # completion
 CASE_SENSITIVE="true"
@@ -53,6 +56,7 @@ zcomet load ohmyzsh plugins/safe-paste         # prevent pasted code from runnin
 zcomet load ohmyzsh plugins/terraform          # terraform completions
 
 zcomet load $ZSH_CONFIG/completions            # watch local dir for completions
+[[ $(command -v brew) ]] && fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
 
 ### must be loaded late after all other modules that provide completion definitions
 zcomet load zsh-users/zsh-completions

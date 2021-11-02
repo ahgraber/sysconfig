@@ -22,22 +22,14 @@ export GPG_TTY=$TTY
 ### Standard path: uncomment to force strict path mgmt in shell
 typeset -U path  # keep only unique, left-most occurrence
 # export path=(/usr/bin /bin /usr/sbin /sbin)
-export path=(/usr/local/bin $path)
-export path=(/usr/local/sbin $path)
+# export path=(/usr/local/bin $path)
+# export path=(/usr/local/sbin $path)
 
 ### Prepend Homebrew's executable directory
 ### Set architecture-specific brew share path.
-arch_name="$(uname -m)"
-if [ "${arch_name}" = "x86_64" ]; then
-    export path=(/usr/local/share $path)
-elif [ "${arch_name}" = "arm64" ]; then
-    export path=(/opt/homebrew/bin /opt/homebrew/share $path)
-else
-    echo "Unknown architecture: ${arch_name}"
+if [[ $(command -v brew) ]]; then
+  export path=($(brew --prefix)/bin $(brew --prefix)/sbin $(brew --prefix)/share $path)
 fi
-
-# fpath=($fpath $HOME/.zshconfig
-typeset -U fpath
 
 ###########################################################
 ###           additional path configuration             ###

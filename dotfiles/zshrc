@@ -55,8 +55,10 @@ zcomet load ohmyzsh plugins/gitfast            # git completions
 zcomet load ohmyzsh plugins/safe-paste         # prevent pasted code from running
 zcomet load ohmyzsh plugins/terraform          # terraform completions
 
-zcomet load $ZSH_CONFIG/completions            # watch local dir for completions
+# add homebrew completions
 [[ $(command -v brew) ]] && fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
+# zcomet load $ZSH_CONFIG/completions            # watch local dir for completions; homebrew auto adds completions
+zcomet load $ZSH_CONFIG/functions              # watch local dir for functions
 
 ### must be loaded late after all other modules that provide completion definitions
 zcomet load zsh-users/zsh-completions

@@ -1,9 +1,41 @@
 #!/bin/bash
+set -- $(locale LC_MESSAGES)
+yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4"
 
-# bootstrap
 export ZSH_CONFIG="${HOME}/.zshconfig"
-[[ -d ${ZSH_CONFIG} ]] || git clone https://github.com/ahgraber/zshconfig.git ${ZSH_CONFIG}
-cd ${ZSH_CONFIG}
+
+# if dest_dir already contains .git file, assume we've already installed there once
+if [[ -d "$ZSH_CONFIG/.git" ]]; then
+  read -p "Update from source? (y/n)? [y] " git_select
+  git_select=${git_select:-"y"}
+
+  if [[ "$git_select" =~ $yesexpr ]]; then
+    echo "Updating...  Will attempt to reapply any local changes..."
+    cd $ZSH_CONFIG
+    git stash && git checkout main && git pull --rebase origin && git stash pop
+  fi
+  unset git_select
+
+else
+  if [[ -d "$ZSH_CONFIG" ]]; then
+    read -p "~/.zshconfig already exists but is not a git repo.  Overwrite (y/n)? [y] " overwrite_select
+    overwrite_select=${overwrite_select:-"y"}
+
+    if [[ "$overwrite_select" =~ $yesexpr ]]; then
+      rm -rf $ZSH_CONFIG
+      echo "Cloning into $ZSH_CONFIG"
+      git clone https://github.com/ahgraber/zshconfig.git
+    else
+      echo "Exiting without configuring..."
+      exit 0
+    fi
+    unset overwrite_select
+
+  else
+    echo "Cloning into $ZSH_CONFIG"
+    git clone https://github.com/ahgraber/zshconfig.git
+fi
+cd $ZSH_CONFIG
 
 echo "Installing prerequisites..."
 . ./scripts/prerequisites.sh
@@ -38,3 +70,10 @@ done
 
 echo "Loading new configuration..."
 exec zsh
+
+read -p "Disconnect from source repo? (y/n)? [n] " git_select
+git_select=${git_select:-"n"}
+if [[ "$git_select" =~ $yesexpr ]]; then
+  rm -rf $ZSH_CONFIG/.git
+fi
+unset git_select

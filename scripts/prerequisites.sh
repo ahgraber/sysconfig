@@ -1,22 +1,26 @@
 #!/bin/zsh
 
 # Ensure Apple's command line tools are installed
-if ! command -v cc >/dev/null; then
+if [[ $(command -v cc) ]] then
+  echo "Xcode already installed. Skipping."
+else
   echo "Installing xcode ..."
   xcode-select --install
   sudo xcodebuild -license
-else
-  echo "Xcode already installed. Skipping."
 fi
 
-# install x86 compatibility layer
+# install rosetta2 x86 compatibility layer
 if [[ "$(arch)" = "arm64" ]]; then
     softwareupdate --install-rosetta --agree-to-license
 fi
 
-# install homebrew if they don't exist
+# install homebrew & packages if they don't exist
 echo "Checking homebrew installation"
-[[ $(command -v brew) ]] || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+if [[ $(command -v brew) ]] || [[ -f /usr/local/Homebrew/bin/brew ]] || [[ -f /opt/homebrew/Homebrew/bin/brew ]]; then
+  echo "Homebrew installed.  Checking packages..."
+else
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
 [[ $(command -v bat) ]] || brew install bat
 [[ $(command -v direnv) ]] || brew install direnv
 [[ $(command -v exa) ]] || brew install exa
@@ -49,11 +53,9 @@ rm -rf termfont.zip termfont
 
 # install mambaforge
 # brew install --cask mambaforge
-if [[ ! $(command -v conda) ]]; then
+if [[ ! $(command -v conda) ]] && [[ ! -f $HOME/mambaforge/bin/conda ]]; then
   echo "Installing mambaforge..."
-  curl -fsSL https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-MacOSX-$(uname -m).sh \
-    -o mambaforge3.sh
-  bash mambaforge3.sh -b
-  rm mambaforge3.sh
-  echo "mambaforge successfully installed!"
+  curl -L -O https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh
+  bash Mambaforge-$(uname)-$(uname -m).sh -b -f -p $HOME/mambaforge
+  rm Mambaforge-$(uname)-$(uname -m).sh
 fi

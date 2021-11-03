@@ -13,6 +13,8 @@ export LANG=en_US.UTF-8
 ### Export environment variables.
 export GPG_TTY=$TTY
 
+MAILCHECK=-1  # Don't check for mail
+
 #####################################################################
 ###                  path configuration                           ###
 ###  `.zshenv` is always sourced first, so set path here          ###
@@ -22,8 +24,8 @@ export GPG_TTY=$TTY
 ### Standard path: uncomment to force strict path mgmt in shell
 typeset -U path  # keep only unique, left-most occurrence
 export path=(/usr/bin /bin /usr/sbin /sbin $path)
-# export path=(/usr/local/bin $path)
-# export path=(/usr/local/sbin $path)
+export path=(/usr/local/bin $path)
+export path=(/usr/local/sbin $path)
 
 ### Prepend Homebrew's executable directory
 ### Set architecture-specific brew share path.

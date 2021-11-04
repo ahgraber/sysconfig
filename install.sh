@@ -4,25 +4,26 @@ yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
 
 export ZSH_CONFIG="${HOME}/.zshconfig"
 
-# if dest_dir already contains .git file, assume we've already installed there once
-if [[ -d "$ZSH_CONFIG/.git" ]]; then
-  read -p "Update from source? (y/n)? [y] " git_select
-  git_select=${git_select:-"y"}
+# check for ~/.zshconfig
+if [[ -d "$ZSH_CONFIG" ]]; then
+  # if dest_dir already contains .git directory, assume we've already installed there once
+  if [[ -d "$ZSH_CONFIG/.git" ]]; then
+    read -p "Update from source? (y/n)? [y] " git_select
+    git_select=${git_select:-"y"}
 
-  if [[ "$git_select" =~ $yesexpr ]]; then
-    echo -e "\nUpdating (Will attempt to reapply any local changes)..."
-    cd "$ZSH_CONFIG" || exit
-    echo -e "\nStashing local changes (stash)..."
-    git stash
-    echo -e "\nUpdating (pull --rebase)..."
-    git checkout main && git pull --rebase origin
-    echo -e "\nReverting local changes (stash pop)..."
-    git stash pop
-  fi
-  unset git_select
+    if [[ "$git_select" =~ $yesexpr ]]; then
+      echo -e "\nUpdating (Will attempt to reapply any local changes)..."
+      cd "$ZSH_CONFIG" || exit
+      echo -e "\nStashing local changes (stash)..."
+      git stash
+      echo -e "\nUpdating (pull --rebase)..."
+      git checkout main && git pull --rebase origin
+      echo -e "\nReverting local changes (stash pop)..."
+      git stash pop
+    fi
+    unset git_select
 
-else
-  if [[ -d "$ZSH_CONFIG" ]]; then
+  else
     read -p "~/.zshconfig already exists but is not a git repo.  Back up and overwrite (y/n)? [y] " overwrite_select
     overwrite_select=${overwrite_select:-"y"}
 
@@ -34,10 +35,11 @@ else
       exit 0
     fi
     unset overwrite_select
-
-    echo "Cloning into $ZSH_CONFIG"
-    git clone https://github.com/ahgraber/zshconfig.git
   fi
+
+else
+  echo "Cloning into $ZSH_CONFIG"
+  git clone https://github.com/ahgraber/zshconfig.git
 fi
 cd "$ZSH_CONFIG" || exit
 

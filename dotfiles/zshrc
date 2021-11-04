@@ -74,7 +74,7 @@ source ~/.p10k.zsh
 [[ -f ~/env.zsh ]] && source ~/env.zsh
 [[ -f ~/.aliases ]] && source ~/.aliases
 [[ -f ~/.aliases.local ]] && source ~/.aliases.local
-[[ -d ~/.fonts ]] && for sh in ~/.fonts/; do source sh; done;
+[[ -d ~/.fonts ]] && for sh in ~/.fonts/; do source $sh; done;
 
 ###########################################################
 ###                 User configuration                  ###

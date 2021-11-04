@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Ensure Apple's command line tools are installed
-if [[ $(command -v cc) ]] then
+if [[ $(command -v cc) ]]; then
   echo "Xcode already installed. Skipping."
 else
   echo "Installing xcode ..."

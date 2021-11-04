@@ -2,7 +2,7 @@
 set -- "$(locale LC_MESSAGES)"
 yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
 
-export ZSH_CONFIG="${HOME}/.zshconfig"
+export ZSH_CONFIG="$HOME/.zshconfig"
 
 # check for ~/.zshconfig
 if [[ -d "$ZSH_CONFIG" ]]; then
@@ -39,10 +39,10 @@ if [[ -d "$ZSH_CONFIG" ]]; then
 
 else
   echo "Cloning into $ZSH_CONFIG"
-  git clone https://github.com/ahgraber/zshconfig.git "$HOME"
-  mv "$HOME/zshconfig" "$ZSH_CONFIG"
+  git clone https://github.com/ahgraber/zshconfig.git
+  mv ./zshconfig "$ZSH_CONFIG"
 fi
-cd "$ZSH_CONFIG" # || exit
+cd "$ZSH_CONFIG" || exit
 
 echo "Installing prerequisites..."
 . ./scripts/prerequisites.sh

@@ -13,7 +13,7 @@ if [[ -d "$ZSH_CONFIG" ]]; then
 
     if [[ "$git_select" =~ $yesexpr ]]; then
       echo -e "\nUpdating (Will attempt to reapply any local changes)..."
-      cd "$ZSH_CONFIG" # || exit
+      cd "$ZSH_CONFIG" || exit
       echo -e "\nStashing local changes (stash)..."
       git stash
       echo -e "\nUpdating (pull --rebase)..."

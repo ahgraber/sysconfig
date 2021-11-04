@@ -1,6 +1,7 @@
+#!/bin/bash
 # Clone zcomet if necessary
 if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
-  command git clone https://github.com/agkozak/zcomet.git ${ZDOTDIR:-${HOME}}/.zcomet/bin
+  command git clone https://github.com/agkozak/zcomet.git "${ZDOTDIR:-${HOME}}/.zcomet/bin"
 fi
 
 # Activate Powerlevel10k Instant Prompt.
@@ -8,20 +9,20 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-source ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh
-export ZSH_CONFIG=${HOME}/.zshconfig # this repo's location
+source "${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh"
+export ZSH_CONFIG="${HOME}/.zshconfig" # this repo's location
 
 # fpath=($fpath $HOME/.zshconfig
 typeset -U fpath
 
 ### set options
 # completion
-CASE_SENSITIVE="true"
-HYPHEN_INSENSITIVE="true"
+export CASE_SENSITIVE="true"
+export HYPHEN_INSENSITIVE="true"
 # correction
-ENABLE_CORRECTION="true"
+export ENABLE_CORRECTION="true"
 
-ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
 # does order matter?
 zcomet load zsh-users/zsh-syntax-highlighting
@@ -39,7 +40,7 @@ bindkey -e
 
 ### custom settings
 for zsh in $ZSH_CONFIG/lib/*.zsh; do
-  zcomet snippet $zsh
+  zcomet snippet "$zsh"
 done
 
 ### additional plugins
@@ -55,8 +56,8 @@ zcomet load ohmyzsh plugins/terraform          # terraform completions
 
 # add homebrew completions
 [[ $(command -v brew) ]] && fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
-# zcomet load $ZSH_CONFIG/completions            # watch local dir for completions; homebrew auto adds completions
-zcomet load $ZSH_CONFIG/functions              # watch local dir for functions
+# zcomet load "$ZSH_CONFIG/completions"          # watch local dir for completions; homebrew auto adds completions
+zcomet load "$ZSH_CONFIG/functions"            # watch local dir for functions
 
 ### must be loaded late after all other modules that provide completion definitions
 zcomet load zsh-users/zsh-completions
@@ -79,7 +80,7 @@ else
 fi
 
 if [[ -d ~/.fonts ]]; then
-  for sh in ~/.fonts/; do
+  for sh in ~/.fonts/*.sh; do
     source $sh
   done
 fi
@@ -98,6 +99,7 @@ else
 fi
 
 ### >>> conda initialize >>>
+### change this if for a different 'conda' source
 # _conda_pfx="opt/anaconda3"
 # _conda_pfx="miniconda3"
 # _conda_pfx="miniforge3"

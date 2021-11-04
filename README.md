@@ -67,6 +67,11 @@ Review `~/.aliases` for an understanding of available functionality and remappin
 
 > hint: run `bindkey` to see defaults
 
+#### References
+
+* [shortcuts](http://teohm.com/blog/shortcuts-to-move-faster-in-bash-command-line/)
+* [cheatsheet](https://catonmat.net/bash-emacs-editing-mode-cheat-sheet)
+
 ### direnv
 
 [direnv](https://direnv.net/) allows un/loading a unique set of environmental variables depending on the current directory.

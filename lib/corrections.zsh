@@ -17,4 +17,5 @@ if [[ "$ENABLE_CORRECTION" == "true" ]]; then
 
   setopt correct                  # suggest corrections for commands
   setopt correct_all
+  CORRECT_IGNORE="[_|.]*"
 fi

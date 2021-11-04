@@ -9,15 +9,15 @@ zstyle ':completion::complete:*' cache-path "${ZDOTDIR:-$HOME}/.zcompcache"
 zstyle ':completion:*' insert-tab pending
 
 # case insensitive (all), partial-word and substring completion
-if [[ "$CASE_SENSITIVE" = true ]]; then
+if [[ "$CASE_SENSITIVE" == "true" ]]; then
   # echo "DEBUG: CASE_SENSITIVE set to 'true' in .zshrc"
-  zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'
+  zstyle ':completion:*' matcher-list '' 'r:|=*' 'l:|=* r:|=*'
 else
-  if [[ "$HYPHEN_INSENSITIVE" = true ]]; then
+  if [[ "$HYPHEN_INSENSITIVE" == "true" ]]; then
     # echo "DEBUG: HYPHEN_INSENSITIVE set to 'true' in .zshrc"
-    zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
+    zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
   else
-    zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+    zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
   fi
 fi
 unset CASE_SENSITIVE HYPHEN_INSENSITIVE
@@ -27,8 +27,6 @@ zstyle ':completion:*' special-dirs true
 
 # Group matches and describe.
 zmodload zsh/complist
-bindkey -M menuselect '^o' accept-and-infer-next-history
-bindkey -M menuselect '^[[Z' reverse-menu-complete                  # shift-tab
 zstyle ':completion:*:*:*:*:*' menu select
 zstyle ':completion:*:matches' group 'yes'
 zstyle ':completion:*:options' description 'yes'

@@ -35,14 +35,12 @@ zcomet snippet OMZ::lib/clipboard.zsh
 # zcomet snippet OMZ::lib/correction.zsh
 # zcomet snippet OMZ::lib/history.zsh
 
+bindkey -e
+
 ### custom settings
-zcomet snippet $ZSH_CONFIG/lib/autosuggest.zsh
-zcomet snippet $ZSH_CONFIG/lib/completion.zsh
-zcomet snippet $ZSH_CONFIG/lib/corrections.zsh
-zcomet snippet $ZSH_CONFIG/lib/highlight.zsh
-zcomet snippet $ZSH_CONFIG/lib/history.zsh
-zcomet snippet $ZSH_CONFIG/lib/fzf.zsh
-zcomet snippet $ZSH_CONFIG/lib/options.zsh
+for zsh in $ZSH_CONFIG/lib/*.zsh; do
+  zcomet snippet $zsh
+done
 
 ### additional plugins
 zcomet load ohmyzsh plugins/colorize           # multilanguage syntax highlighting
@@ -73,8 +71,18 @@ source ~/.p10k.zsh
 ### Source additional local files if they exist.
 [[ -f ~/env.zsh ]] && source ~/env.zsh
 [[ -f ~/.aliases ]] && source ~/.aliases
-[[ -f ~/.aliases.local ]] && source ~/.aliases.local
-[[ -d ~/.fonts ]] && for sh in ~/.fonts/; do source $sh; done;
+
+if [[ -f ~/.aliases.local ]]; then
+  source ~/.aliases.local
+else
+  touch ~/.aliases.local
+fi
+
+if [[ -d ~/.fonts ]]; then
+  for sh in ~/.fonts/; do
+    source $sh
+  done
+fi
 
 ###########################################################
 ###                 User configuration                  ###

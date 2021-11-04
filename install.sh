@@ -34,6 +34,7 @@ else
   else
     echo "Cloning into $ZSH_CONFIG"
     git clone https://github.com/ahgraber/zshconfig.git
+  fi
 fi
 cd $ZSH_CONFIG
 

@@ -39,7 +39,8 @@ if [[ -d "$ZSH_CONFIG" ]]; then
 
 else
   echo "Cloning into $ZSH_CONFIG"
-  git clone https://github.com/ahgraber/zshconfig.git "$ZSH_CONFIG"
+  git clone https://github.com/ahgraber/zshconfig.git "$HOME"
+  mv "$HOME/zshconfig" "$ZSH_CONFIG"
 fi
 cd "$ZSH_CONFIG" # || exit
 

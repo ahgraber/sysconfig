@@ -16,6 +16,7 @@ if [[ "$ENABLE_CORRECTION" == "true" ]]; then
   alias su='nocorrect su'
 
   setopt correct                  # suggest corrections for commands
+  CORRECT_IGNORE="[_|.]*"         # 'correct' should not correct words starting with _ or .
   setopt correct_all
-  CORRECT_IGNORE="[_|.]*"
+  CORRECT_IGNORE_FILE="[_|.]*"    # 'correct_all' should not correct words starting with _ or .
 fi

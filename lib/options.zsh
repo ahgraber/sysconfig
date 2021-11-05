@@ -14,14 +14,14 @@ setopt pushd_silent             # don't print the directory stack after pushd or
 # Completion Options.
 setopt always_to_end            # when completing from the middle of a word, move the cursor to the end of the word
 setopt auto_list                # automatically list choices on ambiguous completion
-# setopt auto_menu                # show completion menu on tab
-setopt menu_complete            # on ambiguous completion, autoinsert first and rotate through with tab
+setopt auto_menu                # show completion menu on tab
+# setopt menu_complete            # on ambiguous completion, autoinsert first and rotate through with tab
 setopt auto_param_slash         # if completed parameter is dir, add trailing slash
 setopt auto_remove_slash        # When the last character from completion is /, remove in certain logical cases
 setopt complete_in_word         # allow completion from within a word/phrase
 setopt complete_aliases         # complete alisases
 # setopt glob_complete            # complete after glob `*` isntead of expanding it
-setopt list_ambiguous           # complete as much of a completion until it gets ambiguous
+# setopt list_ambiguous           # complete as much of a completion until it gets ambiguous
 setopt list_rows_first          # Lay out the completions horiz; the 2nd match is to the right of the 1s, not under it (default).
 
 # Expansion & Globbing

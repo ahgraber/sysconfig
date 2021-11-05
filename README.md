@@ -18,11 +18,14 @@ The following script will autoinstall the default configuration by:
 
 1. Set up your `.gitconfig`.  Refer to [gitconfig](./dotfiles/gitconfig)
 
-   ```sh
-   git config --global user.name "Your Name"
-   git config --global user.email "youremail@yourdomain.com"
-   # git config --global credential.helper osxkeychain
-   ```
+  ```sh
+  git config --global user.name "Your Name"
+  git config --global user.email "youremail@yourdomain.com"
+  # https://leosiddle.com/posts/2020/07/git-config-pull-rebase-autostash/
+  git config --global pull.rebase true
+  git config --global rebase.autoStash true
+  # git config --global credential.helper osxkeychain
+  ```
 
 > Git configuration (`~/.gitconfig` and `~/.gitattributes_global`) are copies (not symlinks) so they will not be synced if you update the git repository
 
@@ -31,7 +34,7 @@ The following script will autoinstall the default configuration by:
 * `.zshrc` relies on [`zcomet`](https://github.com/agkozak/zcomet) for plugin management
 * Other options are set in [`lib/*.zsh`](./lib/) files
 
-### References
+#### References
 
 * [zsh guide](https://zsh.sourceforge.io/Guide/zshguide.html)
 * [completion utilities](https://zv.github.io/a-review-of-zsh-completion-utilities)
@@ -63,7 +66,7 @@ Review `~/.aliases` for an understanding of available functionality and remappin
 <!-- | `⌥ + w` | `opt + w` | undo last completed word | -->
 | `^ + w` | `ctrl + w` | delete prior word |
 | `^ + u` | `ctrl + u` | delete entire line |
-| `^ + q` | `ctrl + q` | reject autosuggestion |
+| `^ + _` | `ctrl + -` | undo |
 
 > hint: run `bindkey` to see defaults
 

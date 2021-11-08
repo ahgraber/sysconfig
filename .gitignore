@@ -1,4 +1,5 @@
 # cache/  # do not include submodule cache in .gitignore
+bin
 completions/*
 *.zwc
 !**.gitkeep

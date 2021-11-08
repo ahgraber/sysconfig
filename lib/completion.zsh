@@ -7,8 +7,8 @@ zstyle ':completion::complete:*' cache-path "${ZDOTDIR:-$HOME}/.zcompcache"
 
 # pasting with tabs doesn't perform completion
 zstyle ':completion:*' insert-tab pending
-
 # case insensitive (all), partial-word and substring completion
+
 if [[ "$CASE_SENSITIVE" == "true" ]]; then
   # echo "DEBUG: CASE_SENSITIVE set to 'true' in .zshrc"
   zstyle ':completion:*' matcher-list '' 'r:|=*' 'l:|=* r:|=*'
@@ -36,14 +36,17 @@ zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
 zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
 zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
+# zstyle ':completion:*' format ' %F{yellow}Completing (%d) --%f'   # what is being completed?
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' verbose yes
 
 # Fuzzy match mistyped completions.
 zstyle ':completion:*' completer _expand _complete _match _approximate
 zstyle ':completion:*:match:*' original only
-zstyle ':completion:*:approximate:*' max-errors 1 numeric
+zstyle ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
+
+# In menu-style completion, give a status bar
+zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
 
 # Increase the number of errors based on the length of the typed word.
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
@@ -70,6 +73,8 @@ zstyle ':completion:*:history-words' menu yes
 
 # disable named-directories autocompletion
 zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
+# disable parent directories
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
 
 # set group order of command completion
 zstyle ':completion:*' group-name ''

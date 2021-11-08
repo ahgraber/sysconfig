@@ -27,6 +27,7 @@ fi
 [[ $(command -v fd) ]] || brew install fd
 [[ $(command -v git) ]] || brew install git
 [[ $(command -v jq) ]] || brew install jq
+[[ $(command -v jq) ]] || brew install vivid
 [[ $(command -v zsh) ]] || brew install zsh
 
 # install fonts

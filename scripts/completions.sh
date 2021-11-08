@@ -14,19 +14,19 @@ fi
 
 # docker-compose
 if [[ $(command -v docker-compose) ]]; then
-    curl -L https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose \
+    curl -fsSL https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose \
         -o $ZSH_CONFIG/completions/_docker-compose
 fi
 
 # exa
 if [[ $(command -v exa) ]]; then
-    curl -L https://raw.githubusercontent.com/ogham/exa/master/completions/zsh/_exa \
+    curl -fsSL https://raw.githubusercontent.com/ogham/exa/master/completions/zsh/_exa \
         -o $ZSHCONFIG/completions/_exa
 fi
 
 # fd
 if [[ $(command -v fd) ]]; then
-    curl -L https://github.com/sharkdp/fd/blob/master/contrib/completion/_fd \
+    curl -fsSL https://raw.githubusercontent.com/sharkdp/fd/master/contrib/completion/_fd \
         -o $ZSH_CONFIG/completions/_fd
 fi
 
@@ -44,6 +44,6 @@ fi
 
 # kubectl
 if [[ $(command -v kubectl) ]]; then
-kubectl completion zsh > _kubectl
-mv _kubectl $ZSH_CONFIG/completions/
+    kubectl completion zsh > _kubectl
+    mv _kubectl $ZSH_CONFIG/completions/
 fi

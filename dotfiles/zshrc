@@ -44,16 +44,16 @@ zcomet snippet OMZ::lib/compfix.zsh
 zcomet load esc/conda-zsh-completion           # conda completions
 zcomet load ohmyzsh plugins/direnv             # enable direnv
 
-zcomet load ohmyzsh plugins/fd                 # fd completions
-zcomet load ohmyzsh plugins/fzf                # fzf completions
+# zcomet load ohmyzsh plugins/fd                 # fd completions
+# zcomet load ohmyzsh plugins/fzf                # fzf completions
 zcomet load ohmyzsh plugins/gitfast            # git completions
 zcomet load ohmyzsh plugins/safe-paste         # prevent pasted code from running
-# zcomet load ohmyzsh plugins/terraform          # terraform completions
+zcomet load ohmyzsh plugins/terraform          # terraform completions
 
 # add homebrew completions
 [[ $(command -v brew) ]] \
-  && fpath=($(brew --prefix)/share/zsh/site-functions $fpath) \
-  && zcomet load $(brew --prefix)/share/zsh/site-functions
+  && fpath=($(brew --prefix)/share/zsh/site-functions $fpath) #\
+  # && zcomet load $(brew --prefix)/share/zsh/site-functions
 # zcomet load "$ZSH_CONFIG/completions"          # watch local dir for completions; homebrew auto adds completions
 zcomet load "$ZSH_CONFIG/functions"            # watch local dir for functions
 
@@ -63,15 +63,12 @@ zcomet load zsh-users/zsh-completions
 ### Run compinit and compile its cache
 zcomet compinit
 
-# pull zpm-zsh/clipboard and lazy-load
-zcomet trigger clip open pbcopy pbpaste zpm-zsh/clipboard
-
 # NOTE: fzf-tab needs to be loaded after compinit, but before plugins that wrap widgets,
 # such as zsh-autosuggestions or fast-syntax-highlighting!!
 zcomet load Aloxaf/fzf-tab
-source ~[fzf-tab]/fzf-tab.zsh
-# zcomet snippet ~[fzf-tab]/fzf-tab.zsh
-zcomet load joshskidmore/zsh-fzf-history-search
+source "$HOME/.zcomet/repos/Aloxaf/fzf-tab/fzf-tab.plugin.zsh"
+
+# zcomet load joshskidmore/zsh-fzf-history-search
 # zcomet load chitoku-k/fzf-zsh-completions
 
 # order must be: syntax-highlighting, history-substr-search, autosuggestions (see zprezto docs)
@@ -80,11 +77,14 @@ zcomet load zsh-users/zsh-syntax-highlighting
 zcomet load zsh-users/zsh-history-substring-search
 zcomet load zsh-users/zsh-autosuggestions
 
+# pull zpm-zsh/clipboard and lazy-load
+zcomet trigger clip open pbcopy pbpaste zpm-zsh/clipboard
 
 ### custom settings
 for zsh in $ZSH_CONFIG/lib/*.zsh; do
   zcomet snippet "$zsh"
 done
+enable-fzf-tab
 
 ### load p10k config
 # source $ZSH_CACHE_DIR/powerlevel10k/powerlevel10k.zsh-theme

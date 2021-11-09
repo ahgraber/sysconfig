@@ -14,7 +14,7 @@ setopt pushd_silent             # don't print the directory stack after pushd or
 # Completion Options.
 setopt always_to_end            # when completing from the middle of a word, move the cursor to the end of the word
 setopt auto_list                # automatically list choices on ambiguous completion
-setopt auto_menu                # show completion menu on tab
+# use fzf-tab instead # setopt auto_menu                # show completion menu on tab
 # setopt menu_complete            # on ambiguous completion, autoinsert first and rotate through with tab
 setopt auto_param_slash         # if completed parameter is dir, add trailing slash
 setopt auto_remove_slash        # When the last character from completion is /, remove in certain logical cases

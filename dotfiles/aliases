@@ -22,12 +22,13 @@ if [[ ! $(command -v exa) ]]; then
   alias ll="ls -lAGp"
   # alias lt="tree -C -L 3"
 else
-  alias l='exa -aF --icons'
-  alias l1='exa -1F --no-icons'
-  alias ls='exa -F'
-  alias la='exa -aF'
-  alias ll='exa -lbGF --git'
-  alias llm='exa -lbGF --git --sort=modified'
+  alias l='exa -a --icons'
+  alias l1='exa -1 --no-icons'
+  alias ls='exa'
+  alias la='exa -a'
+  alias lf='exa -aF' # show character markings for files: https://github.com/ogham/exa/issues/151
+  alias ll='exa -lbG --git'
+  alias llm='exa -lbG --git --sort=modified'
   alias lt='exa --no-icons --tree'
   alias lit='exa --icons --tree'
 fi

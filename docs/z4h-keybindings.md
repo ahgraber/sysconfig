@@ -1,4 +1,14 @@
-| bindkey code | action | key combination|
+# z4h - default keybindings
+
+List current bindings with `bindkey -l`.
+List all available commands with `zle -al`.
+Create new key binding with `bindkey "<code>" <command>`.
+
+## Default Keybindings
+
+As of Nov 2021:
+
+| bindkey code | command | key combination|
 | :---: | :--- | :---|
 | `^@` | z4h-expand | `ctrl + space` |
 | `^A` | beginning-of-line | `ctrl + a; cmd + left` |

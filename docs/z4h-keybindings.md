@@ -2,13 +2,14 @@
 
 List current bindings with `bindkey -l`.
 List all available commands with `zle -al`.
+Test a key combination's translation with `ctrl + v; <keycombination>`
 Create new key binding with `bindkey "<code>" <command>`.
 
 ## Default Keybindings
 
 As of Nov 2021:
 
-| bindkey code | command | key combination|
+| bindkey code | command | key combination |
 | :---: | :--- | :---|
 | `^@` | z4h-expand | `ctrl + space` |
 | `^A` | beginning-of-line | `ctrl + a; cmd + left` |
@@ -32,9 +33,9 @@ As of Nov 2021:
 | `^T` | transpose-chars | `ctrl + t` |
 | `^U` | kill-whole-line | `ctrl + u` |
 | `^V` | quoted-insert | `ctrl + v` |
-| `^W` | z4h-backward-kill-word | `ctrl + w` |
+| `^W` | z4h-backward-kill-word | `ctrl + w; opt + del` |
 | `^Y` | yank | `ctrl + y` |
-| `^_` | undo | `ctrl + -` |
+| `^_` | undo | `ctrl + /` |
 | ` -"~"` | self-insert | `standard keys act as expected` |
 | `^?` | backward-delete-char | `backspace` |
 | `\M-^@-"\M-A"` | self-insert | `` |

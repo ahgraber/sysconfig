@@ -27,4 +27,4 @@ zstyle ':fzf-tab:*' switch-group ',' '.'
 # keybinds
 zstyle ':fzf-tab:*' fzf-bindings 'space:accept'         # accept suggestion
 zstyle ':fzf-tab:*' accept-line enter                   # accept and run
-zstyle ':fzf-tab:*' continuous-trigger '/'              # accept and look for next completion
+zstyle ':fzf-tab:*' continuous-trigger 'tab'              # accept and look for next completion

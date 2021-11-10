@@ -56,7 +56,8 @@ zsh_path=$(which zsh)
 chsh -s "${zsh_path}"
 
 echo "Initializing dotfiles..."
-dotfiles=(aliases p10k.zsh zshenv zshrc)
+# dotfiles=(aliases p10k.zsh zshenv zshrc)
+dotfiles=(aliases p10k.zsh z4henv z4hrc)
 for file in "${dotfiles[@]}"; do
   # if exists as link, relink
   [[ -L "${HOME}/.${file}" ]] && unlink "${HOME}"/."${file}"

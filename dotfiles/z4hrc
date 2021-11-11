@@ -56,10 +56,10 @@ z4h install esc/conda-zsh-completion || return
 z4h init || return
 
 # ---[ Update path ]-----------------------------------------------------------
-export path=(/{bin,sbin} "$path")
-export path=(/usr/{bin,sbin} "$path")
-export path=(/usr/local/{bin,sbin} "$path")
-export path=(~/bin "$path")
+export path=(/{bin,sbin} $path)
+export path=(/usr/{bin,sbin} $path)
+export path=(/usr/local/{bin,sbin} $path)
+export path=(~/bin $path)
 
 # # Add system pythons to path?
 # pythons=($HOME/Library/Python/3.7/bin $HOME/Library/Python/3.8/bin $HOME/Library/Python/3.9/bin)

@@ -1,1 +1,2 @@
 *.ipynb filter=nbstrip_full
+* text=auto eol=lf

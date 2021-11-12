@@ -5,7 +5,26 @@ yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
 export ZSH_CONFIG="$HOME/.zshconfig"
 
 # check for ~/.zshconfig
-if [[ -d "$ZSH_CONFIG" ]]; then
+if [[ ! -d "$ZSH_CONFIG" ]] || [[ ! -d "$ZSH_CONFIG/.git" ]]; then
+  if [[ -d "$ZSH_CONFIG" ]]; then
+    read -p "~/.zshconfig already exists but is not a git repo.  Back up and overwrite (y/n)? [y] " overwrite_select
+    overwrite_select=${overwrite_select:-"y"}
+
+    if [[ "$overwrite_select" =~ $yesexpr ]]; then
+      echo "Backing up..."
+      mv "$ZSH_CONFIG" "$ZSH_CONFIG.$(date +%Y%m%d)"
+    else
+      echo "Exiting without configuring..."
+      exit 0
+    fi
+    unset overwrite_select
+  fi
+
+  echo "Cloning into $ZSH_CONFIG"
+  git clone https://github.com/ahgraber/zshconfig.git
+  mv ./zshconfig "$ZSH_CONFIG"
+
+else
   # if dest_dir already contains .git directory, assume we've already installed there once
   if [[ -d "$ZSH_CONFIG/.git" ]]; then
     read -p "Update from source? (y/n)? [y] " git_select
@@ -22,28 +41,8 @@ if [[ -d "$ZSH_CONFIG" ]]; then
       git stash pop
     fi
     unset git_select
-
-  else
-    read -p "~/.zshconfig already exists but is not a git repo.  Back up and overwrite (y/n)? [y] " overwrite_select
-    overwrite_select=${overwrite_select:-"y"}
-
-    if [[ "$overwrite_select" =~ $yesexpr ]]; then
-      echo "Backing up..."
-      mv "$ZSH_CONFIG" "$ZSH_CONFIG.$(date +%Y%m%d)"
-      echo "Cloning into $ZSH_CONFIG"
-      git clone https://github.com/ahgraber/zshconfig.git
-      mv ./zshconfig "$ZSH_CONFIG"
-    else
-      echo "Exiting without configuring..."
-      exit 0
-    fi
-    unset overwrite_select
   fi
-
-else
-  echo "Cloning into $ZSH_CONFIG"
-  git clone https://github.com/ahgraber/zshconfig.git
-  mv ./zshconfig "$ZSH_CONFIG"
+  
 fi
 cd "$ZSH_CONFIG" || exit
 

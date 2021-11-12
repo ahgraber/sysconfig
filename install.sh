@@ -42,13 +42,14 @@ else
     fi
     unset git_select
   fi
-  
+
 fi
 cd "$ZSH_CONFIG" || exit
 
 echo "Installing prerequisites..."
 . ./scripts/prerequisites.sh
 
+### Note: if installed with Homebrew, completions should be detected automatically
 # echo "Prefilling local completions..."
 # . ./scripts/completions.sh
 

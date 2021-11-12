@@ -3,13 +3,13 @@
 # bat
 if [[ $(command -v bat) ]]; then
     curl -L https://raw.githubusercontent.com/sharkdp/bat/master/assets/completions/bat.zsh.in \
-        -o $ZSHCONFIG/completions/_bat
+        -o $ZSH_CONFIG/completions/_bat
 fi
 
 # docker
 if [[ $(command -v docker) ]]; then
     curl -L https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker \
-        -o $ZSHCONFIG/completions/_docker
+        -o $ZSH_CONFIG/completions/_docker
 fi
 
 # docker-compose
@@ -21,7 +21,7 @@ fi
 # exa
 if [[ $(command -v exa) ]]; then
     curl -fsSL https://raw.githubusercontent.com/ogham/exa/master/completions/zsh/_exa \
-        -o $ZSHCONFIG/completions/_exa
+        -o $ZSH_CONFIG/completions/_exa
 fi
 
 # fd

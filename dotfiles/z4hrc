@@ -79,11 +79,9 @@ archcheck () {
      echo "Unknown architecture detected: $(uname -p) // $(arch)"
    fi
 }
+archcheck
 alias native="/usr/bin/arch -arm64 zsh && archcheck"
 alias rosetta="/usr/bin/arch -x86_64 zsh && archcheck"
-
-# default start native
-native
 
 # # Prepend Homebrew's executable directory (z4h automatically does this)
 # if [[ $(command -v brew) ]]; then

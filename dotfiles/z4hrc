@@ -202,9 +202,9 @@ fi
 ### >>> conda initialize >>>
 ### change this if for a different 'conda' source
 # _conda_pfx="opt/anaconda3"
-_conda_pfx="miniconda3"
+# _conda_pfx="miniconda3"
 # _conda_pfx="miniforge3"
-# _conda_pfx="mambaforge"
+_conda_pfx="mambaforge"
 
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$("/Users/${USERNAME}/${_conda_pfx}/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"

@@ -30,6 +30,9 @@ if [[ -d "$ZSH_CONFIG" ]]; then
     if [[ "$overwrite_select" =~ $yesexpr ]]; then
       echo "Backing up..."
       mv "$ZSH_CONFIG" "$ZSH_CONFIG.$(date +%Y%m%d)"
+      echo "Cloning into $ZSH_CONFIG"
+      git clone https://github.com/ahgraber/zshconfig.git
+      mv ./zshconfig "$ZSH_CONFIG"
     else
       echo "Exiting without configuring..."
       exit 0

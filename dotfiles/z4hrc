@@ -66,15 +66,20 @@ export path=(~/bin $path)
 # export path=($pythons $path)
 
 ### Autodetect architecture for homebrew
-if [ "$(uname -p)" = "i386" ]; then
-  echo "Running in i386 mode (Rosetta)"
-  eval "$(/usr/local/homebrew/bin/brew shellenv)"
-  alias brew='/usr/local/homebrew/bin/brew'
-else
-  echo "Running in ARM mode (M1)"
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-  alias brew='/opt/homebrew/bin/brew'
-fi
+archcheck () {
+   if [ "$(uname -p)" = "i386" ]; then
+     echo "Running in i386 mode (Rosetta)"
+     eval "$(/usr/local/homebrew/bin/brew shellenv)"
+     alias brew='/usr/local/homebrew/bin/brew'
+   elif
+     echo "Running in ARM mode (M1)"
+     eval "$(/opt/homebrew/bin/brew shellenv)"
+     alias brew='/opt/homebrew/bin/brew'
+   else
+     echo "Unknown architecture detected: $(uname -p) // $(arch)"
+   fi
+}
+archcheck
 
 # # Prepend Homebrew's executable directory (z4h automatically does this)
 # if [[ $(command -v brew) ]]; then

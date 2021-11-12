@@ -1,15 +1,15 @@
 ### Aliases for bash and zsh
-### this is symlinked against ahgraber/zshconfig
-### for local aliases, edit ~/.local_aliases
-
-alias zconfig='/usr/bin/git --git-dir=$HOME/.zshcfg/ --work-tree=$HOME'
-
+### this is symlinked against ahgraber/zshconfig repo
+### for local aliases, make/edit ~/.local_aliases
 alias aliasconfig="code ~/.aliases"
 alias zshconfig="code ~/.zshrc"
-# alias bashconfig="code ~/.bash_profile"
+# alias bashconfig="code ~/.bash_profile"  # or ~/.bashrc
 [[ -f ~/.p10k.zsh ]] && alias p10kconfig="code ~/.p10k.zsh"
 [[ -f ~/.p10k.zsh ]] && alias codeconfig="code ~/Library/Application\ Support/Code/User/settings.json"
 alias -s {py,pyc,ipynb,yml,yaml}=code
+
+alias native="arch -arm64 zsh && archcheck"
+alias rosetta="arch -x86_64 zsh && archcheck"
 
 alias c='clear'
 alias clr="clear"

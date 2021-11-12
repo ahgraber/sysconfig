@@ -8,9 +8,6 @@ alias zshconfig="code ~/.zshrc"
 [[ -f ~/.p10k.zsh ]] && alias codeconfig="code ~/Library/Application\ Support/Code/User/settings.json"
 alias -s {py,pyc,ipynb,yml,yaml}=code
 
-alias native="arch -arm64 zsh && archcheck"
-alias rosetta="arch -x86_64 zsh && archcheck"
-
 alias c='clear'
 alias clr="clear"
 alias clrbuf="printf '\ec\e[3J'"

@@ -50,8 +50,8 @@ cd "$ZSH_CONFIG" || exit
 echo "Installing prerequisites..."
 . ./scripts/prerequisites.sh
 
-echo "Prefilling local completions..."
-. ./scripts/completions.sh
+# echo "Prefilling local completions..."
+# . ./scripts/completions.sh
 
 echo "Setting zsh as default shell.  This may require your user password"
 zsh_path=$(which zsh)

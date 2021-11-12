@@ -1,17 +1,23 @@
 #!/bin/zsh
 
 # Ensure Apple's command line tools are installed
-if [[ $(command -v cc) ]]; then
-  echo "Xcode already installed. Skipping."
-else
+check_xcode() { xcode-select -p 2>&1; }
+err_msg="xcode-select: error:"
+if [[ $(check_xcode) == *"$err_msg"* ]]; then
   echo "Installing xcode ..."
   xcode-select --install
-  sudo xcodebuild -license
+  while [[ $(check_xcode) == *"$err_msg"* ]]; do sleep 10; done;
+else
+  echo "Xcode already installed. Skipping."
 fi
 
-# install rosetta2 x86 compatibility layer
-if [[ "$(arch)" = "arm64" ]]; then
-    softwareupdate --install-rosetta --agree-to-license
+# Ensure x86 compatibility layer is installed
+if [[ "$(arch)" == "arm64" ]] && [[ ! -f /Library/Apple/usr/share/rosetta/rosetta ]]; then
+  echo "Installing Rosetta2 combatibility layer"
+  softwareupdate --install-rosetta --agree-to-license
+  while [[ ! "$(pkgutil --pkgs | grep Rosetta)" == "com.apple.pkg.RosettaUpdateAuto" ]]; do sleep 10; done;
+else
+  echo "Rosetta2 already installed. Skipping."
 fi
 
 # install homebrew & packages if they don't exist

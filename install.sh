@@ -60,11 +60,11 @@ echo "Initializing dotfiles..."
 dotfiles=(aliases p10k.zsh z4henv z4hrc)
 for file in "${dotfiles[@]}"; do
   # if exists as link, relink
-  [[ -L "${HOME}/.${file}" ]] && unlink "${HOME}"/."${file}"
+  [[ -L "${HOME}/.${file/z4h/zsh}" ]] && unlink "${HOME}"/."${file/z4h/zsh}"
   # if exists as file, back up
-  [[ -f "${HOME}/.${file}" ]] && mv "${HOME}/.${file}" "${HOME}/.${file}.$(date +%Y%m%d)"
+  [[ -f "${HOME}/.${file/z4h/zsh}" ]] && mv "${HOME}/.${file/z4h/zsh}" "${HOME}/.${file/z4h/zsh}.$(date +%Y%m%d)"
   # make link
-  ln -sf "${ZSH_CONFIG}"/dotfiles/"${file}" "${HOME}"/."${file}"
+  ln -sf "${ZSH_CONFIG}"/dotfiles/"${file}" "${HOME}"/."${file/z4h/zsh}"
 done
 
 # copy git config files

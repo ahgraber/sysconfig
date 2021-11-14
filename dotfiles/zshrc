@@ -134,7 +134,7 @@ function prompt_my_arch() {
   p10k segment -f 250 -i '💻' -t "${archcheck//\%/%%}"
 }
 
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch  # to specify location, modify ~/.p10k.zsh
 
 ###########################################################
 ###                 User configuration                  ###

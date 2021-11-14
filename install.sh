@@ -53,10 +53,10 @@ echo "Installing prerequisites..."
 # echo "Prefilling local completions..."
 # . ./scripts/completions.sh
 
-echo "Setting zsh as default shell.  This may require your user password"
-zsh_path=$(which zsh)
-[[ ! $(grep "${zsh_path}" /etc/shells) ]] && cat "${zsh_path}" >> /etc/shells
-chsh -s "${zsh_path}"
+# echo "Setting zsh as default shell.  This may require your user password"
+# zsh_path=$(which zsh)
+# [[ ! $(grep "${zsh_path}" /etc/shells) ]] && cat "${zsh_path}" >> /etc/shells
+# chsh -s "${zsh_path}"
 
 echo "Initializing dotfiles..."
 # dotfiles=(aliases p10k.zsh zshenv zshrc)

@@ -34,6 +34,10 @@ alias h='history'               # Prints your command history
 alias hs='history | grep'       # Use grep to search your command history
 alias hsi='history | grep -i'   # Use grep to case-insensitive earch your command history
 
+# start new zsh process in specified architecture
+alias native="/usr/bin/arch -arm64 zsh && archcheck"
+alias rosetta="/usr/bin/arch -x86_64 zsh && archcheck"
+
 # directory history: `d` will show history
 # d# will `cd` into that index
 alias d='dirs -v | head -n10'

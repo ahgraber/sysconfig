@@ -56,6 +56,7 @@ z4h install esc/conda-zsh-completion || return
 z4h init || return
 
 # ---[ Update path ]-----------------------------------------------------------
+typeset -U path
 export path=(/{bin,sbin} $path)
 export path=(/usr/{bin,sbin} $path)
 export path=(/usr/local/{bin,sbin} $path)
@@ -74,6 +75,7 @@ case $archcheck in
     if [[ -f /opt/homebrew/bin/brew ]]; then
       eval "$(/opt/homebrew/bin/brew shellenv)"
       alias brew='/opt/homebrew/bin/brew'
+      export path=(/opt/homebrew/{bin,sbin} $path)
     fi
   ;;
   i386|x86_64)

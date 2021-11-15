@@ -107,34 +107,36 @@ if [[ -d ~/.fonts ]]; then
 fi
 
 ### Autodetect architecture (and set `brew` path)
-archcheck=$(/usr/bin/arch)
-typeset -g archcheck
-case $archcheck in
-  arm64)
-    archcheck+=' (Native)'
-    if [[ -f /opt/homebrew/bin/brew ]]; then
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-      alias brew='/opt/homebrew/bin/brew'
-    fi
-  ;;
-  i386|x86_64)
-    archcheck+=' (Rosetta)'
-    if [[ -f /usr/local/homebrew/bin/brew ]]; then
-      eval "$(/usr/local/homebrew/bin/brew shellenv)"
-      alias brew='/usr/local/homebrew/bin/brew'
-    fi
-  ;;
-  *)
-    archcheck+=' (Unknown)'
-  ;;
-esac
+if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
+  archcheck=$(/usr/bin/arch)
+  typeset -g archcheck
+  case $archcheck in
+    arm64)
+      archcheck+=' (Native)'
+      if [[ -f /opt/homebrew/bin/brew ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        alias brew='/opt/homebrew/bin/brew'
+      fi
+    ;;
+    i386|x86_64)
+      archcheck+=' (Rosetta)'
+      if [[ -f /usr/local/homebrew/bin/brew ]]; then
+        eval "$(/usr/local/homebrew/bin/brew shellenv)"
+        alias brew='/usr/local/homebrew/bin/brew'
+      fi
+    ;;
+    *)
+      archcheck+=' (Unknown)'
+    ;;
+  esac
 
-# add arch to p10k
-function prompt_my_arch() {
-  p10k segment -f 250 -i '💻' -t "${archcheck//\%/%%}"
-}
+  # add arch to p10k
+  function prompt_my_arch() {
+    p10k segment -f 250 -i '💻' -t "${archcheck//\%/%%}"
+  }
 
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch  # to specify location, modify ~/.p10k.zsh
+  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch  # to specify location, modify ~/.p10k.zsh
+fi
 
 ###########################################################
 ###                 User configuration                  ###

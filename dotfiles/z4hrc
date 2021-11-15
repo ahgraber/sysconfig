@@ -62,45 +62,46 @@ export path=(/usr/{bin,sbin} $path)
 export path=(/usr/local/{bin,sbin} $path)
 export path=(~/bin $path)
 
-# # Add system pythons to path?
-# pythons=($HOME/Library/Python/3.7/bin $HOME/Library/Python/3.8/bin $HOME/Library/Python/3.9/bin)
-# export path=($pythons $path)
-
 ### Autodetect architecture (and set `brew` path)
-archcheck=$(/usr/bin/arch)
-typeset -g archcheck
-case $archcheck in
-  arm64)
-    archcheck+=' (Native)'
-    if [[ -f /opt/homebrew/bin/brew ]]; then
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-      alias brew='/opt/homebrew/bin/brew'
-      export path=(/opt/homebrew/{bin,sbin} $path)
-    fi
-  ;;
-  i386|x86_64)
-    archcheck+=' (Rosetta)'
-    if [[ -f /usr/local/homebrew/bin/brew ]]; then
-      eval "$(/usr/local/homebrew/bin/brew shellenv)"
-      alias brew='/usr/local/homebrew/bin/brew'
-    fi
-  ;;
-  *)
-    archcheck+=' (Unknown)'
-  ;;
-esac
+if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
+  archcheck=$(/usr/bin/arch)
+  typeset -g archcheck
+  case $archcheck in
+    arm64)
+      archcheck+=' (Native)'
+      if [[ -f /opt/homebrew/bin/brew ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        alias brew='/opt/homebrew/bin/brew'
+      fi
+    ;;
+    i386|x86_64)
+      archcheck+=' (Rosetta)'
+      if [[ -f /usr/local/homebrew/bin/brew ]]; then
+        eval "$(/usr/local/homebrew/bin/brew shellenv)"
+        alias brew='/usr/local/homebrew/bin/brew'
+      fi
+    ;;
+    *)
+      archcheck+=' (Unknown)'
+    ;;
+  esac
 
-# add arch to p10k
-function prompt_my_arch() {
-  p10k segment -f 250 -i '💻' -t "${archcheck//\%/%%}"
-}
+  # add arch to p10k
+  function prompt_my_arch() {
+    p10k segment -f 250 -i '💻' -t "${archcheck//\%/%%}"
+  }
 
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch  # to specify location, modify ~/.p10k.zsh
+  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch  # to specify location, modify ~/.p10k.zsh
+fi
 
 # # Prepend Homebrew's executable directory (z4h automatically does this)
 # if [[ $(command -v brew) ]]; then
 #   export path=($(brew --prefix)/bin $(brew --prefix)/sbin $(brew --prefix)/share $path)
 # fi
+
+# # Add system pythons to path?
+# pythons=($HOME/Library/Python/3.7/bin $HOME/Library/Python/3.8/bin $HOME/Library/Python/3.9/bin)
+# export path=($pythons $path)
 
 # ---[ Export environmental variables ]----------------------------------------
 export GPG_TTY=$TTY

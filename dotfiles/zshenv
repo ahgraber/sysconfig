@@ -27,15 +27,15 @@ export path=(/{bin,sbin} $path)
 export path=(/usr/{bin,sbin} $path)
 export path=(/usr/local/{bin,sbin} $path)
 
-### Add system pythons to path?
-# pythons=($HOME/Library/Python/3.7/bin $HOME/Library/Python/3.8/bin $HOME/Library/Python/3.9/bin)
-# export path=($pythons $path)
-
 ### Prepend Homebrew's executable directory
 ### Set architecture-specific brew share path.
 if [[ $(command -v brew) ]]; then
   export path=($(brew --prefix)/bin $(brew --prefix)/sbin $(brew --prefix)/share $path)
 fi
+
+### Add system pythons to path?
+# pythons=($HOME/Library/Python/3.7/bin $HOME/Library/Python/3.8/bin $HOME/Library/Python/3.9/bin)
+# export path=($pythons $path)
 
 ###########################################################
 ###           additional path configuration             ###

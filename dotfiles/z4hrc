@@ -17,7 +17,7 @@ zstyle ':z4h:' prompt-at-bottom 'yes'
 zstyle ':z4h:bindkey' keyboard  'mac'
 
 # Enable iTerm2 integration
-zstyle ':z4h:' iterm2-integration 'yes'
+zstyle ':z4h:' iterm2-integration 'no'
 
 # Right-arrow key accepts one character ('partial-accept') from
 # command autosuggestions or the whole thing ('accept')?

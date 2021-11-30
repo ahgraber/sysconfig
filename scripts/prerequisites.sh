@@ -34,7 +34,7 @@ fi
 [[ $(command -v git) ]] || brew install git
 [[ $(command -v jq) ]] || brew install jq
 [[ $(command -v jq) ]] || brew install vivid
-[[ $(command -v zsh) ]] || brew install zsh
+# [[ $(command -v zsh) ]] || brew install zsh
 
 # install fonts
 mkdir -p "$HOME/Library/Fonts"

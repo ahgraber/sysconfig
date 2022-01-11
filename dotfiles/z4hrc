@@ -236,6 +236,6 @@ fi
 unset __conda_setup
 
 if [ -f "/Users/${USERNAME}/${_conda_pfx}/etc/profile.d/mamba.sh" ]; then
-    . "/Users/${USERNAME}/${_conda_pfx}/etc/profile.d/mamba.sh"
+    . "/Users/${USERNAME}/${_conda_pfx}/etc/profile.d/mamba.sh"  # commented out by conda initialize
 fi
 ### <<< conda initialize <<<

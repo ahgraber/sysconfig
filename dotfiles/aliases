@@ -34,15 +34,28 @@ alias h='history'               # Prints your command history
 alias hs='history | grep'       # Use grep to search your command history
 alias hsi='history | grep -i'   # Use grep to case-insensitive earch your command history
 
+# # directory history: `d` will show history
+# # d# will `cd` into that index
+# alias d='dirs -v | head -n10'
+# for index ({1..10}); do alias "d$index"="cd +${index}"; unset index;
+
 # start new zsh process in specified architecture
 alias native="/usr/bin/arch -arm64 /bin/zsh"
 alias rosetta="/usr/bin/arch -x86_64 /bin/zsh"
-alias oldbrew="arch -x86_64 /usr/local/homebrew/bin/brew"
+# alias oldbrew="arch -x86_64 /usr/local/homebrew/bin/brew"
 
-# directory history: `d` will show history
-# d# will `cd` into that index
-alias d='dirs -v | head -n10'
-for index ({1..10}) alias "d$index"="cd +${index}"; unset index
+function arch_brew {
+  if [ "$(uname -p)" = "i386" ]; then
+    echo "Running 'brew' in x86 (Rosetta) mode"
+    # eval "$(/usr/local/homebrew/bin/brew shellenv)"
+    arch -x86_64 /usr/local/homebrew/bin/brew "$@"
+  else
+    echo "Running 'brew' in arm64 (Native) mode"
+    # eval "$(/opt/homebrew/bin/brew shellenv)"
+    arch -arm64 /opt/homebrew/bin/brew "$@"
+  fi
+}
+alias brew=arch_brew
 
 if [[ $(command -v bat) ]]; then
   export BAT_THEME="OneHalfDark" # TwoDark"
@@ -113,5 +126,7 @@ alias docker-clean-all=' \
   docker network prune -f ; \
   docker volume prune -f '
 
-alias docker-clean-untagged=' \
-  docker rmi $(docker images | grep "^<none>" | awk "{print $3}")'
+function docker_clean_untagged {
+  docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
+}
+alias docker-clean-untagged=docker_clean_untagged

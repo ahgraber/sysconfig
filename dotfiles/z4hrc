@@ -215,27 +215,22 @@ else
 fi
 
 ### >>> conda initialize >>>
-### change this if for a different 'conda' source
-# _conda_pfx="opt/anaconda3"
-# _conda_pfx="miniconda3"
-# _conda_pfx="miniforge3"
-_conda_pfx="mambaforge"
-
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$("/Users/${USERNAME}/${_conda_pfx}/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$("/Users/${USERNAME}/mambaforge/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/Users/${USERNAME}/${_conda_pfx}/etc/profile.d/conda.sh" ]; then
-        . "/Users/${USERNAME}/${_conda_pfx}/etc/profile.d/conda.sh"  # commented out by conda initialize
+    if [ -f "/Users/${USERNAME}/mambaforge/etc/profile.d/conda.sh" ]; then
+        . "/Users/${USERNAME}/mambaforge/etc/profile.d/conda.sh"  # commented out by conda initialize
         # CONDA_CHANGEPS1=false conda activate base
     else
-        export PATH="/Users/${USERNAME}/${_conda_pfx}/bin:$PATH"
+        export PATH="/Users/${USERNAME}/mambaforge/bin:$PATH"
     fi
 fi
 unset __conda_setup
 
-if [ -f "/Users/${USERNAME}/${_conda_pfx}/etc/profile.d/mamba.sh" ]; then
-    . "/Users/${USERNAME}/${_conda_pfx}/etc/profile.d/mamba.sh"  # commented out by conda initialize
+if [ -f "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh" ]; then
+    . "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh"  # commented out by conda initialize
 fi
 ### <<< conda initialize <<<
+

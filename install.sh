@@ -81,8 +81,8 @@ if [[ -f "${HOME}/.gitattributes_global" ]]; then
   cp "${ZSH_CONFIG}/dotfiles/gitattributes_global" "${HOME}/.gitattributes_global"
 fi
 
-read -p "Disconnect from source repo? (y/n)? [n] " git_select
-git_select=${git_select:-"n"}
+read -p "Disconnect zshconfig from source repo? (y/n)? [y] " git_select
+git_select=${git_select:-"y"}
 if [[ "$git_select" =~ $yesexpr ]]; then
   rm -rf "$ZSH_CONFIG/.git"
 fi

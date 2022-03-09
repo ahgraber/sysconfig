@@ -61,16 +61,17 @@ Review `~/.aliases` for an understanding of available functionality and remappin
 ### keybinds
 
 |  icon   |    keybind    | description                                               |
-| :-----: | :-----------: | :-------------------------------------------------------- | ------------------------ | --- |
+| :-----: | :-----------: | :-------------------------------------------------------- |
 | `^ + c` |  `ctrl + c`   | break/exit                                                |
 |   `➡`   |     `tab`     | show available completions                                |
 |  `➡➡`   |  `tab + tab`  | enter completion menu                                     |
 | `⌥ + ←` | `opt + left`  | move the cursor one word left (including in completions)  |
 | `⌥ + →` | `opt + right` | move the cursor one word right (including in completions) |
-|  <!--   |    `⌥ + w`    | `opt + w`                                                 | undo last completed word | --> |
 | `^ + w` |  `ctrl + w`   | delete prior word                                         |
 | `^ + u` |  `ctrl + u`   | delete entire line                                        |
 | `^ + _` |  `ctrl + -`   | undo                                                      |
+
+<!--   |    `⌥ + w`    | `opt + w`                                                 | undo last completed word | -->
 
 > hint: run `bindkey` to see defaults
 

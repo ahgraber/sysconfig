@@ -67,8 +67,9 @@ Review `~/.aliases` for an understanding of available functionality and remappin
 |  `➡➡`   |  `tab + tab`  | enter completion menu                                     |
 | `⌥ + ←` | `opt + left`  | move the cursor one word left (including in completions)  |
 | `⌥ + →` | `opt + right` | move the cursor one word right (including in completions) |
-| `^ + w` |  `ctrl + w`   | delete prior word                                         |
-| `^ + u` |  `ctrl + u`   | delete entire line                                        |
+| `^ + w` |  `ctrl + w`   | cut/delete prior word                                     |
+| `^ + u` |  `ctrl + u`   | cut/delete entire line                                    |
+| `^ + y` |  `ctrl + y`   | paste                                                     |
 | `^ + _` |  `ctrl + -`   | undo                                                      |
 
 <!--   |    `⌥ + w`    | `opt + w`                                                 | undo last completed word | -->
@@ -77,6 +78,7 @@ Review `~/.aliases` for an understanding of available functionality and remappin
 
 #### References
 
+- [keybinds](docs/z4h-keybindings.md)
 - [shortcuts](http://teohm.com/blog/shortcuts-to-move-faster-in-bash-command-line/)
 - [cheatsheet](https://catonmat.net/bash-emacs-editing-mode-cheat-sheet)
 

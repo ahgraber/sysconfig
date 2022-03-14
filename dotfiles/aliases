@@ -130,3 +130,7 @@ function docker_clean_untagged {
   docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
 }
 alias docker-clean-untagged=docker_clean_untagged
+
+function loadenv {
+  export $(grep -v '^#' .env | xargs)
+}

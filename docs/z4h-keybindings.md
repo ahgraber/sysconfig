@@ -1,9 +1,10 @@
 # z4h - default keybindings
 
-List current bindings with `bindkey -l`.
-List all available commands with `zle -al`.
-Test a key combination's translation with `ctrl + v; <keycombination>`
-Create new key binding with `bindkey "<code>" <command>`.
+List current bindings with `bindkey -l`.  
+List all available commands with `zle -al`.  
+Test a key combination's translation with `ctrl + v; <keycombination>`.  
+Create new key binding with `bindkey "<code>" <command>`.  
+
 
 ## Default Keybindings
 

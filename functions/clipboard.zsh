@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # ref: https://coderwall.com/p/a035gq/zsh-copy-paste-system-wide-for-os-x-like-in-emacs
 # ref: https://gist.github.com/varenc/e4a22145c484771f254fa20982e2cd7f
 

@@ -149,7 +149,8 @@ z4h load -c ohmyzsh/ohmyzsh/plugins/gitfast            # git completions
 z4h load -c ohmyzsh/ohmyzsh/plugins/safe-paste         # prevent pasted code from running
 z4h load -c ohmyzsh/ohmyzsh/plugins/terraform          # terraform completions
 
-z4h source -c ohmyzsh/ohmyzsh/lib/clipboard.zsh
+# z4h source -c ohmyzsh/ohmyzsh/lib/clipboard.zsh
+z4h source -c "$HOME/.zshconfig/functions/clipboard.zsh"
 z4h source -c "$HOME/.zshconfig/lib/corrections.zsh"
 
 ### ---[ Define key bindings ]-------------------------------------------------
@@ -166,6 +167,23 @@ z4h bindkey z4h-cd-down    Shift+Down   # cd into a child directory
 zstyle ':z4h:fzf-dir-history' fzf-bindings tab:repeat
 zstyle ':z4h:fzf-complete' fzf-bindings tab:repeat
 zstyle ':z4h:fzf-dir-history' fzf-bindings tab:repeat
+
+# use clipboard functions
+# paste command
+bindkey '^Y'   pb-yank                  # ctrl + y
+# cut commands
+bindkey '^K'   pb-kill-line             # ctrl + k
+bindkey '^U'   pb-kill-whole-line       # ctrl + u
+bindkey '^W'   pb-backward-kill-word    # ctrl + w; opt + del
+bindkey '^[^H' pb-backward-kill-word    # esc + ctrl + h
+bindkey '^[^?' pb-backward-kill-word    # esc + backspace
+
+bindkey '^[D'      pb-kill-word         # esc + d; opt + right
+bindkey '^[[3;5~'  pb-kill-word         # ctrl + delete
+bindkey '^X^K' pb-kill-buffer           # ctrl + x, ctrl + k
+bindkey '^[w'  pb-copy-region-as-kill-deactivate-mark   # esc + w
+bindkey '^[W'  pb-copy-region-as-kill-deactivate-mark   # esc + w
+
 
 # ### Autoload functions.
 # autoload -Uz zmv

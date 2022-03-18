@@ -23,7 +23,7 @@ As of Nov 2021:
 | `^I` | z4h-fzf-complete | `ctrl + i` |
 | `^J` | accept-line | `ctrl + j` |
 | `^K` | kill-line | `ctrl + k` |
-| `^L` | z4h-clear-screen-soft-bottom | `ctrl + u` |
+| `^L` | z4h-clear-screen-soft-bottom | `ctrl + l` |
 | `^M` | accept-line | `ctrl + m` |
 | `^N` | z4h-down-substring-local | `ctrl + n` |
 | `^O` | accept-line-and-down-history | `ctrl + o` |

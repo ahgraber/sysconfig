@@ -110,13 +110,13 @@ export GPG_TTY=$TTY
 export LANG=en_US.UTF-8
 export ZSH_CONFIG="${HOME}/.zshconfig"
 
-# unidodbc
-export LDFLAGS="-L/opt/homebrew/Cellar/unixodbc/2.3.9_1/lib ${LDFLAGS}"
-export CPPFLAGS="-I/opt/homebrew/Cellar/unixodbc/2.3.9_1/include ${CPPFLAGS}"
-# openblas
-export LDFLAGS="-L/opt/homebrew/opt/openblas/lib ${LDFLAGS}"
-export CPPFLAGS="-I/opt/homebrew/opt/openblas/include ${CPPFLAGS}"
-export OPENBLAS="$(brew --prefix openblas)"
+# # unixdodbc
+# export LDFLAGS="-L/opt/homebrew/Cellar/unixodbc/2.3.9_1/lib ${LDFLAGS}"
+# export CPPFLAGS="-I/opt/homebrew/Cellar/unixodbc/2.3.9_1/include ${CPPFLAGS}"
+# # openblas
+# export LDFLAGS="-L/opt/homebrew/opt/openblas/lib ${LDFLAGS}"
+# export CPPFLAGS="-I/opt/homebrew/opt/openblas/include ${CPPFLAGS}"
+# export OPENBLAS="$(brew --prefix openblas)"
 
 # ---[ Load/Source additional plugins/files ]---------------------------------
 # `z4h source`: ohmyzsh/ohmyzsh/lib/diagnostics.zsh  # source an individual file

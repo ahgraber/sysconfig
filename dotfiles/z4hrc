@@ -109,6 +109,7 @@ fi
 export GPG_TTY=$TTY
 export LANG=en_US.UTF-8
 export ZSH_CONFIG="${HOME}/.zshconfig"
+export HOMEBREW_NO_ANALYTICS=1
 
 # # unixdodbc
 # export LDFLAGS="-L/opt/homebrew/Cellar/unixodbc/2.3.9_1/lib ${LDFLAGS}"
@@ -261,4 +262,3 @@ if [ -f "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh" ]; then
     . "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh"  # commented out by conda initialize
 fi
 ### <<< conda initialize <<<
-

@@ -82,6 +82,10 @@ alias externalip='curl ifconfig.co'
 
 alias sleepless="pmset -g assertions | egrep '(PreventUserIdleSystemSleep|PreventUserIdleDisplaySleep)'"
 
+function loadenv {
+  export $(grep -v '^#' .env | xargs)
+}
+
 # run with nbstrip_jq path/to/metadata.ipynb > path/to/stripped.ipynb
 alias nbstrip_jq="jq --indent 1 \
     '(.cells[] | select(has(\"outputs\")) | .outputs) = []  \
@@ -130,6 +134,8 @@ function docker_clean_untagged {
   docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
 }
 alias docker-clean-untagged=docker_clean_untagged
+alias dcu="docker compose up"
+alias dcd="docker compose down --remove-orphans"
 
 function loadenv {
   export $(grep -v '^#' .env | xargs)

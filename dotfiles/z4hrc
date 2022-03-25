@@ -64,7 +64,7 @@ export path=(/usr/{bin,sbin} $path)
 export path=(/usr/local/{bin,sbin} $path)
 export path=(~/bin $path)
 
-### Autodetect architecture (and set `brew` path)
+### Autodetect architecture (and set `brew` path) every time zsh called
 if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
   archcheck=$(/usr/bin/arch)
   typeset -g archcheck
@@ -78,9 +78,9 @@ if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
     ;;
     i386|x86_64)
       archcheck+=' (Rosetta)'
-      if [[ -f /usr/local/homebrew/bin/brew ]]; then
-        eval "$(/usr/local/homebrew/bin/brew shellenv)"
-        alias brew='/usr/local/homebrew/bin/brew'
+      if [[ -f /usr/local/bin/brew ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+        alias brew='/usr/local/bin/brew'
       fi
     ;;
     *)
@@ -96,10 +96,11 @@ if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
   POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch  # to specify location, modify ~/.p10k.zsh
 fi
 
-# # Prepend Homebrew's executable directory (z4h automatically does this)
-# if [[ $(command -v brew) ]]; then
-#   export path=($(brew --prefix)/bin $(brew --prefix)/sbin $(brew --prefix)/share $path)
-# fi
+# Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
+# requires `sudo chown $(whoami) /etc/odbcinst.ini`
+if [[ -f /etc/odbcinst.ini ]]; then
+  cat $HOMEBREW_PREFIX/etc/odbcinst.ini >! /etc/odbcinst.ini
+fi
 
 # # Add system pythons to path?
 # pythons=($HOME/Library/Python/3.7/bin $HOME/Library/Python/3.8/bin $HOME/Library/Python/3.9/bin)
@@ -111,7 +112,7 @@ export LANG=en_US.UTF-8
 export ZSH_CONFIG="${HOME}/.zshconfig"
 export HOMEBREW_NO_ANALYTICS=1
 
-# # unixdodbc
+# # unixodbc
 # export LDFLAGS="-L/opt/homebrew/Cellar/unixodbc/2.3.9_1/lib ${LDFLAGS}"
 # export CPPFLAGS="-I/opt/homebrew/Cellar/unixodbc/2.3.9_1/include ${CPPFLAGS}"
 # # openblas
@@ -149,9 +150,18 @@ z4h load -c esc/conda-zsh-completion
 z4h load -c ohmyzsh/ohmyzsh/plugins/gitfast            # git completions
 z4h load -c ohmyzsh/ohmyzsh/plugins/safe-paste         # prevent pasted code from running
 z4h load -c ohmyzsh/ohmyzsh/plugins/terraform          # terraform completions
-
 # z4h source -c ohmyzsh/ohmyzsh/lib/clipboard.zsh
+
+### load local functions
+### 'fzf' will detect based on filename + underscore (try 'conda_' + TAB)
 z4h source -c "$HOME/.zshconfig/functions/clipboard.zsh"
+z4h source -c "$HOME/.zshconfig/functions/conda.zsh"
+z4h source -c "$HOME/.zshconfig/functions/docker.zsh"
+z4h source -c "$HOME/.zshconfig/functions/env.zsh"
+z4h source -c "$HOME/.zshconfig/functions/git.zsh"
+z4h source -c "$HOME/.zshconfig/functions/python.zsh"
+
+
 z4h source -c "$HOME/.zshconfig/lib/corrections.zsh"
 
 ### ---[ Define key bindings ]-------------------------------------------------

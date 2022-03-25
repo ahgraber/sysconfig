@@ -42,62 +42,6 @@ alias hsi='history | grep -i'   # Use grep to case-insensitive earch your comman
 # start new zsh process in specified architecture
 alias native="/usr/bin/arch -arm64 /bin/zsh"
 alias rosetta="/usr/bin/arch -x86_64 /bin/zsh"
-# alias oldbrew="arch -x86_64 /usr/local/homebrew/bin/brew"
-
-function arch_brew {
-  if [ "$(uname -p)" = "i386" ]; then
-    echo "Running 'brew' in x86 (Rosetta) mode"
-    # eval "$(/usr/local/homebrew/bin/brew shellenv)"
-    arch -x86_64 /usr/local/homebrew/bin/brew "$@"
-  else
-    echo "Running 'brew' in arm64 (Native) mode"
-    # eval "$(/opt/homebrew/bin/brew shellenv)"
-    arch -arm64 /opt/homebrew/bin/brew "$@"
-  fi
-}
-alias brew=arch_brew
-
-function create_env {
-
-  [[ "$1" = "-h" || "$1" = "--help" ]] && echo "
-    Usage: 
-    '$(basename "$0") <env_name> [OPTIONAL: list of packages to install]'
-
-    -h, --help                      Display help
-  " && return
-
-  env_name="$1"
-  shift
-  package_list="$*"
-  package_list="${package_list:=python>3.7}"
-
-  if [[ "$(uname -p)" = "i386" ]]; then
-    echo "Running x86/Rosetta install"
-    conda_arch="osx-64"
-
-    # ensure env starts with "x86"
-    if [[ ! "$env_name" =~ "^x86_" ]]; then 
-      env_name="x86_$env_name"
-      echo "Prepending 'x86_'"
-    fi
-  fi
-
-  echo "Creating new conda env: '$env_name'"
-  echo "Installing packages: $package_list"
-
-  if [[ "$(uname -p)" = "i386" ]]; then
-    CONDA_SUBDIR="$conda_arch" conda create -n "$env_name" "$package_list" --quiet --yes && conda activate "$env_name"
-    conda env config vars set CONDA_SUBDIR="$conda_arch" --name "$env_name"
-    conda deactivate && conda activate "$env_name"  # not technically needed, but can prevent env overwrites
-    unset conda_arch
-  else
-    conda create -n "$env_name" "$package_list" --quiet --yes && conda activate "$env_name"
-  fi
-  
-  conda config --prepend channels conda-forge > /dev/null 2>&1
-  echo "Environment $env_name created for $(conda config --env --show | grep 'subdir:') architecture"
-  unset env_name
-}
 
 if [[ $(command -v bat) ]]; then
   export BAT_THEME="OneHalfDark" # TwoDark"
@@ -124,10 +68,6 @@ alias externalip='curl ifconfig.co'
 
 alias sleepless="pmset -g assertions | egrep '(PreventUserIdleSystemSleep|PreventUserIdleDisplaySleep)'"
 
-function loadenv {
-  export $(grep -v '^#' .env | xargs)
-}
-
 # run with nbstrip_jq path/to/metadata.ipynb > path/to/stripped.ipynb
 alias nbstrip_jq="jq --indent 1 \
     '(.cells[] | select(has(\"outputs\")) | .outputs) = []  \
@@ -146,39 +86,5 @@ function nbstrip_all_cwd {
 }
 alias clean_ipynbs="nbstrip_all_cwd"
 
-# Remove python compiled byte-code and mypy/pytest cache in either the current
-# directory or in a list of specified directories (including sub directories).
-function pyclean() {
-    ZSH_PYCLEAN_PLACES=${*:-'.'}
-    find ${ZSH_PYCLEAN_PLACES} -type f -name "*.py[co]" -delete
-    find ${ZSH_PYCLEAN_PLACES} -type d -name "__pycache__" -delete
-    find ${ZSH_PYCLEAN_PLACES} -depth -type d -name ".mypy_cache" -exec rm -r "{}" +
-    find ${ZSH_PYCLEAN_PLACES} -depth -type d -name ".pytest_cache" -exec rm -r "{}" +
-}
-
-function clean_branches {
-  local -r deleteflag=${1:-"-d"}
-  # remove link to nonexistent upstream branch
-  git remote prune origin;
-  # removes LOCAL branches that are deleted on (remote) origin
-  git fetch -p;
-  git branch -vv | grep ': gone]' | grep -v "\*" | awk '{ print $1 }' | xargs git branch ${deleteflag}
-}
-alias cleanbranches=clean_branches
-
-alias docker-clean-all=' \
-  docker container prune -f ; \
-  docker image prune -f ; \
-  docker network prune -f ; \
-  docker volume prune -f '
-
-function docker_clean_untagged {
-  docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
-}
-alias docker-clean-untagged=docker_clean_untagged
 alias dcu="docker compose up"
 alias dcd="docker compose down --remove-orphans"
-
-function loadenv {
-  export $(grep -v '^#' .env | xargs)
-}

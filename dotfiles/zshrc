@@ -19,7 +19,7 @@ typeset -U fpath
 ### set options
 # export CLICOLOR=1
 # export LSCOLORS=ExFxBxDxCxegedabagacad
-export LS_COLORS="$(vivid generate snazzy)"
+export LS_COLORS="$(vivid generate one-dark)"
 # completion
 export CASE_SENSITIVE="true"
 export HYPHEN_INSENSITIVE="true"
@@ -34,7 +34,7 @@ bindkey -e
 zcomet load romkatv/powerlevel10k
 
 ### settings from OMZ
-zcomet snippet OMZ::lib/clipboard.zsh
+# zcomet snippet OMZ::lib/clipboard.zsh
 zcomet snippet OMZ::lib/compfix.zsh
 
 # zcomet snippet OMZ::lib/completion.zsh
@@ -78,8 +78,12 @@ zcomet load zsh-users/zsh-syntax-highlighting
 zcomet load zsh-users/zsh-history-substring-search
 zcomet load zsh-users/zsh-autosuggestions
 
-# pull zpm-zsh/clipboard and lazy-load
-zcomet trigger clip open pbcopy pbpaste zpm-zsh/clipboard
+zcomet snippet "$HOME/.zshconfig/functions/clipboard.zsh"
+zcomet snippet "$HOME/.zshconfig/functions/conda.zsh"
+zcomet snippet "$HOME/.zshconfig/functions/docker.zsh"
+zcomet snippet "$HOME/.zshconfig/functions/env.zsh"
+zcomet snippet "$HOME/.zshconfig/functions/git.zsh"
+zcomet snippet "$HOME/.zshconfig/functions/python.zsh"
 
 ### custom settings
 for zsh in $ZSH_CONFIG/lib/*.zsh; do
@@ -121,9 +125,9 @@ if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
     ;;
     i386|x86_64)
       archcheck+=' (Rosetta)'
-      if [[ -f /usr/local/homebrew/bin/brew ]]; then
-        eval "$(/usr/local/homebrew/bin/brew shellenv)"
-        alias brew='/usr/local/homebrew/bin/brew'
+      if [[ -f /usr/local/bin/brew ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+        alias brew='/usr/local/bin/brew'
       fi
     ;;
     *)
@@ -137,6 +141,12 @@ if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
   }
 
   POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch  # to specify location, modify ~/.p10k.zsh
+fi
+
+# Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
+# requires `sudo chown $(whoami) /etc/odbcinst.ini`
+if [[ -f /etc/odbcinst.ini ]]; then
+  cat $HOMEBREW_PREFIX/etc/odbcinst.ini >! /etc/odbcinst.ini
 fi
 
 ###########################################################

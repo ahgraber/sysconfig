@@ -70,17 +70,21 @@ function create_env {
   shift
   package_list="$*"
 
-  echo "Creating new conda env: '$env_name'"
-
-  if [ "$(uname -p)" = "i386" ]; then
+  if [[ "$(uname -p)" = "i386" ]]; then
     echo "Running x86/Rosetta install"
     conda_arch="osx-64"
 
     # ensure env starts with "x86"
     if [[ ! "$env_name" =~ "^x86_" ]]; then 
       env_name="x86_$env_name"
-      echo "Prepending 'x86_' and installing to $env_name"
+      echo "Prepending 'x86_'"
     fi
+  fi
+
+  echo "Creating new conda env: '$env_name'"
+  echo "Installing packages: $package_list"
+
+  if [[ "$(uname -p)" = "i386" ]]; then
 
     CONDA_SUBDIR="$conda_arch" conda create -n "$env_name" "$package_list" --quiet --yes && conda activate "$env_name"
     conda env config vars set CONDA_SUBDIR="$conda_arch" --name "$env_name"
@@ -91,7 +95,7 @@ function create_env {
   fi
   
   conda config --prepend channels conda-forge > /dev/null 2>&1
-  echo "Environment $env_name created for $(conda config --env --show | grep 'subdir:')"
+  echo "Environment $env_name created for $(conda config --env --show | grep 'subdir:') architecture"
   unset env_name
 }
 

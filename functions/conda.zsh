@@ -3,7 +3,7 @@
 conda_env_create () {
 
   [[ "$1" = "-h" || "$1" = "--help" ]] && echo "
-    Usage: 
+    Usage:
     '$(basename "$0") <env_name> [OPTIONAL: list of packages to install]'
 
     -h, --help                      Display help
@@ -19,9 +19,9 @@ conda_env_create () {
     conda_arch="osx-64"
 
     # ensure env starts with "x86"
-    if [[ ! "$env_name" =~ "^x86_" ]]; then 
+    if [[ ! "$env_name" =~ "^x86_" ]]; then
       env_name="x86_$env_name"
-      echo "Prepending 'x86_'"
+      echo "Prepending 'x86_' to environment name"
     fi
   fi
 
@@ -36,7 +36,7 @@ conda_env_create () {
   else
     conda create -n "$env_name" "$package_list" --quiet --yes && conda activate "$env_name"
   fi
-  
+
   conda config --prepend channels conda-forge > /dev/null 2>&1
   echo "Environment $env_name created for $(conda config --env --show | grep 'subdir:') architecture"
   unset env_name

@@ -27,10 +27,10 @@ EOF
   # This ensures we are not contaminated by variables from the environment.
   env_name=
   file=
-  package_list=
+  package_list=()
 
   # parse options
-  while :; do
+  while [[ $# -gt 0 ]]; do
     case $1 in
       -h|-\?|--help)
           # Display a usage synopsis.
@@ -50,7 +50,6 @@ EOF
       --name=?*)
           # Delete everything up to & including "=" and assign the remainder.
           env_name=${1#*=}
-          shift
           ;;
       --name=)
           # Handle the case of an empty --name=
@@ -70,7 +69,6 @@ EOF
       --file=?*)
           # Delete everything up to & including "=" and assign the remainder.
           file=${1#*=}
-          shift
           ;;
       --file=)
           # Handle the case of an empty --file=
@@ -80,16 +78,21 @@ EOF
       -?*)
           # Detect dash and warn of unknown option
           echo 'WARN: Unknown option (ignored): %s\n' "$1"
-          shift
           ;;
       *)
           # Default case: No more options detected, any thing else are packages
-          package_list="$*"
-          break
+          package_list+=("$1")
     esac
 
     shift
   done
+
+  # echo "env_name: $env_name"
+  # echo "file: $file"
+  # echo "package_list: $package_list"
+  # unset env_name
+  # unset file
+  # unset package_list
 
   # check architecture
   if [[ "$(uname -p)" = "i386" ]]; then
@@ -117,7 +120,12 @@ EOF
     conda create --name "$env_name" --quiet --yes && conda activate "$env_name"
   fi
 
-  # check file exists
+  # update env using specified packages
+  if [[ ${#package_list[@]} -gt 0 ]]; then
+    mamba update --name "$env_name" "${package_list[@]}" --quiet --yes
+  fi
+
+  # update env using file
   if [[ ! -z $file ]]; then
     if [[ ! -f $file ]]; then
       echo "ERROR: $file not found."
@@ -127,16 +135,11 @@ EOF
     fi
   fi
 
-  if [[ ! -z $package_list ]]; then
-    mamba update --name "$env_name" $package_list --quiet --yes
-  fi
-
-
   # conda config --prepend channels conda-forge > /dev/null 2>&1
   echo "Environment ${env_name} created for $(conda config --env --show | grep 'subdir:') architecture"
   unset env_name
   unset file
   unset package_list
 
-  return
+  # return
 }

@@ -114,11 +114,13 @@ EOF
   if [[ "$(uname -p)" = "i386" ]]; then
     CONDA_SUBDIR="$conda_arch" conda create --name "$env_name" --quiet --yes && conda activate "$env_name"
     conda env config vars set CONDA_SUBDIR="$conda_arch" --name "$env_name"
-    conda deactivate && conda activate "$env_name"  # not technically needed, but can prevent env overwrites
     unset conda_arch
   else
-    conda create --name "$env_name" --quiet --yes && conda activate "$env_name"
+    conda create --name "$env_name" --quiet --yes
   fi
+
+  conda deactivate && conda activate "$env_name"  # not technically needed, but can prevent env overwrites
+  conda config --prepend channels conda-forge
 
   # update env using specified packages
   if [[ ${#package_list[@]} -gt 0 ]]; then

@@ -107,8 +107,8 @@ EOF
   fi
 
   echo "Creating new conda env: '$env_name' ..."
-  [[ -z $file ]] || echo "from file $file "
-  [[ -z $package_list ]] || echo "with specified packages: $package_list"
+  # [[ -z $file ]] || echo "from file $file "
+  # [[ -z $package_list ]] || echo "with specified packages: $package_list"
 
   # run conda commands for setup
   if [[ "$(uname -p)" = "i386" ]]; then
@@ -124,7 +124,8 @@ EOF
 
   # update env using specified packages
   if [[ ${#package_list[@]} -gt 0 ]]; then
-    mamba update --name "$env_name" "${package_list[@]}" --quiet --yes
+    echo "... with specified packages: $package_list"
+    mamba install --force-reinstall --name "$env_name" "${package_list[@]}" --quiet --yes
   fi
 
   # update env using file
@@ -133,6 +134,7 @@ EOF
       echo "ERROR: $file not found."
       return 1
     else
+      echo "... from file $file "
       mamba env update --name "$env_name" --file "$file" --quiet
     fi
   fi

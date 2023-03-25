@@ -165,8 +165,14 @@ z4h source -c "$HOME/.zshconfig/functions/python.zsh"
 z4h source -c "$HOME/.zshconfig/lib/corrections.zsh"
 
 ### ---[ Define key bindings ]-------------------------------------------------
-z4h bindkey undo Ctrl+/  # undo the last command line change
+z4h bindkey undo Ctrl+/  # undo the last command line change (may cause issues on some layouts)
 z4h bindkey redo Alt+/   # redo the last undone command line change
+
+# mimic mac-standard key nav
+z4h bindkey beginning-of-line Ctrl+Left
+z4h bindkey end-of-line       Ctrl+Right
+z4h bindkey backward-word     Alt+Left
+z4h bindkey forward-word      Alt+Right
 
 z4h bindkey z4h-cd-back    Shift+Left   # cd into the previous directory
 z4h bindkey z4h-cd-forward Shift+Right  # cd into the next directory
@@ -176,7 +182,7 @@ z4h bindkey z4h-cd-down    Shift+Down   # cd into a child directory
 ### fzf-bindings updates keybinds for fzf widgets/commands {binding:command}
 # hitting `tab` will accept and stay in fzf completion menu
 zstyle ':z4h:fzf-dir-history' fzf-bindings tab:repeat
-zstyle ':z4h:fzf-complete' fzf-bindings tab:repeat
+zstyle ':z4h:fzf-complete'    fzf-bindings tab:repeat
 zstyle ':z4h:fzf-dir-history' fzf-bindings tab:repeat
 
 # use clipboard functions

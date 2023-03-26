@@ -261,6 +261,7 @@ As of Nov 2021:
 # In MacOS Terminal,  Ctrl+Backspace -> Ctrl+U -> \025
 # In iTerm,           Ctrl+Backspace -> Ctrl+U -> 0x15
 # In VSCode,          Ctrl+Backspace -> Ctrl+U -> \u000b
+# VSCode ref: https://code.visualstudio.com/docs/terminal/advanced#_keybinding-and-the-shell
 'bindkey' '^u'     'backward-kill-line'    # Ctrl+U
 'bindkey' '^U'     'backward-kill-line'    # Ctrl+U
 # Use terminal applications to remap Alt+Backspace to Ctrl+W representation

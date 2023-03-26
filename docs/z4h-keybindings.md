@@ -242,3 +242,45 @@ As of Nov 2021:
 | `^[~` | _bash_complete-word | `esc + ~` |
 | `^[^?` | z4h-backward-kill-word | `esc + backspace` |
 | `\M-p-"\M-^?"` | self-insert | `` |
+
+
+```sh
+### Navigation
+'bindkey' '^[[H'    'beginning-of-line'     # Home
+'bindkey' '^[[1;5D' 'beginning-of-line'     # Ctrl+Left
+'bindkey' '^[[F'    'end-of-line'           # End
+'bindkey' '^[[1;5C' 'end-of-line'           # Ctrl+Right
+'bindkey' '^[[1;3D' 'backward-word'         # Alt+Left
+'bindkey' '^[[1;3C' 'forward-word'          # Alt+Right
+
+'bindkey' '^[[3~'   'delete-char'           # Delete
+'bindkey' '^[[3;3~' 'kill-word'             # Alt+Del
+
+# Note: backspace just sends backspace; can't combine with other keys
+# Use terminal applications to remap Ctrl+Backspace to Ctrl+U representation
+# In MacOS Terminal,  Ctrl+Backspace -> Ctrl+U -> \025
+# In iTerm,           Ctrl+Backspace -> Ctrl+U -> 0x15
+# In VSCode,          Ctrl+Backspace -> Ctrl+U -> \u000b
+'bindkey' '^u'     'backward-kill-line'    # Ctrl+U
+'bindkey' '^U'     'backward-kill-line'    # Ctrl+U
+# Use terminal applications to remap Alt+Backspace to Ctrl+W representation
+# In MacOS Terminal,  Ctrl+Delete -> Ctrl+K -> \013
+# In iTerm,           Ctrl+Delete -> Ctrl+K -> 0x0b
+# In VSCode,          Ctrl+Delete -> Ctrl+K -> \u000b
+# NOTE: also map Shift+Ctrl+Backspace!
+'bindkey' '^k'     'kill-line'             # Ctrl+K
+'bindkey' '^K'     'kill-line'             # Ctrl+K
+# Use terminal applications to remap Alt+Backspace to Ctrl+W representation
+# In MacOS Terminal,  Alt+Backspace -> Ctrl+W -> \027
+# In iTerm,           Alt+Backspace -> Ctrl+W -> 0x17
+# In VSCode,          Alt+Backspace -> Ctrl+W -> \u0017
+'bindkey' '^w'     'backward-kill-word'    # Ctrl+W
+'bindkey' '^W'     'backward-kill-word'    # Ctrl+W
+# Use terminal applications to remap Alt+Backspace to Ctrl+W representation
+# In MacOS Terminal,  Alt+Delete -> Alt+D -> \033d
+# In iTerm,           Alt+Delete -> Alt+D -> 0x1b 0x64
+# In VSCode,          Alt+Delete -> Alt+D -> \u001bd
+# NOTE: also map Shift+Alt+Backspace!
+'bindkey' '^[d'     'kill-word'             # Alt+D
+'bindkey' '^[D'     'kill-word'             # Alt+D
+```

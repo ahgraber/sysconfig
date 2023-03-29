@@ -1,28 +1,28 @@
 # z4h - default keybindings
 
-List current bindings with `bindkey -l`.  
+List current bindings with `bindkey`.  
 List all available commands with `zle -al`.  
 Test a key combination's translation with `ctrl + v; <keycombination>`.  
 Create new key binding with `bindkey "<code>" <command>`.  
 
-
 ## Default Keybindings
 
-As of Nov 2021:
+As of Mar 2023:
 
+<!-- markdownlint-disable MD037 -->
 | bindkey code | command | key combination |
 | :---: | :--- | :---|
 | `^@` | z4h-expand | `ctrl + space` |
 | `^A` | beginning-of-line | `ctrl + a; cmd + left` |
 | `^B` | backward-char | `ctrl + b` |
-| `^D` | delete-char | `ctrl + d` |
+| `^D` | z4h-eof | `ctrl + d` |
 | `^E` | end-of-line | `ctrl + e; cmd + right` |
 | `^F` | forward-char | `ctrl + f` |
 | `^G` | send-break | `ctrl + g` |
 | `^H` | backward-delete-char | `ctrl + h` |
 | `^I` | z4h-fzf-complete | `ctrl + i` |
 | `^J` | accept-line | `ctrl + j` |
-| `^K` | kill-line | `ctrl + k` |
+| `^K` | pb-kill-line | `ctrl + k` |
 | `^L` | z4h-clear-screen-soft-bottom | `ctrl + l` |
 | `^M` | accept-line | `ctrl + m` |
 | `^N` | z4h-down-substring-local | `ctrl + n` |
@@ -32,12 +32,12 @@ As of Nov 2021:
 | `^R` | z4h-fzf-history | `ctrl + r` |
 | `^S` | history-incremental-search-forward | `ctrl + s` |
 | `^T` | transpose-chars | `ctrl + t` |
-| `^U` | kill-whole-line | `ctrl + u` |
+| `^U` | pb-kill-whole-line | `ctrl + u` |
 | `^V` | quoted-insert | `ctrl + v` |
-| `^W` | z4h-backward-kill-word | `ctrl + w; opt + del` |
-| `^Y` | yank | `ctrl + y` |
+| `^W` | pb-backward-kill-word | `ctrl + w; alt + del` |
+| `^Y` | pb-yank | `ctrl + y` |
 | `^_` | undo | `ctrl + /` |
-| ` -"~"` | self-insert | `standard keys act as expected` |
+| `-"~"` | self-insert | `standard keys act as expected` |
 | `^?` | backward-delete-char | `backspace` |
 | `\M-^@-"\M-A"` | self-insert | `` |
 | `\M-B\M-.` | z4h-fzf-dir-history | `` |
@@ -66,7 +66,7 @@ As of Nov 2021:
 | `^X^B` | vi-match-bracket | `ctrl + x, ctrl + b` |
 | `^X^F` | vi-find-next-char | `ctrl + x, ctrl + f` |
 | `^X^J` | vi-join | `ctrl + x, ctrl + j` |
-| `^X^K` | kill-buffer | `ctrl + x, ctrl + k` |
+| `^X^K` | pb-kill-buffer | `ctrl + x, ctrl + k` |
 | `^X^N` | infer-next-history | `ctrl + x, ctrl + n` |
 | `^X^O` | overwrite-mode | `ctrl + x, ctrl + o` |
 | `^X^R` | _read_comp | `ctrl + x, ctrl + r` |
@@ -108,9 +108,9 @@ As of Nov 2021:
 | `^[^[[C` | ^[[1;3C | `esc + right` |
 | `^[^[[D` | ^[[1;3D | `esc + left` |
 | `^[^_` | copy-prev-word | `` |
-| `^[ ` | expand-history | `esc + space` |
+| `^[` | expand-history | `esc + space` |
 | `^[!` | expand-history | `esc + !` |
-| `^[\" quote-region` |  | `esc + "` |
+| `^[\"` | quote-region | `esc + "` |
 | `^[\$` | spell-word | `esc + $` |
 | `^['` | quote-line | `esc + '` |
 | `^[,` | _history-complete-newer | `esc + ,` |
@@ -131,9 +131,9 @@ As of Nov 2021:
 | `^[>` | end-of-buffer-or-history | `esc + >` |
 | `^[?` | which-command | `esc + ?` |
 | `^[A` | accept-and-hold | `esc + a` |
-| `^[B` | z4h-backward-word | `esc + b; opt + left` |
+| `^[B` | z4h-backward-word | `esc + b; alt + left` |
 | `^[C` | capitalize-word | `esc + c` |
-| `^[D` | z4h-kill-word | `esc + d; opt + right` |
+| `^[D` | pb-kill-word | `esc + d; alt + right` |
 | `^[F` | z4h-forward-word | `esc + f` |
 | `^[G` | get-line | `esc + g` |
 | `^[H` | run-help | `esc + h` |
@@ -165,33 +165,33 @@ As of Nov 2021:
 | `^[S` | spell-word | `esc + s` |
 | `^[T` | transpose-words | `esc + t` |
 | `^[U` | up-case-word | `esc + u` |
-| `^[W` | copy-region-as-kill | `esc + w` |
+| `^[W` | pb-copy-region-as-kill-deactivate-mark | `esc + w` |
 | `^[[1;2A` | z4h-cd-up | `shift + up` |
 | `^[[1;2B` | z4h-cd-down | `shift + down` |
 | `^[[1;2C` | z4h-cd-forward | `shift + right` |
 | `^[[1;2D` | z4h-cd-back | `shift + back` |
-| `^[[1;3C` | z4h-forward-word | `opt + right` |
-| `^[[1;3D` | z4h-backward-word | `opt + left` |
-| `^[[1;3F` | z4h-end-of-buffer | `opt + fn+right` |
-| `^[[1;3H` | z4h-beginning-of-buffer | `opt + fn+left` |
+| `^[[1;3C` | z4h-forward-word | `alt + right` |
+| `^[[1;3D` | z4h-backward-word | `alt + left` |
+| `^[[1;3F` | z4h-end-of-buffer | `alt + fn+right` |
+| `^[[1;3H` | z4h-beginning-of-buffer | `alt + fn+left` |
 | `^[[1;5A` | z4h-up-prefix-global | `ctrl + up` |
 | `^[[1;5B` | z4h-down-prefix-global | `ctrl + down` |
-| `^[[1;5C` | z4h-forward-word | `ctrl + right` |
-| `^[[1;5D` | z4h-backward-word | `ctrl + left` |
+| `^[[1;5C` | end-of-line | `ctrl + right` |
+| `^[[1;5D` | beginning-of-line | `ctrl + left` |
 | `^[[1;5F` | z4h-end-of-buffer | `ctrl + fn + right` |
 | `^[[1;5H` | z4h-beginning-of-buffer | `ctrl + fn + left` |
 | `^[[1;6C` | z4h-forward-zword | `shift + ctrl + right` |
 | `^[[1;6D` | z4h-backward-zword | `shift + ctrl + left` |
-| `^[[1;9A` | ^[[1;3A | `opt + up` |
-| `^[[1;9B` | ^[[1;3B | `opt + down` |
-| `^[[1;9C` | ^[[1;3C | `cmd + opt + right` |
-| `^[[1;9D` | ^[[1;3D | `cmd + opt + left` |
-| `^[[1;9F` | ^[[1;3F | `cmd + opt + fn+right` |
-| `^[[1;9H` | ^[[1;3H | `cmd + opt + fn+left` |
+| `^[[1;9A` | ^[[1;3A | `alt + up` |
+| `^[[1;9B` | ^[[1;3B | `alt + down` |
+| `^[[1;9C` | ^[[1;3C | `cmd + alt + right` |
+| `^[[1;9D` | ^[[1;3D | `cmd + alt + left` |
+| `^[[1;9F` | ^[[1;3F | `cmd + alt + fn+right` |
+| `^[[1;9H` | ^[[1;3H | `cmd + alt + fn+left` |
 | `^[[1~` | ^[[H | `` |
 | `^[[200~` | bracketed-paste | `` |
-| `^[[3;3~` | z4h-kill-word | `` |
-| `^[[3;5~` | z4h-kill-word | `ctrl + delete` |
+| `^[[3;3~` | z4h-kill-word | alt + delete` |
+| `^[[3;5~` | kill-line | `ctrl + delete` |
 | `^[[3;6~` | z4h-kill-zword | `` |
 | `^[[3\^` | ^[[3;5~ | `` |
 | `^[[3~` | delete-char | `backspace` |
@@ -216,9 +216,9 @@ As of Nov 2021:
 | `^[[d` | ^[[1;2D | `shift + right` |
 | `^[_` | insert-last-word | `esc + _` |
 | `^[a` | accept-and-hold | `esc + a` |
-| `^[b` | z4h-backward-word | `esc + b; opt + left` |
+| `^[b` | z4h-backward-word | `esc + b; alt + left` |
 | `^[c` | capitalize-word | `esc + c` |
-| `^[d` | z4h-kill-word | `esc + d; opt + right` |
+| `^[d` | z4h-kill-word | `esc + d; alt + right` |
 | `^[f` | z4h-forward-word | `esc + f` |
 | `^[g` | get-line | `esc + g` |
 | `^[h` | run-help | `esc + h` |
@@ -243,45 +243,89 @@ As of Nov 2021:
 | `^[^?` | z4h-backward-kill-word | `esc + backspace` |
 | `\M-p-"\M-^?"` | self-insert | `` |
 
+## Using standard keyboard nav in different terminals
 
-```sh
-### Navigation
-'bindkey' '^[[H'    'beginning-of-line'     # Home
-'bindkey' '^[[1;5D' 'beginning-of-line'     # Ctrl+Left
-'bindkey' '^[[F'    'end-of-line'           # End
-'bindkey' '^[[1;5C' 'end-of-line'           # Ctrl+Right
-'bindkey' '^[[1;3D' 'backward-word'         # Alt+Left
-'bindkey' '^[[1;3C' 'forward-word'          # Alt+Right
+Goal: To avoid context-switching, try to have consistent keyboard nav across applications, including command line.
 
-'bindkey' '^[[3~'   'delete-char'           # Delete
-'bindkey' '^[[3;3~' 'kill-word'             # Alt+Del
+This means having standard behaviors like "Alt+Left" move to prior word, and "Cmd+Left" moving to beginning of line.
+Since not all terminals will accept "Cmd" as a valid keybind, subsititue "Ctrl".
 
-# Note: backspace just sends backspace; can't combine with other keys
-# Use terminal applications to remap Ctrl+Backspace to Ctrl+U representation
-# In MacOS Terminal,  Ctrl+Backspace -> Ctrl+U -> \025
-# In iTerm,           Ctrl+Backspace -> Ctrl+U -> 0x15
-# In VSCode,          Ctrl+Backspace -> Ctrl+U -> \u000b
-# VSCode ref: https://code.visualstudio.com/docs/terminal/advanced#_keybinding-and-the-shell
-'bindkey' '^u'     'backward-kill-line'    # Ctrl+U
-'bindkey' '^U'     'backward-kill-line'    # Ctrl+U
-# Use terminal applications to remap Alt+Backspace to Ctrl+W representation
-# In MacOS Terminal,  Ctrl+Delete -> Ctrl+K -> \013
-# In iTerm,           Ctrl+Delete -> Ctrl+K -> 0x0b
-# In VSCode,          Ctrl+Delete -> Ctrl+K -> \u000b
-# NOTE: also map Shift+Ctrl+Backspace!
-'bindkey' '^k'     'kill-line'             # Ctrl+K
-'bindkey' '^K'     'kill-line'             # Ctrl+K
-# Use terminal applications to remap Alt+Backspace to Ctrl+W representation
-# In MacOS Terminal,  Alt+Backspace -> Ctrl+W -> \027
-# In iTerm,           Alt+Backspace -> Ctrl+W -> 0x17
-# In VSCode,          Alt+Backspace -> Ctrl+W -> \u0017
-'bindkey' '^w'     'backward-kill-word'    # Ctrl+W
-'bindkey' '^W'     'backward-kill-word'    # Ctrl+W
-# Use terminal applications to remap Alt+Backspace to Ctrl+W representation
-# In MacOS Terminal,  Alt+Delete -> Alt+D -> \033d
-# In iTerm,           Alt+Delete -> Alt+D -> 0x1b 0x64
-# In VSCode,          Alt+Delete -> Alt+D -> \u001bd
-# NOTE: also map Shift+Alt+Backspace!
-'bindkey' '^[d'     'kill-word'             # Alt+D
-'bindkey' '^[D'     'kill-word'             # Alt+D
-```
+Simplistically, this looks something like:
+
+| key combination | command |
+| :---: | :--- |
+| Home | 'beginning-of-line' |
+| Cmd+Left | 'beginning-of-line' |
+| Ctrl+Left | 'beginning-of-line' |
+| End | 'end-of-line' |
+| Cmd+Right | 'end-of-line' |
+| Ctrl+Right | 'end-of-line' |
+| Alt+Left | 'backward-word' |
+| Alt+Right | 'forward-word' |
+| Backspace | 'backward-delete-char' |
+| Alt+Backspace | 'backward-kill-word' |
+| Ctrl+Backspace | 'backward-kill-line' |
+| Delete | 'delete-char' |
+| Alt+Del | 'kill-word' |
+| Ctrl+Del | 'kill-line' |
+
+### Straightforward keybind behaviors
+
+| bindkey code | command | key combination |
+| :---: | :--- | :---|
+| 'bindkey' '^[[H' | 'beginning-of-line'| Home |
+| 'bindkey' '^[[1;5D' | 'beginning-of-line'| Ctrl+Left |
+| 'bindkey' '^[[F' | 'end-of-line'| End |
+| 'bindkey' '^[[1;5C' | 'end-of-line'| Ctrl+Right |
+| 'bindkey' '^[[1;3D' | 'backward-word'| Alt+Left |
+| 'bindkey' '^[[1;3C' | 'forward-word'| Alt+Right |
+| 'bindkey' '^[[3~' | 'delete-char'| Delete |
+| 'bindkey' '^[[3;3~' | 'kill-word'| Alt+Del |
+
+### Hack application key shortcuts to remap desired combinations
+
+Unfortunately, different terminals will send these intercept these keypresses differently -
+particularly because `backspace` doesn't play well in key combinations.
+Instead, we rely on standard zsh keybinds for these commands, and alter the keyboard shortcuts
+_for each terminal application_ where needed to achieve the above effect.
+([VSCode ref](https://code.visualstudio.com/docs/terminal/advanced#_keybinding-and-the-shell))
+
+For instance, 'backward-kill-line' is `Ctrl+U`.  We want it to be `Ctrl+Backspace`.
+For each terminal application, create a new shortcut that sends the `Ctrl+U` signal
+when we press `Ctrl+Backspace`.
+
+#### Remap remap Ctrl+Backspace to send Ctrl+U ('backward-kill-line') signal
+
+| bindkey code | remap | remap representation |
+| :---: | :--- | :---|
+| MacOS Terminal | Ctrl+Backspace -> Ctrl+U | `\025` |
+| iTerm | Ctrl+Backspace -> Ctrl+U | `0x15` |
+| VSCode | Ctrl+Backspace -> Ctrl+U | `\u0015` |
+
+#### Remap Ctrl+Delete to send Ctrl+K ('kill-line') signal
+
+_NOTE:_ also map Shift+Ctrl+Backspace
+
+| bindkey code | remap | remap representation |
+| :---: | :--- | :---|
+| MacOS Terminal | Ctrl+Delete -> Ctrl+K | `\013` |
+| iTerm | Ctrl+Delete -> Ctrl+K | `0x0b` |
+| VSCode | Ctrl+Delete -> Ctrl+K | `\u000b` |
+
+#### Remap Alt+Backspace to send Ctrl+W ('backward-kill-word') signal
+
+| bindkey code | remap | remap representation |
+| :---: | :--- | :---|
+| MacOS Terminal | Alt+Backspace -> Ctrl+W | `\027` |
+| iTerm | Alt+Backspace -> Ctrl+W | `0x17` |
+| VSCode | Alt+Backspace -> Ctrl+W | `\u0017` |
+
+#### Remap Alt+Delete to send Alt+D ('kill-word') signal
+
+_NOTE:_ also map Shift+Alt+Backspace!
+
+| bindkey code | remap | remap representation |
+| :---: | :--- | :---|
+| MacOS Terminal | Alt+Delete -> Alt+D | `\033d` |
+| iTerm | Alt+Delete -> Alt+D | `0x1b 0x64` |
+| VSCode | Alt+Delete -> Alt+D | `\u001bd` |

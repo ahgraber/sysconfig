@@ -124,8 +124,14 @@ repos:
         # exclude: "^.*zsh$"
         types: [shell]
 
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.4
+  # - repo: https://github.com/codespell-project/codespell
+  #   rev: v2.2.4
+  #   hooks:
+  #     - id: codespell
+  #       args:
+  #         - "--ignore-words-list"
+  #         - "iterm"
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.14.3
     hooks:
-      - id: codespell
-        args: ["-L", "keypair"]
+      - id: typos

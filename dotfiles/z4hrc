@@ -1,55 +1,67 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
-# Personal Zsh configuration file. It is strongly recommended to keep all
-# shell customization and configuration (including exported environment
-# variables such as PATH) in this file or in files source by it.
+###-----------------------------------------------------------------------####
+# Personal Zsh configuration file.
+# Keep all shell customization and configuration
+# (including exported environment variables such as PATH)
+# in this file or in files source by it.
 #
 # Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md.
+###-----------------------------------------------------------------------####
 
-# Periodic auto-update on Zsh startup: 'ask' or 'no'.
-# You can manually run `z4h update` to update everything.
-zstyle ':z4h:' auto-update      'no'
-# Ask whether to auto-update this often; has no effect if auto-update is 'no'.
-zstyle ':z4h:' auto-update-days '28'
+### Uncomment to enable startup profiling (also at end of .zshrc!)
+# zmodload zsh/zprof
 
-# Move prompt to the bottom when zsh starts and on Ctrl+L.
-zstyle ':z4h:' prompt-at-bottom 'yes'
+### Periodic auto-update on Zsh startup: 'ask' or 'no'.
+### You can manually run `z4h update` to update everything.
+zstyle ':z4h:'                                auto-update       'ask'
+zstyle ':z4h:'                                auto-update-days  '28'
 
-# Keyboard type: 'mac' or 'pc'.
-zstyle ':z4h:bindkey' keyboard  'mac'
+### Move prompt to the bottom when zsh starts and on Ctrl+L.
+zstyle ':z4h:'                                prompt-at-bottom  'yes'
+### Open new tabs/windows in the same directory as the current tab
+zstyle ':z4h:'                                propagate-cwd     'yes'
+zstyle ':z4h:'                                prompt-height      4
+### Enable iTerm2 integration
+zstyle ':z4h:'                                iterm2-integration      'no'
+### Enable shell integrations
+zstyle ':z4h:'                                term-shell-integration  'yes'
 
-# Enable iTerm2 integration
-zstyle ':z4h:' iterm2-integration 'no'
+### Autocompletion settings
+zstyle ':z4h:autosuggestions'                 forward-char      'partial-accept'
+zstyle ':z4h:autosuggestions'                 end-of-line       'partial-accept'
 
-# Right-arrow key accepts one character ('partial-accept') from
-# command autosuggestions or the whole thing ('accept')?
-zstyle ':z4h:autosuggestions' forward-char 'accept'
+#### Completion settings
+zstyle ':completion:*'                        list-colors       ${(s.:.)LS_COLORS}
+zstyle ':completion:*'                        sort              false
+zstyle ':completion:*:ls:*'                   list-dirs-first   true
+### Improve completions for ssh based on ~/.ssh/config hosts list
+zstyle ':completion:*:ssh:argument-1:'        tag-order         hosts users
+zstyle ':completion:*:scp:argument-rest:'     tag-order         hosts files users
+zstyle ':completion:*:(ssh|scp|rdp):*:hosts'  hosts
 
-# Recursively traverse directories when TAB-completing files.
-zstyle ':z4h:fzf-complete' recurse-dirs 'no'
+### Enable direnv to automatically source .envrc files.
+if [[ "$(command -v direnv)" ]]; then
+  zstyle ':z4h:direnv'                        enable            'yes'
+  zstyle ':z4h:direnv:success'                notify            'yes'
+fi
 
-# Enable direnv to automatically source .envrc files.
-zstyle ':z4h:direnv'         enable 'yes'
-# Show "loading" and "unloading" notifications from direnv.
-zstyle ':z4h:direnv:success' notify 'yes'
+### Recursively traverse directories when TAB-completing files.
+zstyle ':z4h:fzf-complete'                    recurse-dirs      'no'
+zstyle ':z4h:fzf-complete'                    fzf-bindings      tab:repeat
+zstyle ':z4h:fzf-dir-history'                 fzf-bindings      tab:repeat
 
-# Enable ('yes') or disable ('no') automatic teleportation of z4h over
-# ssh when connecting to these hosts.
-zstyle ':z4h:ssh:example-hostname1'   enable 'yes'
-zstyle ':z4h:ssh:*.example-hostname2' enable 'no'
-# The default value if none of the overrides above match the hostname.
-zstyle ':z4h:ssh:*'                   enable 'no'
+### Configure automatic teleportation of z4h over ssh
+### "Whitelist/Blacklist" modes determined by default
+zstyle ':z4h:ssh:*'                           enable            'no'   # default
+# zstyle ':z4h:ssh:example-hostname1'         enable            'yes'  # specified host
+### Send these files over to the remote host when connecting over ssh to the enabled hosts.
+# zstyle ':z4h:ssh:*'                           send-extra-files  '~/.nanorc' '~/.env.zsh'
 
-# Send these files over to the remote host when connecting over ssh to the
-# enabled hosts.
-zstyle ':z4h:ssh:*' send-extra-files '~/.nanorc' '~/.env.zsh'
-
-# Clone additional Git repositories from GitHub.
-#
-# This doesn't do anything apart from cloning the repository and keeping it up-to-date.
-# `z4h install` must come before `z4h init`; Cloned files can be used after `z4h init`.
+### Clone additional Git repositories from GitHub.
+### `z4h install` must come before `z4h init`; Cloned files can be used after `z4h init`.
 z4h install ohmyzsh/ohmyzsh || return
-z4h install esc/conda-zsh-completion || return
+z4h install conda-incubator/conda-zsh-completion || return
 
 # Install or update core components (fzf, zsh-autosuggestions, etc.) and
 # initialize Zsh. After this point console I/O is unavailable until Zsh
@@ -57,13 +69,92 @@ z4h install esc/conda-zsh-completion || return
 # perform network I/O must be done above. Everything else is best done below.
 z4h init || return
 
-# ---[ Update path ]-----------------------------------------------------------
-typeset -U path
-export path=(/{bin,sbin} $path)
-export path=(/usr/{bin,sbin} $path)
-export path=(/usr/local/{bin,sbin} $path)
-export path=(~/bin $path)
+# ---[ Set shell options ]----------------------------------------------------
+### Ref: http://zsh.sourceforge.net/Doc/Release/Options.html.
+setopt no_clobber               # Force using `>!` to truncate / overwrite an existing file
+setopt no_mail_warning          # Don't print warning if mail
+setopt glob_dots                # no special treatment for file names with a leading dot
+setopt glob_star_short          # ** only match directories
+setopt no_auto_menu             # require an extra TAB press to open the completion menu
+setopt always_to_end            # when completing from the middle of a word, move the cursor to the end of the word
+setopt mark_dirs                # append trailing slash '/' to directory names resulting from globbing
+setopt auto_param_slash         # if completed parameter is dir, add trailing slash
+setopt rc_quotes                # enables parsing of quoted strings in .zshrc files
 
+
+# ---[ Update path ]----------------------------------------------------------
+typeset -U path
+path=(/{bin,sbin} $path)
+path=(/usr/{bin,sbin} $path)
+path=(/usr/local/{bin,sbin} $path)
+# for d in /usr/local/bin/*/; do
+#     path=($d $path)
+# done
+path=(~/bin $path)
+# [[ -f ~/.krew ]] || path=(~/.krew/bin $path) # kubectl plugins
+[[ -f ~/.rd ]] || path=(~/.rd/bin $path) # rancher desktop
+
+export path
+
+# # Add system pythons to path?
+# pythons=($HOME/Library/Python/3.7/bin $HOME/Library/Python/3.8/bin $HOME/Library/Python/3.9/bin)
+# export path=($pythons $path)
+
+# ---[ Load/Source additional plugins/files ]---------------------------------
+### load a plugin
+# `z4h load`:   ohmyzsh/ohmyzsh/plugins/emoji
+### source an individual file
+# `z4h source`: ohmyzsh/ohmyzsh/lib/diagnostics.zsh
+
+# Source additional local files if they exist.
+# z4h source "${HOME}/.env.zsh"
+z4h source "${HOME}/.aliases"
+z4h source "${HOME}/.aliases.local"
+# if [[ -d "${HOME}/.fonts" ]]; then
+#   for sh in "${HOME}"/.fonts/*.sh; do
+#     z4h source "$sh"
+#   done
+# fi
+
+[[ "$(command -v thefuck)" ]] && eval $(thefuck --alias)
+[[ "$(command -v vivid)" ]] && export LS_COLORS="$(vivid generate one-dark)"
+
+z4h load -c esc/conda-zsh-completion
+z4h load -c ohmyzsh/ohmyzsh/plugins/gitfast            # git completions
+z4h load -c ohmyzsh/ohmyzsh/plugins/safe-paste         # prevent pasted code from running
+# z4h source -c ohmyzsh/ohmyzsh/lib/clipboard.zsh
+
+### load local functions
+### 'fzf' will detect based on filename + underscore (try 'conda_' + TAB)
+z4h source -c "$HOME/.zshconfig/functions/clipboard.zsh"
+# z4h source -c "$HOME/.zshconfig/functions/conda.zsh"
+
+# z4h source -c "$HOME/.zshconfig/lib/corrections.zsh"
+
+### Autoload functions.
+autoload -Uz zmv
+
+### Define functions and completions.
+function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
+compdef _directories md
+compdef _default open
+
+# ---[ Export environmental variables ]---------------------------------------
+export GPG_TTY=$TTY
+export LANG=en_US.UTF-8
+export PAGER=less
+export ZSH_CONFIG="${HOME}/.zshconfig"
+export HOMEBREW_NO_ANALYTICS=1
+
+# # unixodbc
+# export LDFLAGS="-L/opt/homebrew/Cellar/unixodbc/2.3.9_1/lib ${LDFLAGS}"
+# export CPPFLAGS="-I/opt/homebrew/Cellar/unixodbc/2.3.9_1/include ${CPPFLAGS}"
+# # openblas
+# export LDFLAGS="-L/opt/homebrew/opt/openblas/lib ${LDFLAGS}"
+# export CPPFLAGS="-I/opt/homebrew/opt/openblas/include ${CPPFLAGS}"
+# export OPENBLAS="$(brew --prefix openblas)"
+
+# ---[ Prompt Configuration ]-------------------------------------------------
 ### Autodetect architecture (and set `brew` path) every time zsh called
 if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
   archcheck=$(/usr/bin/arch)
@@ -93,170 +184,81 @@ if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
     p10k segment -f 250 -i '💻' -t "${archcheck//\%/%%}"
   }
 
-  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch  # to specify location, modify ~/.p10k.zsh
+  # hack prompt to show "my_arch" at end of RIGHT_PROMPT_ELEMENTS
+  # if specific location is required, modify ~/.p10k.zsh
+  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch
 fi
+
+### Smooth rendering with two-line prompt with an empty line before it
+POSTEDIT=$'\n\n\e[2A'
+
+### make transient prompt work consistently when closing an SSH connection
+z4h bindkey z4h-eof             Ctrl+D
+setopt ignore_eof
+
+### ---[ Define key bindings ]-------------------------------------------------
+### For default keybindings, see
+### Ref: https://github.com/romkatv/zsh4humans/blob/v5/fn/-z4h-init-zle
+
+### Keyboard type: 'mac' or 'pc'.
+zstyle ':z4h:bindkey' keyboard  'mac'
+
+### unset keybindings
+# () {
+#   local key keys=(
+#     "^B"   "^D"   "^F"   "^N"   "^O"   "^P"   "^Q"   "^S"   "^T"   "^W"
+#     "^X*"  "^X="  "^X?"  "^XC"  "^XG"  "^Xa"  "^Xc"  "^Xd"  "^Xe"  "^Xg"  "^Xh"  "^Xm"  "^Xn"
+#     "^Xr"  "^Xs"  "^Xt"  "^Xu"  "^X~"  "^[ "  "^[!"  "^['"  "^[,"  "^[<"  "^[>"  "^[?"
+#     "^[A"  "^[B"  "^[C"  "^[D"  "^[F"  "^[G"  "^[L"  "^[M"  "^[N"  "^[P"  "^[Q"  "^[S"  "^[T"
+#     "^[U"  "^[W"  "^[_"  "^[a"  "^[b"  "^[d"  "^[f"  "^[g"  "^[l"  "^[n"  "^[p"  "^[q"  "^[s"
+#     "^[t"  "^[u"  "^[w"  "^[y"  "^[z"  "^[|"  "^[~"  "^[^I" "^[^J" "^[^_" "^[\"" "^[\$" "^X^B"
+#     "^X^F" "^X^J" "^X^K" "^X^N" "^X^O" "^X^R" "^X^U" "^X^X" "^[^D" "^[^G")
+#   for key in $keys; do
+#     bindkey $key z4h-do-nothing
+#   done
+# }
+
+z4h bindkey undo                Ctrl+/
+z4h bindkey redo                Alt+/
+### mimic mac-standard key nav
+z4h bindkey beginning-of-line   Ctrl+Left
+z4h bindkey end-of-line         Ctrl+Right
+z4h bindkey z4h-backward-word   Alt+Left
+z4h bindkey z4h-forward-word    Alt+Right
+
+### use system clipboard as kill buffer
+# paste command
+bindkey     '^y'                pb-yank                     # Ctrl + Y
+bindkey     '^Y'                pb-yank                     # Ctrl + Y
+# cut commands
+bindkey     '^u'                pb-kill-whole-line          # Ctrl + U
+bindkey     '^U'                pb-kill-whole-line          # Ctrl + U
+bindkey     '^k'                pb-kill-line                # Ctrl + K
+bindkey     '^K'                pb-kill-line                # Ctrl + K
+bindkey     '^[[3;5~'           pb-kill-line                # Ctrl + Delete
+bindkey     '^w'                pb-backward-kill-word       # Ctrl + W
+bindkey     '^W'                pb-backward-kill-word       # Ctrl + W
+bindkey     '^[d'               pb-kill-word                # Alt + D
+bindkey     '^[D'               pb-kill-word                # Alt + D
+# empty kill buffer
+bindkey     '^X^K'              pb-kill-buffer              # Ctrl + X, Ctrl + K
+# mark with ctrl+space, use Esc+W to mark region end
+bindkey     '^[w'  pb-copy-region-as-kill-deactivate-mark   # Alt + W
+bindkey     '^[W'  pb-copy-region-as-kill-deactivate-mark   # Alt + W
+
+### shift + arrows does directory navigation
+z4h bindkey z4h-cd-back         Shift+Left   # cd into the previous directory
+z4h bindkey z4h-cd-forward      Shift+Right  # cd into the next directory
+z4h bindkey z4h-cd-up           Shift+Up     # cd into the parent directory
+z4h bindkey z4h-cd-down         Shift+Down   # cd into a child directory
+
+
+# ---[ User Configuration ]---------------------------------------------------
 
 # Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
 # requires `sudo chown $(whoami) /etc/odbcinst.ini`
 if [[ -f /etc/odbcinst.ini ]]; then
   cat $HOMEBREW_PREFIX/etc/odbcinst.ini >! /etc/odbcinst.ini
-fi
-
-# # Add system pythons to path?
-# pythons=($HOME/Library/Python/3.7/bin $HOME/Library/Python/3.8/bin $HOME/Library/Python/3.9/bin)
-# export path=($pythons $path)
-
-# ---[ Export environmental variables ]----------------------------------------
-export GPG_TTY=$TTY
-export LANG=en_US.UTF-8
-export ZSH_CONFIG="${HOME}/.zshconfig"
-export HOMEBREW_NO_ANALYTICS=1
-
-# # unixodbc
-# export LDFLAGS="-L/opt/homebrew/Cellar/unixodbc/2.3.9_1/lib ${LDFLAGS}"
-# export CPPFLAGS="-I/opt/homebrew/Cellar/unixodbc/2.3.9_1/include ${CPPFLAGS}"
-# # openblas
-# export LDFLAGS="-L/opt/homebrew/opt/openblas/lib ${LDFLAGS}"
-# export CPPFLAGS="-I/opt/homebrew/opt/openblas/include ${CPPFLAGS}"
-# export OPENBLAS="$(brew --prefix openblas)"
-
-# ---[ Load/Source additional plugins/files ]---------------------------------
-# `z4h source`: ohmyzsh/ohmyzsh/lib/diagnostics.zsh  # source an individual file
-# `z4h load`:   ohmyzsh/ohmyzsh/plugins/emoji-clock  # load a plugin
-
-# Source additional local files if they exist.
-z4h source "${HOME}/.env.zsh"
-z4h source "${HOME}/.aliases"
-z4h source "${HOME}/.aliases.local"
-if [[ -d "${HOME}/.fonts" ]]; then
-  for sh in "${HOME}"/.fonts/*.sh; do
-    z4h source "$sh"
-  done
-fi
-if [[ "$(command -v brew)" ]]; then
-    [[ ! "$(command -v bat)" ]] && brew install bat
-    [[ ! "$(command -v bfs)" ]] && brew install tavianator/tap/bfs
-    [[ ! "$(command -v exa)" ]] && brew install exa
-    [[ ! "$(command -v fd)" ]] && brew install fd
-    [[ ! "$(command -v fzf)" ]] && brew install fzf
-    [[ ! "$(command -v jq)" ]] && brew install jq
-    [[ ! "$(command -v vivid)" ]] && brew install vivid
-fi
-
-[[ "$(command -v vivid)" ]] && export LS_COLORS="$(vivid generate one-dark)"
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-
-z4h load -c esc/conda-zsh-completion
-z4h load -c ohmyzsh/ohmyzsh/plugins/gitfast            # git completions
-z4h load -c ohmyzsh/ohmyzsh/plugins/safe-paste         # prevent pasted code from running
-z4h load -c ohmyzsh/ohmyzsh/plugins/terraform          # terraform completions
-# z4h source -c ohmyzsh/ohmyzsh/lib/clipboard.zsh
-
-### load local functions
-### 'fzf' will detect based on filename + underscore (try 'conda_' + TAB)
-z4h source -c "$HOME/.zshconfig/functions/clipboard.zsh"
-z4h source -c "$HOME/.zshconfig/functions/conda.zsh"
-z4h source -c "$HOME/.zshconfig/functions/docker.zsh"
-z4h source -c "$HOME/.zshconfig/functions/env.zsh"
-z4h source -c "$HOME/.zshconfig/functions/git.zsh"
-z4h source -c "$HOME/.zshconfig/functions/python.zsh"
-
-
-z4h source -c "$HOME/.zshconfig/lib/corrections.zsh"
-
-### ---[ Define key bindings ]-------------------------------------------------
-z4h bindkey undo Ctrl+/  # undo the last command line change (may cause issues on some layouts)
-z4h bindkey redo Alt+/   # redo the last undone command line change
-
-# mimic mac-standard key nav
-z4h bindkey beginning-of-line Ctrl+Left
-z4h bindkey end-of-line       Ctrl+Right
-z4h bindkey backward-word     Alt+Left
-z4h bindkey forward-word      Alt+Right
-
-z4h bindkey z4h-cd-back    Shift+Left   # cd into the previous directory
-z4h bindkey z4h-cd-forward Shift+Right  # cd into the next directory
-z4h bindkey z4h-cd-up      Shift+Up     # cd into the parent directory
-z4h bindkey z4h-cd-down    Shift+Down   # cd into a child directory
-
-### fzf-bindings updates keybinds for fzf widgets/commands {binding:command}
-# hitting `tab` will accept and stay in fzf completion menu
-zstyle ':z4h:fzf-dir-history' fzf-bindings tab:repeat
-zstyle ':z4h:fzf-complete'    fzf-bindings tab:repeat
-zstyle ':z4h:fzf-dir-history' fzf-bindings tab:repeat
-
-# use clipboard functions
-# paste command
-bindkey '^Y'   pb-yank                  # ctrl + y
-# cut commands
-bindkey '^K'   pb-kill-line             # ctrl + k
-bindkey '^U'   pb-kill-whole-line       # ctrl + u
-bindkey '^W'   pb-backward-kill-word    # ctrl + w; opt + del
-bindkey '^[^H' pb-backward-kill-word    # esc + ctrl + h
-bindkey '^[^?' pb-backward-kill-word    # esc + backspace
-
-bindkey '^[D'      pb-kill-word         # esc + d; opt + right
-bindkey '^[[3;5~'  pb-kill-word         # ctrl + delete
-bindkey '^X^K' pb-kill-buffer           # ctrl + x, ctrl + k
-bindkey '^[w'  pb-copy-region-as-kill-deactivate-mark   # esc + w
-bindkey '^[W'  pb-copy-region-as-kill-deactivate-mark   # esc + w
-
-
-# ### Autoload functions.
-# autoload -Uz zmv
-
-# ### Define functions and completions.
-# function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
-# compdef _directories md
-
-# ### Define named directories: ~w <=> Windows home directory on WSL.
-# [[ -z $z4h_win_home ]] || hash -d w=$z4h_win_home
-
-### Set shell options: http://zsh.sourceforge.net/Doc/Release/Options.html.
-### These are examples
-setopt no_clobber               # Force using `>!` to truncate / overwrite an existing file
-setopt no_mail_warning          # Don't print warning if mail
-setopt glob_dots                # no special treatment for file names with a leading dot
-setopt no_auto_menu             # require an extra TAB press to open the completion menu
-setopt always_to_end            # when completing from the middle of a word, move the cursor to the end of the word
-setopt mark_dirs                # append trailing slash '/' to directory names resulting from globbing
-setopt auto_param_slash         # if completed parameter is dir, add trailing slash
-
-# ---[ User configuration ]----------------------------------------------------
-
-# # integrate `fd` with `fzf`
-# export FZF_DEFAULT_COMMAND='fd --type file --hidden --exclude .git --color=always'
-# export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-# # now, you can type `vim <Ctrl-T>` on your terminal to open fzf and search through the fd-results.
-# export FZF_DEFAULT_OPTS="--ansi"
-
-# zstyle 'z4h:fzf-tab:*' show-group brief                     # show header only if multiple items / group
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}       # set list-colors to enable filename colorizing
-
-export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
---color=fg:-1,bg:-1,hl:#c678dd,fg+:#ffffff,bg+:#4b5263,hl+:#d858fe
---color=info:#98c379,prompt:#61afef,pointer:#be5046,marker:#e5c07b,spinner:#61afef,header:#61afef
-'
-zstyle ':z4h:fzf-complete' fzf-flags --color='dark'
-zstyle ':z4h:fzf-complete' fzf-flags --color='fg:-1,bg:-1,hl:#c678dd,fg+:#ffffff,bg+:#4b5263,hl+:#d858fe'
-zstyle ':z4h:fzf-complete' fzf-flags --color='info:#98c379,prompt:#61afef,pointer:#be5046,marker:#e5c07b,spinner:#61afef,header:#61afef'
-
-# zstyle 'z4h:fzf-complete:*' fzf-preview 'bat --style=numbers --color=always --line-range :500 {}'
-# zstyle 'z4h:fzf-complete:cd:*' fzf-preview 'exa -1 --color=always $realpath' # preview directory's content with exa when completing cd
-
-### fzf-flags passes options through to fzf
-# zstyle ':z4h:fzf-complete' fzf-flags --preview 'exa -1 --color=always $realpath' # preview directory's content with exa when completing cd
-# zstyle ':z4h:fzf-complete:' fzf-flags --show-group brief                     # show header only if multiple items / group
-
-
-# don't cover the prompt when fzf-history (ctrl+r)
-# zstyle ':z4h:fzf-history' fzf-preview no
-
-### Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='nano'
-else
-  export EDITOR='code'
 fi
 
 ### >>> conda initialize >>>
@@ -278,3 +280,7 @@ if [ -f "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh" ]; then
     . "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh"  # commented out by conda initialize
 fi
 ### <<< conda initialize <<<
+
+
+### uncomment to enable startup profiling
+# zprof

@@ -1,3 +1,6 @@
+#!/usr/bin/env zsh
+# shellcheck disable=SC2034 # variable appears unused
+
 # ref: https://github.com/zsh-users/zsh-syntax-highlighting/blob/894127b221ab73847847bf7cf31eeb709bc16dc5/docs/highlighters.md
 
 # limit maximum command length to highlight

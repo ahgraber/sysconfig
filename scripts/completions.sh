@@ -1,49 +1,50 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC2154 # ZSH_CONFIG used not assigned in this script
 
 # bat
-if [[ $(command -v bat) ]]; then
-    curl -L https://raw.githubusercontent.com/sharkdp/bat/master/assets/completions/bat.zsh.in \
-        -o $ZSH_CONFIG/completions/_bat
-fi
+[[ -n $(command -v bat) ]] && \
+    curl \
+    -L https://raw.githubusercontent.com/sharkdp/bat/master/assets/completions/bat.zsh.in \
+    -o "$ZSH_CONFIG/completions/_bat"
 
 # docker
-if [[ $(command -v docker) ]]; then
-    curl -L https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker \
-        -o $ZSH_CONFIG/completions/_docker
-fi
+[[ -n $(command -v docker) ]] && \
+    curl \
+    -L https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker \
+    -o "$ZSH_CONFIG/completions/_docker"
 
 # docker-compose
-if [[ $(command -v docker-compose) ]]; then
-    curl -fsSL https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose \
-        -o $ZSH_CONFIG/completions/_docker-compose
-fi
+[[ -n $(command -v docker-compose) ]] && \
+    curl \
+    -fsSL https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose \
+    -o "$ZSH_CONFIG/completions/_docker-compose"
 
 # exa
-if [[ $(command -v exa) ]]; then
-    curl -fsSL https://raw.githubusercontent.com/ogham/exa/master/completions/zsh/_exa \
-        -o $ZSH_CONFIG/completions/_exa
-fi
+[[ -n $(command -v exa) ]] && \
+    curl \
+    -fsSL https://raw.githubusercontent.com/ogham/exa/master/completions/zsh/_exa \
+    -o "$ZSH_CONFIG/completions/_exa"
 
 # fd
-if [[ $(command -v fd) ]]; then
-    curl -fsSL https://raw.githubusercontent.com/sharkdp/fd/master/contrib/completion/_fd \
-        -o $ZSH_CONFIG/completions/_fd
-fi
+[[ -n $(command -v fd) ]] && \
+    curl \
+    -fsSL https://raw.githubusercontent.com/sharkdp/fd/master/contrib/completion/_fd \
+    -o "$ZSH_CONFIG/completions/_fd"
 
 # flux
-if [[ $(command -v flux) ]]; then
+if [[ -n $(command -v flux) ]]; then
     flux completion zsh > _flux
-    mv _flux $ZSH_CONFIG/completions/
+    mv _flux "$ZSH_CONFIG/completions/"
 fi
 
 # helm
-if [[ $(command -v helm) ]]; then
+if [[ -n $(command -v helm) ]]; then
     helm completion zsh > _helm
-    mv _helm $ZSH_CONFIG/completions/
+    mv _helm "$ZSH_CONFIG/completions/"
 fi
 
 # kubectl
-if [[ $(command -v kubectl) ]]; then
+if [[ -n $(command -v kubectl) ]]; then
     kubectl completion zsh > _kubectl
-    mv _kubectl $ZSH_CONFIG/completions/
+    mv _kubectl "$ZSH_CONFIG/completions/"
 fi

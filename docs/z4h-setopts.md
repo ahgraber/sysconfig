@@ -18,7 +18,7 @@ Disable option with `unsetopt <optionname>` or `setopt no<optionname>`.
 | nobgnice | (don't) run background jobs at lower priority |
 | cbases | output hexadecimal numbers in C format: `0xFF` instead of `16#FF` |
 | extendedglob | treat `#`, `~`, and `^` characters as part of patterns for filename generation, etc. |
-| extendedhistory | Save each command’s beginning timestamp (in seconds since the epoch) and the duration (in seconds) to the history file |
+| extendedhistory | Save each command's beginning timestamp (in seconds since the epoch) and the duration (in seconds) to the history file |
 | noflowcontrol | (don't) allow output flow control via start/stop characters (`^S`/`^Q`) |
 | noglobalrcs | (don't) run startup files `/etc/zprofile`, `/etc/zshrc`, `/etc/zlogin`, and `/etc/zlogout` |
 | globdots | do not require a leading `.` to be matched explicitly |

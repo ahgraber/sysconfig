@@ -13,26 +13,29 @@ alias clr="clear"
 alias clrbuf="printf '\ec\e[3J'"
 alias clear_buffer="printf '\ec\e[3J'"
 
-if [[ ! $(command -v exa) ]]; then
+if [[ -z  $(command -v exa) ]]; then
   alias ls="ls -Gp"
   alias la="ls -AGp"
   alias ll="ls -lAGp"
   # alias lt="tree -C -L 3"
 else
-  alias l='exa -a --icons'
-  alias l1='exa -1 --no-icons'
+  alias exa='exa -F --group-directories-first'
+  alias l1='exa -1 --no-icons' # one entry per line
   alias ls='exa'
   alias la='exa -a'
-  alias lf='exa -aF' # show character markings for files: https://github.com/ogham/exa/issues/151
+  alias lg='exa -alg' # show character markings for files: https://github.com/ogham/exa/issues/151
   alias ll='exa -lbG --git'
   alias llm='exa -lbG --git --sort=modified'
-  alias lt='exa --no-icons --tree'
-  alias lit='exa --icons --tree'
+  alias lt='exa --tree'
+  # adding "i" outputs icons
+  alias lsi='ls --icons'
+  alias lai='la --icons'
+  alias lgi='lg --icons'
+  alias lti='exa --tree --icons'
 fi
 
 alias h='history'               # Prints your command history
-alias hs='history | grep'       # Use grep to search your command history
-alias hsi='history | grep -i'   # Use grep to case-insensitive earch your command history
+alias hs='history | grep -i'       # Use grep to search your command history
 
 alias rm='rm -i'
 
@@ -45,14 +48,14 @@ alias rm='rm -i'
 alias native="/usr/bin/arch -arm64 /bin/zsh"
 alias rosetta="/usr/bin/arch -x86_64 /bin/zsh"
 
-if [[ $(command -v bat) ]]; then
+if [[ -n $(command -v bat) ]]; then
   export BAT_THEME="OneHalfDark" # TwoDark"
   alias cat='bat -p'
   alias man='batman'
 fi
 
-[[ $(command -v fd) ]] && alias find="fd"
-[[ $(command -v gdircolors) ]] && alias dircolors="gdircolors"
+[[ -n $(command -v fd) ]] && alias find="fd"
+[[ -n $(command -v gdircolors) ]] && alias dircolors="gdircolors"
 
 
 alias showpath="defaults write com.apple.finder _FXShowPosixPathInTitle -bool true; killall Finder"
@@ -81,8 +84,9 @@ alias nbstrip_jq="jq --indent 1 \
 # strips metadata from .ipynb files
 function nbstrip_all_cwd {
     IPYNB_CLEAN_PLACES=${*:-'.'}
-    for nbfile in ${IPYNB_CLEAN_PLACES}/*.ipynb; do
-        echo "$( nbstrip_jq $nbfile )" > $nbfile
+    for nbfile in "${IPYNB_CLEAN_PLACES}"/*.ipynb; do
+        # shellcheck disable=SC2005 # allow "useless echo" for readability
+        echo "$( nbstrip_jq "$nbfile" )" > "$nbfile"
     done
     unset nbfile
 }

@@ -5,33 +5,33 @@
 
 pb-kill-line () {
   zle kill-line
-  printf '%s' $CUTBUFFER | pbcopy
+  printf '%s' "$CUTBUFFER" | pbcopy
 }
 
 pb-kill-whole-line () {
   zle kill-whole-line
-  printf '%s' $CUTBUFFER | pbcopy
+  printf '%s' "$CUTBUFFER" | pbcopy
 }
 
 pb-backward-kill-word () {
   zle backward-kill-word
-  printf '%s' $CUTBUFFER | pbcopy
+  printf '%s' "$CUTBUFFER" | pbcopy
 }
 
 pb-kill-word () {
   zle kill-word
-  printf '%s' $CUTBUFFER | pbcopy
+  printf '%s' "$CUTBUFFER" | pbcopy
 }
 
 pb-kill-buffer () {
   zle kill-buffer
-  printf '%s' $CUTBUFFER | pbcopy
+  printf '%s' "$CUTBUFFER" | pbcopy
 }
 
 pb-copy-region-as-kill-deactivate-mark () {
   zle copy-region-as-kill
   zle set-mark-command -n -1
-  printf '%s' $CUTBUFFER | pbcopy
+  printf '%s' "$CUTBUFFER" | pbcopy
 }
 
 pb-yank () {

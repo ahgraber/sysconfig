@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 git_branch_clean () {
   local -r deleteflag=${1:-"-d"}
@@ -6,5 +6,5 @@ git_branch_clean () {
   git remote prune origin;
   # removes LOCAL branches that are deleted on (remote) origin
   git fetch -p;
-  git branch -vv | grep ': gone]' | grep -v "\*" | awk '{ print $1 }' | xargs git branch ${deleteflag}
+  git branch -vv | grep ': gone]' | grep -v "\*" | awk '{ print $1 }' | xargs git branch "$deleteflag"
 }

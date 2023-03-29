@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 env_load () {
-  export $(grep -v '^#' .env | xargs)
+  export "$(grep -v '^#' .env | xargs)"
 }
 
 # arch_brew () {

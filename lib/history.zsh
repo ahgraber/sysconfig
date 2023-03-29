@@ -1,3 +1,6 @@
+#!/usr/bin/env zsh
+# shellcheck disable=SC2034 # variable appears unused
+
 # History
 # ref: https://zsh.sourceforge.io/Guide/zshguide02.html#l17
 # ref: https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/history.zsh

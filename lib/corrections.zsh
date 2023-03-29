@@ -1,3 +1,6 @@
+#!/usr/bin/env zsh
+# shellcheck  disable=SC2154,2034
+
 # manage corrections
 # ref: https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/correction.zsh
 

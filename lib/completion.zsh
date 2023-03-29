@@ -1,7 +1,10 @@
+#!/usr/bin/env zsh
+# shellcheck disable=SC2016 # allow zsh expressions in single quotes
+
 # source: https://github.com/paulmillr/dotfiles/blob/master/terminal/completion.sh
 # ref: https://thevaluable.dev/zsh-completion-guide-examples/
 
-# Use caching so that commands like apt and dpkg complete are useable
+# Use caching so that commands like apt and dpkg complete are usable
 zstyle ':completion::complete:*' use-cache on
 zstyle ':completion::complete:*' cache-path "${ZDOTDIR:-$HOME}/.zcompcache"
 
@@ -9,6 +12,7 @@ zstyle ':completion::complete:*' cache-path "${ZDOTDIR:-$HOME}/.zcompcache"
 zstyle ':completion:*' insert-tab pending
 # case insensitive (all), partial-word and substring completion
 
+# shellcheck disable=SC2154 # variable referenced by not assigned
 if [[ "$CASE_SENSITIVE" == "true" ]]; then
   # echo "DEBUG: CASE_SENSITIVE set to 'true' in .zshrc"
   zstyle ':completion:*' matcher-list '' 'r:|=*' 'l:|=* r:|=*'
@@ -59,6 +63,7 @@ zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 
 
 # Colors for files and directory
+# shellcheck disable=SC2086,SC2296
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
 zstyle ':completion:*:*:cd:*:directory-stack' menu yes select

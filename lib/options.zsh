@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # Set options `man zshoptions`
 setopt auto_cd                  # change directory to entered path
 setopt chase_dots               # do not follow symlinks when using '..'
@@ -20,7 +21,7 @@ setopt auto_param_slash         # if completed parameter is dir, add trailing sl
 setopt auto_remove_slash        # When the last character from completion is /, remove in certain logical cases
 setopt complete_in_word         # allow completion from within a word/phrase
 setopt complete_aliases         # complete alisases
-# setopt glob_complete            # complete after glob `*` isntead of expanding it
+# setopt glob_complete            # complete after glob `*` instead of expanding it
 # setopt list_ambiguous           # complete as much of a completion until it gets ambiguous
 setopt list_rows_first          # Lay out the completions horiz; the 2nd match is to the right of the 1s, not under it (default).
 

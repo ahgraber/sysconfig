@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+# shellcheck disable=SC2046
 set -- $(locale LC_MESSAGES)
 yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
 
@@ -7,7 +10,8 @@ export ZSH_CONFIG="$HOME/.zshconfig"
 # check for ~/.zshconfig
 if [[ ! -d "$ZSH_CONFIG" ]] || [[ ! -d "$ZSH_CONFIG/.git" ]]; then
   if [[ -d "$ZSH_CONFIG" ]]; then
-    read -p "~/.zshconfig already exists but is not a git repo.  Back up and overwrite (y/n)? [y] " overwrite_select
+    # shellcheck disable=SC2088 # tilde does not expand in quotes
+    read -r -p "~/.zshconfig already exists but is not a git repo.  Back up and overwrite (y/n)? [y] " overwrite_select
     overwrite_select=${overwrite_select:-"y"}
 
     if [[ "$overwrite_select" =~ $yesexpr ]]; then
@@ -27,7 +31,7 @@ if [[ ! -d "$ZSH_CONFIG" ]] || [[ ! -d "$ZSH_CONFIG/.git" ]]; then
 else
   # if dest_dir already contains .git directory, assume we've already installed there once
   if [[ -d "$ZSH_CONFIG/.git" ]]; then
-    read -p "Update from source? (y/n)? [y] " git_select
+    read -r -p "Update from source? (y/n)? [y] " git_select
     git_select=${git_select:-"y"}
 
     if [[ "$git_select" =~ $yesexpr ]]; then
@@ -81,7 +85,7 @@ if [[ -f "${HOME}/.gitattributes_global" ]]; then
   cp "${ZSH_CONFIG}/dotfiles/gitattributes_global" "${HOME}/.gitattributes_global"
 fi
 
-read -p "Disconnect zshconfig from source repo? (y/n)? [y] " git_select
+read -r -p "Disconnect zshconfig from source repo? (y/n)? [y] " git_select
 git_select=${git_select:-"y"}
 if [[ "$git_select" =~ $yesexpr ]]; then
   rm -rf "$ZSH_CONFIG/.git"

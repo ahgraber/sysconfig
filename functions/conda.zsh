@@ -1,5 +1,9 @@
 #!/usr/bin/env zsh
 
+set -o errexit
+set -o nounset
+set -o pipefail
+
 conda_env_create () {
 
   show_help () {
@@ -39,11 +43,11 @@ EOF
           ;;
       -n|--name)
           # Require option argument has been specified.
-          if [ "$2" ]; then
+          if [ -n "$2" ]; then
               env_name=$2
               shift
           else
-              echo 'ERROR: "--name" requires a non-empty option argument.'
+              printf 'ERROR: "--name" requires a non-empty option argument.\n'
               return 1
           fi
           ;;
@@ -53,16 +57,16 @@ EOF
           ;;
       --name=)
           # Handle the case of an empty --name=
-          echo 'ERROR: "--name" requires a non-empty option argument.'
+          printf 'ERROR: "--name" requires a non-empty option argument.\n'
           return 1
           ;;
       -f|--file)
           # Require option argument has been specified.
-          if [ "$2" ]; then
+          if [ -n "$2" ]; then
               file=$2
               shift
           else
-              echo 'ERROR: "--file" requires a non-empty option argument.'
+              printf 'ERROR: "--file" requires a non-empty option argument.\n'
               return 1
           fi
           ;;
@@ -72,12 +76,12 @@ EOF
           ;;
       --file=)
           # Handle the case of an empty --file=
-          echo 'ERROR: "--file" requires a non-empty option argument.'
+          printf 'ERROR: "--file" requires a non-empty option argument.\n'
           return 1
           ;;
       -?*)
           # Detect dash and warn of unknown option
-          echo 'WARN: Unknown option (ignored): %s\n' "$1"
+          printf 'WARN: Unknown option (ignored): %s\n' "$1"
           ;;
       *)
           # Default case: No more options detected, any thing else are packages
@@ -102,11 +106,11 @@ EOF
     # ensure env starts with "x86"
     if [[ ! "$env_name" =~ "^x86_" ]]; then
       env_name="x86_$env_name"
-      echo "--- NOTE: Prepending 'x86_' to environment name ---"
+      printf "--- NOTE: Prepending 'x86_' to environment name ---\n"
     fi
   fi
 
-  echo "Creating new conda env: '$env_name' ..."
+  printf "Creating new conda env: '%s' ...\n" "$env_name"
   # [[ -z $file ]] || echo "from file $file "
   # [[ -z $package_list ]] || echo "with specified packages: $package_list"
 
@@ -124,23 +128,23 @@ EOF
 
   # update env using specified packages
   if [[ ${#package_list[@]} -gt 0 ]]; then
-    echo "... with specified packages: $package_list"
+    printf "... with specified packages: %s \n" "${package_list[@]}"
     mamba install --force-reinstall --name "$env_name" "${package_list[@]}" --quiet --yes
   fi
 
   # update env using file
-  if [[ ! -z $file ]]; then
-    if [[ ! -f $file ]]; then
-      echo "ERROR: $file not found."
-      return 1
-    else
-      echo "... from file $file "
+  if [[ -n $file ]]; then   # check if variable is non-empty
+    if [[ -f $file ]]; then # check if file exists
+      printf "... from file %s \n" "$file"
       mamba env update --name "$env_name" --file "$file" --quiet
+    else
+      printf "ERROR: %s not found.\n" "$file"
+      return 1
     fi
   fi
 
   # conda config --prepend channels conda-forge > /dev/null 2>&1
-  echo "Environment ${env_name} created for $(conda config --env --show | grep 'subdir:') architecture"
+  printf "Environment %s created for %s architecture\n" "$env_name" "$(conda config --env --show | grep 'subdir:')"
   unset env_name
   unset file
   unset package_list

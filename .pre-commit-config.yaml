@@ -1,0 +1,131 @@
+---
+fail_fast: false
+repos:
+  - repo: local
+    hooks:
+      - id: forbid-yml
+        name: Forbid .yml file extensions (use .yaml)
+        entry: YAML file extension must be .yaml
+        language: fail
+        files: \.yml$
+      # - id: env-substitute
+      #   name: envvar-substitute
+      #   entry: .precommit/substitute.sh
+      #   language: script
+      #   pass_filenames: false
+      # - id: sops
+      #   name: sops-encrypt
+      #   entry: .precommit/sops.sh
+      #   language: script
+      #   pass_filenames: false
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+        args: [--maxkb=500000]
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.4.2
+    hooks:
+      - id: remove-crlf
+      - id: remove-tabs
+  - repo: https://github.com/sirosen/texthooks
+    rev: 0.5.0
+    hooks:
+      - id: fix-smartquotes
+      - id: fix-ligatures
+  - repo: https://github.com/onedr0p/sops-pre-commit
+    rev: v2.1.1
+    hooks:
+      - id: forbid-secrets
+        args: [-h, "**/*.sops.yaml"]
+        # note: this only checks specific files for secrets!
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: v8.16.1
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.0-alpha.6
+    hooks:
+      - id: prettier
+        args:
+          - --ignore-unknown
+          # - "--ignore-path '**/*.md'"
+          # - "--ignore-path '**/*.y*ml'"
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.33.0 # v0.30.0
+    hooks:
+      - id: markdownlint
+        args:
+          - --config=.markdownlint.yaml
+          - --fix
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.30.0
+    hooks:
+      - id: yamllint
+        args:
+          - --config-file=.yamllint.yaml
+          - --format=parsable
+          - --strict
+  # - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+  #   rev: 0.1.0
+  #   hooks:
+  #     - id: yamlfmt
+  #       args: [--mapping, '2', --sequence, '4', --offset, '2', --preserve-quotes]
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    # Ruff version.
+    rev: "v0.0.259"
+    hooks:
+      - id: ruff
+        args: [--fix]
+  - repo: https://github.com/psf/black
+    rev: "23.1.0" # 21.11b1
+    hooks:
+      - id: black
+
+  # - repo: https://github.com/hadolint/hadolint.git
+  #   rev: v2.12.1-beta
+  #   hooks:
+  #     - id: hadolint
+  #       entry: hadolint/hadolint hadolint # uses system-installed hadolint
+  - repo: local
+    hooks:
+      - id: hadolint-system
+        name: hadolint
+        description: Runs system hadolint to lint dockerfiles
+        entry: hadolint
+        language: system
+        # args: []
+        types: [dockerfile]
+
+  # - repo: https://github.com/shellcheck-py/shellcheck-py
+  #   rev: v0.9.0.2
+  #   hooks:
+  #     - id: shellcheck
+  #       args: ["-x"]
+  #       # ignore '*.zsh" scripts'
+  #       exclude: "^.*zsh$"
+  - repo: local
+    hooks:
+      - id: shellcheck-system
+        name: shellcheck
+        description: Runs system shellcheck to lint sh/bash/dash/ksh
+        entry: shellcheck
+        language: system
+        args:
+          - --shell=bash # lint as if bash
+          - --external-sources # allow 'source' external files
+        # exclude: "^.*zsh$"
+        types: [shell]
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.4
+    hooks:
+      - id: codespell
+        args: ["-L", "keypair"]

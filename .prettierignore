@@ -1,2 +1,15 @@
-.pytest_cache/
+# prettier should ignore
+# .azureml
+# .eggs
+# .ipynb_checkpoints
+# .obsidian
+# .pytest_cache
+# .tox
 .vscode/
+.**/
+dist/
+*.sops.*
+gotk-components.y*ml
+*.md
+*.mjs
+# *.y*ml

@@ -1,13 +1,41 @@
-# cache/  # do not include submodule cache in .gitignore
+# Editors
+.vscode/
+*.profraw
+# Trash
+.DS_Store
+Thumbs.db
+# k8s
+*kubeconfig*
+# keys
+*key*
+*.pem
+*.pgp
+*.pub
+# vscode-sops
+.decrypted~*.yaml
+# env
+.env
+.envrc
+
+# temp / working files & dirs
+*.bak
+.temp*
+.todo*
+**/*archive/
+**/*wip/
+.private/
+.logs/
+.task/
+report/
+
+#extras
+*pytest*
+*cache*
+
 bin
 completions/*
 *.zwc
+
+# retain files
+
 !**.gitkeep
-
-# OS Junk
-.DS_Store
-Thumbs.db
-settings.json
-.vscode
-
-.pytest_cache

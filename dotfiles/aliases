@@ -8,6 +8,10 @@ alias zshconfig="code ~/.zshrc"
 [[ -f ~/.p10k.zsh ]] && alias codeconfig="code ~/Library/Application\ Support/Code/User/settings.json"
 alias -s {py,pyc,ipynb,yml,yaml}=code
 
+# start new zsh process in specified architecture
+alias native="exec /usr/bin/arch -arm64 /bin/zsh"
+alias rosetta="exec /usr/bin/arch -x86_64 /bin/zsh"
+
 alias c='clear'
 alias clr="clear"
 alias clrbuf="printf '\ec\e[3J'"
@@ -43,10 +47,6 @@ alias rm='rm -i'
 # # d# will `cd` into that index
 # alias d='dirs -v | head -n10'
 # for index ({1..10}); do alias "d$index"="cd +${index}"; unset index;
-
-# start new zsh process in specified architecture
-alias native="/usr/bin/arch -arm64 /bin/zsh"
-alias rosetta="/usr/bin/arch -x86_64 /bin/zsh"
 
 if [[ -n $(command -v bat) ]]; then
   export BAT_THEME="OneHalfDark" # TwoDark"

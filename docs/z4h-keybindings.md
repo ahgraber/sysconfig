@@ -5,6 +5,8 @@ List all available commands with `zle -al`.
 Test a key combination's translation with `ctrl + v; <keycombination>`.  
 Create new key binding with `bindkey "<code>" <command>`.  
 
+[A list of ASCII character code translations may be useful](https://redirect.cs.umbc.edu/portal/help/theory/ascii.txt)
+
 ## Default Keybindings
 
 As of Mar 2023:

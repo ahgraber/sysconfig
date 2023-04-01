@@ -31,7 +31,7 @@ zstyle ':z4h:'                                term-shell-integration  'yes'
 zstyle ':z4h:autosuggestions'                 forward-char      'partial-accept'
 zstyle ':z4h:autosuggestions'                 end-of-line       'partial-accept'
 
-#### Completion settings
+### Completion settings
 zstyle ':completion:*'                        list-colors       ${(s.:.)LS_COLORS}
 zstyle ':completion:*'                        sort              false
 zstyle ':completion:*:ls:*'                   list-dirs-first   true
@@ -82,21 +82,42 @@ setopt auto_param_slash         # if completed parameter is dir, add trailing sl
 setopt rc_quotes                # enables parsing of quoted strings in .zshrc files
 
 
-# ---[ Configure default path ]-----------------------------------------------
-# -U means "unique" -- i.e., deduplicate
+# ---[ Path Configuration ]---------------------------------------------------
+### -U means "unique" -- i.e., deduplicate
 typeset -U base_path
+typeset -U prefix_path
 typeset -U path
 typeset -U manpath
 typeset -U infopath
 
-# enforce mostly-standard ordering of path (reinsert these at front of path)
-set -A path '/usr/local/bin' '/usr/local/sbin' '/usr/bin' '/bin' '/usr/sbin' '/sbin' "${path[@]}"
-# save as 'base_path' for future reference
+### enforce mostly-standard ordering of path (reinsert these at front of path)
+set -A path '/usr/local/bin' '/usr/local/sbin' '/usr/bin' '/bin' '/usr/sbin' '/sbin' "${path[@]:-}"
+### save as 'base_path' for future reference
 base_path=("${path[@]}")
 
-# # Add system pythons to path?
-# pythons=($HOME/Library/Python/3.7/bin $HOME/Library/Python/3.8/bin $HOME/Library/Python/3.9/bin)
-# export path=($pythons $path)
+# ### Add system pythons to path?
+# pythons=("$HOME/Library/Python/3.7/bin" "$HOME/Library/Python/3.8/bin" "$HOME/Library/Python/3.9/bin")
+# set -A path "${pythons[@]:-}" "${path[@]:-}"
+
+### Set prefix_path for things that should always be first-in-path
+prefix_path=(.)
+
+### Higher priorities are higher in this section
+# pipx
+[[ -n "$(command -v pipx)" ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.local/bin")
+
+# conda/mamba
+[[ -n "$(command -v conda)" ]] && \
+  prefix_path=("${prefix_path[@]:-}" "${CONDA_PREFIX}/bin" "${HOME}/mambaforge/condabin" "${HOME}/mambaforge/bin")
+
+# rancher desktop
+[[ -d ~/.rd ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.rd/bin")
+
+# kubectl plugins
+# [[ -d ~/.krew ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.krew/bin")
+
+set -A path "${prefix_path[@]}" "${path[@]}"
+export path
 
 # ---[ Load/Source additional plugins/files ]---------------------------------
 ### load a plugin
@@ -114,8 +135,8 @@ z4h source "${HOME}/.aliases.local"
 #   done
 # fi
 
-[[ "$(command -v thefuck)" ]] && eval $(thefuck --alias)
-[[ "$(command -v vivid)" ]] && export LS_COLORS="$(vivid generate one-dark)"
+[[ -n "$(command -v thefuck)" ]] && eval $(thefuck --alias)
+[[ -n "$(command -v vivid)" ]] && export LS_COLORS="$(vivid generate one-dark)"
 
 z4h load -c esc/conda-zsh-completion
 z4h load -c ohmyzsh/ohmyzsh/plugins/gitfast            # git completions
@@ -153,20 +174,17 @@ export HOMEBREW_NO_ANALYTICS=1
 # export OPENBLAS="$(brew --prefix openblas)"
 
 # ---[ Rosetta Emulation ]----------------------------------------------------
-# start new zsh process in specified architecture
-# alias native="exec /usr/bin/arch -arm64 /bin/zsh"
-# alias rosetta="exec /usr/bin/arch -x86_64 /bin/zsh"
-
-# !! Also export to .direnvrc !!
+### !! NOTE: This assumes that 'homebrew' is installed for both native and rosetta modes !!
+### !!       And cant take advantage 'direnv' for directory-based architecture specification
 native() {
-  # export ROSETTA_MODE=0
+  ### restart zsh process with arm64 (native) architecture
   if [[ $(sysctl -n sysctl.proc_translated) -eq 1 ]]; then
     echo "Entering Native mode..."
     exec /usr/bin/arch -arm64 /bin/zsh
   fi
 }
 rosetta() {
-  # export ROSETTA_MODE=1
+  ### restart zsh process with x86_64 (rosetta/emulated) architecture
   if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
     echo "Entering Rosetta mode..."
     exec /usr/bin/arch -x86_64 /bin/zsh
@@ -174,62 +192,56 @@ rosetta() {
 }
 
 _rosetta_switcher() {
-  if [[ "$ROSETTA_MODE" -eq 1 && $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
-    echo "Entering Rosetta mode..."
-    exec /usr/bin/arch -x86_64 /bin/zsh
-  fi
-
-  if [[ "$ROSETTA_MODE" -eq 0 && $(sysctl -n sysctl.proc_translated) -eq 1 ]]; then
-    echo "Entering Native mode..."
-    exec /usr/bin/arch -arm64 /bin/zsh
+  ### allows direnv-based architecture determination by monitoring ROSETTA_MODE
+  if [[ -n "$ROSETTA_MODE" && "$ROSETTA_MODE" -eq 0 ]]; then
+    native
+  elif [[ -n "$ROSETTA_MODE" && "$ROSETTA_MODE" -eq 1 ]]; then
+    rosetta
+  else
+    : # pass
+    # return 0
   fi
 }
 
-_rosetta_watch() {
-  typeset -g prompt_arch
+_rosetta_path() {
+  ### manage architecture-/rosetta-based path updates (especially for homebrew)
   if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
-    prompt_rosettamode='arm64 (Native)';
     # alias brew='/opt/homebrew/bin/brew';
     brew() { /opt/homebrew/bin/brew $@; };
-
     # eval "$(/opt/homebrew/bin/brew shellenv)"
     export HOMEBREW_PREFIX="/opt/homebrew";
     export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
     export HOMEBREW_REPOSITORY="/opt/homebrew/Homebrew";
-    set -A path '/opt/homebrew/bin' '/opt/homebrew/sbin' "${path[@]}"
-    set -A manpath '/opt/homebrew/share/man' "${manpath[@]:-}"
-    set -A infopath '/opt/homebrew/share/info' "${infopath[@]:-}"
-
   else
-    prompt_rosettamode='x86_64 (Rosetta)';
     # alias brew='/usr/local/bin/brew';
     brew() { /usr/local/bin/brew $@; };
-
     # eval "$(/usr/local/bin/brew shellenv)"
     export HOMEBREW_PREFIX="/usr/local";
     export HOMEBREW_CELLAR="/usr/local/Cellar";
     export HOMEBREW_REPOSITORY="/usr/local/Homebrew";
     export HOMEBREW_SHELLENV_PREFIX="/usr/local";
-    set -A path '/usr/local/bin' '/usr/local/sbin' "${path[@]}"
-    set -A manpath '/usr/local/share/man'"${manpath[@]:-}"
-    set -A infopath '/usr/local/share/info$' "${infopath[@]:-}"
+  fi
+
+  set -A path "${prefix_path[@]}" "$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin" "${path[@]}"
+  set -A manpath "$HOMEBREW_PREFIX/share/man" "${manpath[@]:-}"
+  set -A infopath "$HOMEBREW_PREFIX/share/info" "${infopath[@]:-}"
+  export path
+  export manpath
+  export infopath
+}
+
+_rosetta_prompt() {
+  ### configure variable for p10k to display current rosetta mode
+  typeset -g prompt_arch
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+    prompt_rosettamode='arm64 (Native)';
+  else
+    prompt_rosettamode='x86_64 (Rosetta)';
   fi
 }
 
-# prepend to precmd functions (needs to run prior to p10k precmd_functions)
-# precmd_functions=(_rosetta_watch $precmd_functions)
-precmd_functions=(_rosetta_switcher _rosetta_watch $precmd_functions)
-
-# _fix_path() {
-#   eval "$(brew shellenv)"
-#   typeset -U path
-#   ### more path setup (for things that should be found with higher priority that brew)
-#   # [[ -d ~/.krew ]] && path=(~/.krew/bin $path)  # kubectl plugins
-#   # [[ -d ~/.rd ]] && path=(~/.rd/bin $path)  # rancher desktop
-#   [[ -n $(command -v pipx) ]] && path=("${HOME}/.local/bin" $path)  # pipx
-
-# }
-# precmd_functions+=(_fix_path)
+# prepend _rosetta_* to precmd functions (need to run *prior* to p10k precmd_functions)
+set -A precmd_functions _rosetta_switcher _rosetta_path _rosetta_prompt "${precmd_functions[@]:-}"
 
 # ---[ Prompt Configuration ]-------------------------------------------------
 # add arch to p10k
@@ -318,23 +330,6 @@ if [ -f "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh" ]; then
 fi
 ### <<< conda initialize <<<
 
-# ---[ Path prioritization ]--------------------------------------------------
-# kubectl plugins
-# [[ -d ~/.krew ]] && set -A path "${HOME}/.krew/bin" "${path[@]}"
-
-# rancher desktop
-[[ -d ~/.rd ]] && set -A path "${HOME}/.rd/bin" "${path[@]}"
-
-# conda/mamba
-[[ -n $(command -v conda) ]] && \
-  set -A path "${CONDA_PREFIX}/bin" "${HOME}/mambaforge/condabin" "${HOME}/mambaforge/bin" "${path[@]}"
-
-# pipx
-[[ -n $(command -v pipx) ]] && set -A path "${HOME}/.local/bin" "${path[@]}"
-
-export path
-export manpath
-export infopath
 
 ### uncomment to enable startup profiling
 # zprof

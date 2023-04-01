@@ -13,13 +13,49 @@ fi
 source "${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh"
 export ZSH_CONFIG="${HOME}/.zshconfig" # this repo's location
 
+# ---[ Path Configuration ]---------------------------------------------------
+### -U means "unique" -- i.e., deduplicate
+typeset -U base_path
+typeset -U prefix_path
+typeset -U path
+typeset -U manpath
+typeset -U infopath
+
+### enforce mostly-standard ordering of path (reinsert these at front of path)
+set -A path '/usr/local/bin' '/usr/local/sbin' '/usr/bin' '/bin' '/usr/sbin' '/sbin' "${path[@]:-}"
+### save as 'base_path' for future reference
+base_path=("${path[@]}")
+
+# ### Add system pythons to path?
+# pythons=("$HOME/Library/Python/3.7/bin" "$HOME/Library/Python/3.8/bin" "$HOME/Library/Python/3.9/bin")
+# set -A path "${pythons[@]:-}" "${path[@]:-}"
+
+### Set prefix_path for things that should always be first-in-path
+prefix_path=(.)
+
+### Higher priorities are higher in this section
+# pipx
+[[ -n $(command -v pipx) ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.local/bin")
+
+# conda/mamba
+[[ -n $(command -v conda) ]] && \
+  prefix_path=("${prefix_path[@]:-}" "${CONDA_PREFIX}/bin" "${HOME}/mambaforge/condabin" "${HOME}/mambaforge/bin")
+
+# rancher desktop
+[[ -d ~/.rd ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.rd/bin")
+
+# kubectl plugins
+# [[ -d ~/.krew ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.krew/bin")
+
+set -A path "${prefix_path[@]}" "${path[@]}"
+export path
+
 # fpath=($fpath $HOME/.zshconfig
 typeset -U fpath
 
 ### set options
-# export CLICOLOR=1
-# export LSCOLORS=ExFxBxDxCxegedabagacad
-export LS_COLORS="$(vivid generate one-dark)"
+[[ -n "$(command -v thefuck)" ]] && eval $(thefuck --alias)
+[[ -n "$(command -v vivid)" ]] && export LS_COLORS="$(vivid generate one-dark)"
 # completion
 export CASE_SENSITIVE="true"
 export HYPHEN_INSENSITIVE="true"
@@ -30,6 +66,7 @@ export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 # keymap
 bindkey -e
 
+# ---[ Load/Source additional plugins/files ]---------------------------------
 # does order matter?
 zcomet load romkatv/powerlevel10k
 
@@ -49,11 +86,11 @@ zcomet load ohmyzsh plugins/direnv             # enable direnv
 # zcomet load ohmyzsh plugins/fzf                # fzf completions
 zcomet load ohmyzsh plugins/gitfast            # git completions
 zcomet load ohmyzsh plugins/safe-paste         # prevent pasted code from running
-zcomet load ohmyzsh plugins/terraform          # terraform completions
+# zcomet load ohmyzsh plugins/terraform          # terraform completions
 
 # add homebrew completions
-[[ $(command -v brew) ]] \
-  && fpath=($(brew --prefix)/share/zsh/site-functions $fpath) #\
+[[ -n "$(command -v brew)" ]] \
+  && fpath=($(brew --prefix)/share/zsh/site-functions "${fpath[@]:-}") #\
   # && zcomet load $(brew --prefix)/share/zsh/site-functions
 # zcomet load "$ZSH_CONFIG/completions"          # watch local dir for completions; homebrew auto adds completions
 zcomet load "$ZSH_CONFIG/functions"            # watch local dir for functions
@@ -79,14 +116,15 @@ zcomet load zsh-users/zsh-history-substring-search
 zcomet load zsh-users/zsh-autosuggestions
 
 zcomet snippet "$HOME/.zshconfig/functions/clipboard.zsh"
-zcomet snippet "$HOME/.zshconfig/functions/conda.zsh"
-zcomet snippet "$HOME/.zshconfig/functions/docker.zsh"
-zcomet snippet "$HOME/.zshconfig/functions/env.zsh"
-zcomet snippet "$HOME/.zshconfig/functions/git.zsh"
-zcomet snippet "$HOME/.zshconfig/functions/python.zsh"
+# zcomet snippet "$HOME/.zshconfig/functions/conda.zsh"
+# zcomet snippet "$HOME/.zshconfig/functions/docker.zsh"
+# zcomet snippet "$HOME/.zshconfig/functions/env.zsh"
+# zcomet snippet "$HOME/.zshconfig/functions/git.zsh"
+# zcomet snippet "$HOME/.zshconfig/functions/python.zsh"
 
 ### custom settings
-for zsh in $ZSH_CONFIG/lib/*.zsh; do
+for zsh in "$ZSH_CONFIG"/lib/*.zsh; do
+  # source lib files
   zcomet snippet "$zsh"
 done
 enable-fzf-tab
@@ -111,52 +149,97 @@ if [[ -d ~/.fonts ]]; then
   done
 fi
 
-### Autodetect architecture (and set `brew` path)
-if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
-  archcheck=$(/usr/bin/arch)
-  typeset -g archcheck
-  case $archcheck in
-    arm64)
-      archcheck+=' (Native)'
-      if [[ -f /opt/homebrew/bin/brew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-        alias brew='/opt/homebrew/bin/brew'
-      fi
-    ;;
-    i386|x86_64)
-      archcheck+=' (Rosetta)'
-      if [[ -f /usr/local/bin/brew ]]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-        alias brew='/usr/local/bin/brew'
-      fi
-    ;;
-    *)
-      archcheck+=' (Unknown)'
-    ;;
-  esac
+# ---[ Rosetta Emulation ]----------------------------------------------------
+### !! NOTE: This assumes that 'homebrew' is installed for both native and rosetta modes !!
+### !!       And cant take advantage 'direnv' for directory-based architecture specification
+native() {
+  ### restart zsh process with arm64 (native) architecture
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 1 ]]; then
+    echo "Entering Native mode..."
+    exec /usr/bin/arch -arm64 /bin/zsh
+  fi
+}
+rosetta() {
+  ### restart zsh process with x86_64 (rosetta/emulated) architecture
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+    echo "Entering Rosetta mode..."
+    exec /usr/bin/arch -x86_64 /bin/zsh
+  fi
+}
 
-  # add arch to p10k
-  function prompt_my_arch() {
-    p10k segment -f 250 -i '💻' -t "${archcheck//\%/%%}"
-  }
+_rosetta_switcher() {
+  ### allows direnv-based architecture determination by monitoring ROSETTA_MODE
+  if [[ -n "$ROSETTA_MODE" && "$ROSETTA_MODE" -eq 0 ]]; then
+    native
+  elif [[ -n "$ROSETTA_MODE" && "$ROSETTA_MODE" -eq 1 ]]; then
+    rosetta
+  else
+    : # pass
+    # return 0
+  fi
+}
 
-  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_arch  # to specify location, modify ~/.p10k.zsh
-fi
+_rosetta_path() {
+  ### manage architecture-/rosetta-based path updates (especially for homebrew)
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+    # alias brew='/opt/homebrew/bin/brew';
+    brew() { /opt/homebrew/bin/brew $@; };
+    # eval "$(/opt/homebrew/bin/brew shellenv)"
+    export HOMEBREW_PREFIX="/opt/homebrew";
+    export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+    export HOMEBREW_REPOSITORY="/opt/homebrew/Homebrew";
+  else
+    # alias brew='/usr/local/bin/brew';
+    brew() { /usr/local/bin/brew $@; };
+    # eval "$(/usr/local/bin/brew shellenv)"
+    export HOMEBREW_PREFIX="/usr/local";
+    export HOMEBREW_CELLAR="/usr/local/Cellar";
+    export HOMEBREW_REPOSITORY="/usr/local/Homebrew";
+    export HOMEBREW_SHELLENV_PREFIX="/usr/local";
+  fi
+
+  set -A path "${prefix_path[@]}" "$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin" "${path[@]}"
+  set -A manpath "$HOMEBREW_PREFIX/share/man" "${manpath[@]:-}"
+  set -A infopath "$HOMEBREW_PREFIX/share/info" "${infopath[@]:-}"
+  export path
+  export manpath
+  export infopath
+}
+
+_rosetta_prompt() {
+  ### configure variable for p10k to display current rosetta mode
+  typeset -g prompt_arch
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+    prompt_rosettamode='arm64 (Native)';
+  else
+    prompt_rosettamode='x86_64 (Rosetta)';
+  fi
+}
+
+# prepend _rosetta_* to precmd functions (need to run *prior* to p10k precmd_functions)
+set -A precmd_functions _rosetta_switcher _rosetta_path _rosetta_prompt "${precmd_functions[@]:-}"
+
+# ---[ Prompt Configuration ]-------------------------------------------------
+# add arch to p10k
+prompt_rosettamode() {
+  p10k segment -f 250 -i '💻' -t "${prompt_rosettamode//\%/%%}"
+}
+instant_prompt_rosettamode() {prompt_rosettamode;}
+# hack prompt to show "rosettamode" at end of RIGHT_PROMPT_ELEMENTS
+# if specific location is required, modify ~/.p10k.zsh
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=rosettamode
+
+
+### ---[ Define key bindings ]-------------------------------------------------
+# completed above
+# source "$ZSH_CONFIG/lib/keybindings.zsh"
+
+# ---[ User Configuration ]---------------------------------------------------
 
 # Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
 # requires `sudo chown $(whoami) /etc/odbcinst.ini`
 if [[ -f /etc/odbcinst.ini ]]; then
   cat $HOMEBREW_PREFIX/etc/odbcinst.ini >! /etc/odbcinst.ini
-fi
-
-###########################################################
-###                 User configuration                  ###
-###########################################################
-### Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='nano'
-else
-  export EDITOR='code'
 fi
 
 ### >>> conda initialize >>>

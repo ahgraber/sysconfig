@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034 # don't warn for unused variables
 
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
 # shellcheck disable=SC2046
 set -- $(locale LC_MESSAGES)
 yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
@@ -74,7 +79,7 @@ for file in "${dotfiles[@]}"; do
   ln -sf "${ZSH_CONFIG}"/dotfiles/"${file}" "${HOME}"/."${file/z4h/zsh}"
 done
 
-# copy direnvrc
+# copy/link direnvrc
 if [[ ! -d "${HOME}/.config/direnv" ]]; then
   read -r -p "Create direnv config directory? (y/n)? [y] " direnv_select
   direnv_select=${direnv_select:-"y"}

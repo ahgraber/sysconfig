@@ -12,7 +12,7 @@ setopt append_history           # Add commands to HISTFILE in order of execution
 setopt extended_history         # Save timestamps & durations
 setopt no_share_history         # Do not share history between shells until shell exit; new shells share history pool
 
-# setopt hist_find_no_dups        # When searching for prior entries, do nto display duplicates of previously found line (even non-contiguous)
+# setopt hist_find_no_dups        # When searching for prior entries, do not display duplicates of previously found line (even non-contiguous)
 setopt hist_ignore_dups         # Do not enter new lines in history if duplicates of immediately prior command
 setopt hist_ignore_all_dups     # If new command duplicates older, remove older from history (even non-contiguous)
 setopt hist_expire_dups_first   # Delete duplicates first when HISTFILE size exceeds HISTSIZE

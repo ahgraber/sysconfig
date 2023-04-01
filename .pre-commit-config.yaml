@@ -135,3 +135,4 @@ repos:
     rev: v1.14.3
     hooks:
       - id: typos
+        args: []

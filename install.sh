@@ -74,6 +74,23 @@ for file in "${dotfiles[@]}"; do
   ln -sf "${ZSH_CONFIG}"/dotfiles/"${file}" "${HOME}"/."${file/z4h/zsh}"
 done
 
+# copy direnvrc
+if [[ ! -d "${HOME}/.config/direnv" ]]; then
+  read -r -p "Create direnv config directory? (y/n)? [y] " direnv_select
+  direnv_select=${direnv_select:-"y"}
+  if [[ "$direnv_select" =~ $yesexpr ]]; then
+    mkdir -p "${HOME}/.config/direnv"
+  fi
+fi
+if [[ -d "${HOME}/.config/direnv" ]]; then
+  # if exists as link, relink
+  [[ -L "${HOME}/.config/direnv/direnvrc" ]] && unlink "${HOME}/.config/direnv/direnvrc"
+  # if exists as file, back up
+  [[ -f "${HOME}/.config/direnv/direnvrc" ]] && mv "${ZSH_CONFIG}/dotfiles/direnvrc" "${HOME}/.config/direnv/direnvrc.$(date +%Y%m%d)"
+  # make link
+  ln -sf "${ZSH_CONFIG}/dotfiles/direnvrc" "${HOME}/.config/direnv/direnvrc"
+fi
+
 # copy git config files
 if [[ -f "${HOME}/.gitconfig" ]]; then
   mv "${HOME}/.gitconfig" "${HOME}/.gitconfig.$(date +%Y%m%d)"

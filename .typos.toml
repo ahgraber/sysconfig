@@ -5,3 +5,9 @@
 [default.extend-words]
 # Don't correct "iterm" or "iTerm"
 iterm = "iterm"
+
+[files]
+extend-exclude = [
+  ".typos.toml",
+  "*.sops.yaml"
+]

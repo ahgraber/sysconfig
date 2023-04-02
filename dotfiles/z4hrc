@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 
+# shellcheck shell=bash
+# shellcheck source=/dev/null
+
 ###-----------------------------------------------------------------------####
 # Personal Zsh configuration file.
 # Keep all shell customization and configuration

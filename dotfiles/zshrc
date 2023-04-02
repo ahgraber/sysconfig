@@ -1,4 +1,7 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
+
+# shellcheck shell=bash
+# shellcheck source=/dev/null
 
 # Clone zcomet if necessary
 if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then

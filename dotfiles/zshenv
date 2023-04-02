@@ -1,6 +1,9 @@
 ###########################################################
 ###                 zsh configuration                   ###
 ###########################################################
+# .zshenv is always sourced
+# use to define settings that should be available to other programs.
+
 setopt rcs  # `no_rcs` would disable all .z<file>s
 
 ### Ubuntu-specific: Don't run compinit in /etc/zshrc; run it later
@@ -12,6 +15,10 @@ export LANG=en_US.UTF-8
 
 ### Export environment variables.
 export GPG_TTY=$TTY
+export VISUAL=code
+export EDITOR=nano
+export PAGER=less
+export TERM="xterm-256color"
 
 MAILCHECK=-1  # Don't check for mail
 

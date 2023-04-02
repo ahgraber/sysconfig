@@ -1,8 +1,11 @@
 # zsh configuration
 
 This repo is designed to quickly implement an intelligent standard zsh configuration.
-In its default settings, it relies on [zsh4humans](https://github.com/romkatv/zsh4humans) with minor customization.
-Alternatively, alter the install script to use `zshrc` and `zshenv` which relies on [zcomet](https://github.com/agkozak/zcomet) for more granular control of your zsh environment.  These files should be considered _alpha_.
+In its default settings, it relies on [zsh4humans](https://github.com/romkatv/zsh4humans).
+
+Alternatively, alter the install script to use `zshrc` and `zshenv` which relies on
+[zcomet](https://github.com/agkozak/zcomet) for more granular control of your zsh environment.
+As these are not daily-driven, they are likely rough around the edges.
 
 > **Rosetta emulation** inherent in the z4hrc assumes/_requires_ `direnv` is installed in both native and emulated environments!
 >

@@ -1,0 +1,55 @@
+---
+version: "3"
+
+includes:
+  git:
+    taskfile: "./GitTasks.yaml"
+    internal: true
+
+vars:
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+  BIN_DIR: "/usr/local/bin"
+  GIT_DIR: "${HOME}/_git"
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task: get-pipx
+
+  get-pipx:
+    desc: Install most recent version of pipx
+    silent: true
+    deps:
+      - task: git:shlib
+    cmds:
+      - |
+        source shlib.sh && \
+        http_download {{.BIN_DIR}}/pipx https://github.com/pypa/pipx/releases/download/{{.PIPX_LATEST}}/pipx.pyz
+      - chmod +x {{.BIN_DIR}}/pipx
+      - pipx ensurepath
+    vars:
+      PIPX_LATEST: $(github_release pypa/pipx)
+
+  install:
+    desc: Install with pipx
+    silent: true
+    cmds:
+      - |
+        PACKAGES=({{.PACKAGES}})
+        for pkg in ${PACKAGES[@]}; do
+          pipx install "$pkg";
+        done;
+    vars:
+      PACKAGES: |
+        ansible
+        black
+        pre-commit
+        ruff
+
+  upgrade:
+    desc: Update all packages managed with pipx
+    silent: true
+    cmds:
+      - pipx upgrade-all

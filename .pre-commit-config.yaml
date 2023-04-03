@@ -133,5 +133,7 @@ repos:
         exclude: |
           (?x)^(
             ^.*(typos\.toml)$ |
-            ^.*(\.sops\.yaml)$
+            ^.*(\.sops\.yaml)$ |
+            ^.*(\.terminal)$ |
+            ^.*(macos).*(settings\.sh)$
           )$

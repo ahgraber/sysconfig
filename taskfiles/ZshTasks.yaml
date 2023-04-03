@@ -1,0 +1,27 @@
+---
+version: "3"
+
+# includes:
+#   git:
+#     taskfile: "./GitTasks.yaml"
+#     internal: true
+
+vars:
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+  BIN_DIR: "/usr/local/bin"
+  GIT_DIR: "${HOME}/_git"
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task:compinit
+
+  compinit:
+    desc: Enable zsh and bash autocompletions
+    silent: true
+    cmds:
+      - grep -q "autoload -U compinit" ~/.zshrc || echo "autoload -U compinit" >> ~/.zshrc
+      - grep -q "autoload -U bashcompinit" ~/.zshrc || echo "autoload -U bashcompinit" >> ~/.zshrc
+      - grep -q "compinit -i" ~/.zshrc || echo "compinit -i" >> ~/.zshrc

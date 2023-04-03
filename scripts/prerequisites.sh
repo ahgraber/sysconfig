@@ -33,7 +33,8 @@ fi
 [[ -n $(command -v fd) ]] || brew install fd
 [[ -n $(command -v git) ]] || brew install git
 [[ -n $(command -v jq) ]] || brew install jq
-[[ -n $(command -v jq) ]] || brew install vivid
+[[ -n $(command -v vivid) ]] || brew install vivid
+[[ -n $(command -v yq) ]] || brew install yq
 # [[ -n $(command -v zsh) ]] || brew install zsh
 
 # install fonts

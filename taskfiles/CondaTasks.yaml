@@ -1,0 +1,39 @@
+---
+version: "3"
+
+vars:
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+  SCRIPTS_DIR: "{{.PROJECT_DIR}}/scripts"
+
+# env:
+#   KUBECONFIG: "{{.PROJECT_DIR}}/kubeconfig"
+
+includes:
+  git:
+    taskfile: "../.taskfiles/GitTasks.yaml"
+    internal: true
+
+tasks:
+  # default:
+  #   silent: true
+  #   cmds:
+  #     - ...
+
+  install:
+    desc: Install mambaforge
+    silent: true
+    cmds:
+      - curl -L -O https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh
+      - bash Mambaforge-$(uname)-$(uname -m).sh -b -f -p $HOME/mambaforge
+      - rm Mambaforge-$(uname)-$(uname -m).sh
+
+  env create:
+    desc: Create a new conda environment
+    summary: |
+      Create a new conda environment with optional Python version and packages or from an environment.yaml file
+      Usage: conda_env_create -n <env_name> [-p <python_version>] [-l <package list>] | [-r <environment_yaml>]
+      Note: <package list> should be quoted and space-delimited or comma delimited
+    silent: true
+    cmds:
+      - bash {{.SCRIPTS_DIR}}/conda_env_create.sh {{.CLI_ARGS}}

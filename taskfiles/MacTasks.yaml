@@ -1,0 +1,100 @@
+---
+version: "3"
+
+vars:
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+  SCRIPTS_DIR: "{{.PROJECT_DIR}}/scripts"
+
+# env:
+#   KUBECONFIG: "{{.PROJECT_DIR}}/kubeconfig"
+
+includes:
+  git:
+    taskfile: "../.taskfiles/GitTasks.yaml"
+    internal: true
+  pipx:
+    taskfile: "../.taskfiles/PipxTasks.yaml"
+    internal: true
+  zsh:
+    taskfile: "../.taskfiles/ZshTasks.yaml"
+    internal: true
+  # standard:
+  #   taskfile: "../.taskfiles/StandardTasks.yaml"
+  #   aliases: [std]
+  #   internal: true
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task: xcode-tools
+      - task: rosetta
+      - task: task git:create-git-dir
+      - task: task git:shlib
+      # - task: task git:setup-config
+      - task: fonts
+      - task: user-settings
+      - task: system-settings
+      - task: quicklook
+      - task: onedrive
+
+  xcode-tools:
+    desc: Ensure xcode command line tools are installed
+    silent: true
+    cmds:
+      - |
+        check_xcode() { xcode-select -p 2>&1; }
+        err_msg="xcode-select: error:"
+        if [[ $(check_xcode) == *"$err_msg"* ]]; then
+          echo "Installing xcode ..."
+          xcode-select --install
+          while [[ $(check_xcode) == *"$err_msg"* ]]; do sleep 10; done;
+        else
+          echo "Xcode already installed. Skipping."
+        fi
+
+  rosetta:
+    desc: Ensure Rosetta x86 compatibility layer is installed
+    silent: true
+    cmds:
+      - |
+        if [[ "$(arch)" == "arm64" ]] && [[ ! -f /Library/Apple/usr/share/rosetta/rosetta ]]; then
+          echo "Installing Rosetta2 compatibility layer"
+          softwareupdate --install-rosetta --agree-to-license
+          while [[ ! "$(pkgutil --pkgs | grep Rosetta)" == "com.apple.pkg.RosettaUpdateAuto" ]]; do sleep 10; done;
+        else
+          echo "Rosetta2 already installed. Skipping."
+        fi
+
+  fonts:
+    desc: Install font files
+    silent: true
+    cmds:
+      - cp {{.PROJECT_DIR}}/fonts/*.ttf "$HOME/Library/Fonts"
+
+  user-settings:
+    desc: Run user settings configuration script
+    silent: true
+    cmds:
+      - bash {{.SCRIPTS_DIR}}/macos_user_settings.sh
+
+  system-settings:
+    desc: Run system settings configuration script
+    silent: true
+    cmds:
+      - sudo bash {{.SCRIPTS_DIR}}/macos_system_settings.sh
+
+  quicklook:
+    desc: Allow any user-added quicklook plugins
+    silent: true
+    cmds:
+      - for quicklook in "$HOME"/Library/QuickLook/*.qlgenerator; do xattr -cr "$quicklook"; done
+      - qlmanage -r > /dev/null
+      - qlmanage -r cache > /dev/null
+
+  onedrive:
+    desc: This will back up your current ~/Desktop and ~/Documents folders and replace with links to OneDrive locations
+    silent: true
+    cmds:
+      - bash {{.SCRIPTS_DIR}}/symlink_onedrive.sh

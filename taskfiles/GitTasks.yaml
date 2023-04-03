@@ -1,0 +1,48 @@
+---
+version: "3"
+
+vars:
+  GIT_DIR: "${HOME}/_git"
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+  SCRIPTS_DIR: "{{.PROJECT_DIR}}/scripts"
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task: create-git-dir
+
+  create-git-dir:
+    desc: Ensure standard "_git" directory exists
+    silent: true
+    cmds:
+      - mkdir -p "${HOME}/_git"
+
+  clone-update:
+    desc: Clone or update
+    silent: true
+    cmds:
+      - bash {{.SCRIPTS_DIR}}/git_clone_update.sh {{.CLI_ARGS}}
+
+  branch-clean:
+    desc: Remove local branches not present in origin
+    silent: true
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      # - "{{.SCRIPTS_DIR}}/branch_clean.sh {{.CLI_ARGS | default '-d'}"
+      - |
+        git fetch;
+        git remote prune origin;
+        git branch -vv |                                # list local branches : remote branches & tracking status
+        grep ': gone]' |                                # filter to local branches that have been deleted on remote
+        grep -v "\*" |                                  # exclude branches that have "*", indicating incomplete merge
+        awk '{ print $1 }' |                            # extract the branch name
+        xargs git branch {{.CLI_ARGS | default "-d"}}   # delete branch with -d (or -D if specified in call
+
+  sync:
+    desc: Sync current repo with upstream
+    # silent: true
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - git fetch -p && git pull

@@ -2,6 +2,7 @@
 
 # shellcheck shell=bash
 # shellcheck source=/dev/null
+# shellcheck disable=SC2034,SC2154,SC2317
 
 ###-----------------------------------------------------------------------####
 # Personal Zsh configuration file.
@@ -35,6 +36,7 @@ zstyle ':z4h:autosuggestions'                 forward-char      'partial-accept'
 zstyle ':z4h:autosuggestions'                 end-of-line       'partial-accept'
 
 ### Completion settings
+# shellcheck disable=SC2086,SC2296
 zstyle ':completion:*'                        list-colors       ${(s.:.)LS_COLORS}
 zstyle ':completion:*'                        sort              false
 zstyle ':completion:*:ls:*'                   list-dirs-first   true
@@ -72,18 +74,12 @@ z4h install conda-incubator/conda-zsh-completion || return
 # perform network I/O must be done above. Everything else is best done below.
 z4h init || return
 
-# ---[ Set shell options ]----------------------------------------------------
-### Ref: http://zsh.sourceforge.net/Doc/Release/Options.html.
-setopt no_clobber               # Force using `>!` to truncate / overwrite an existing file
-setopt no_mail_warning          # Don't print warning if mail
-setopt glob_dots                # no special treatment for file names with a leading dot
-setopt glob_star_short          # ** only match directories
-setopt no_auto_menu             # require an extra TAB press to open the completion menu
-setopt always_to_end            # when completing from the middle of a word, move the cursor to the end of the word
-setopt mark_dirs                # append trailing slash '/' to directory names resulting from globbing
-setopt auto_param_slash         # if completed parameter is dir, add trailing slash
-setopt rc_quotes                # enables parsing of quoted strings in .zshrc files
+#--- set VIDs (Very Important Dirs) ------------------------------------------
+SYS_CONFIG="${SYS_CONFIG:-"$HOME/_sysconfig"}" && export SYS_CONFIG
+ZSH_CONFIG="${ZSH_CONFIG:-"$SYS_CONFIG/dotfiles/zsh"}" && export ZSH_CONFIG
 
+# ---[ Set shell options ]----------------------------------------------------
+z4h source "$ZSH_CONFIG"/config/options.zsh
 
 # ---[ Path Configuration ]---------------------------------------------------
 ### -U means "unique" -- i.e., deduplicate
@@ -106,6 +102,9 @@ base_path=("${path[@]}")
 prefix_path=(.)
 
 ### Higher priorities are higher in this section
+# config
+prefix_path=("${prefix_path[@]:-}" "$SYS_CONFIG/bin")
+
 # pipx
 [[ -n "$(command -v pipx)" ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.local/bin")
 
@@ -121,6 +120,10 @@ prefix_path=(.)
 
 set -A path "${prefix_path[@]}" "${path[@]}"
 export path
+
+typeset -U fpath
+fpath=("${fpath[@]:-}" "$ZSH_CONFIG/completions")
+export fpath
 
 # ---[ Load/Source additional plugins/files ]---------------------------------
 ### load a plugin
@@ -138,8 +141,8 @@ z4h source "${HOME}/.aliases.local"
 #   done
 # fi
 
-[[ -n "$(command -v thefuck)" ]] && eval $(thefuck --alias)
-[[ -n "$(command -v vivid)" ]] && export LS_COLORS="$(vivid generate one-dark)"
+[[ -n "$(command -v thefuck)" ]] && eval "$(thefuck --alias)"
+[[ -n "$(command -v vivid)" ]] && LS_COLORS="$(vivid generate one-dark)" && export LS_COLORS
 
 z4h load -c esc/conda-zsh-completion
 z4h load -c ohmyzsh/ohmyzsh/plugins/gitfast            # git completions
@@ -148,16 +151,15 @@ z4h load -c ohmyzsh/ohmyzsh/plugins/safe-paste         # prevent pasted code fro
 
 ### load local functions
 ### 'fzf' will detect based on filename + underscore (try 'conda_' + TAB)
-z4h source -c "$HOME/.zshconfig/functions/clipboard.zsh"
-# z4h source -c "$HOME/.zshconfig/functions/conda.zsh"
+z4h source -c "$ZSH_CONFIG/functions/clipboard.zsh"
 
-# z4h source -c "$HOME/.zshconfig/lib/corrections.zsh"
+# z4h source -c "$HOME/.ZSH_CONFIG/config/corrections.zsh"
 
 ### Autoload functions.
 autoload -Uz zmv
 
 ### Define functions and completions.
-function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
+md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" || return; }
 compdef _directories md
 compdef _default open
 
@@ -165,7 +167,6 @@ compdef _default open
 export GPG_TTY=$TTY
 export LANG=en_US.UTF-8
 export PAGER=less
-export ZSH_CONFIG="${HOME}/.zshconfig"
 export HOMEBREW_NO_ANALYTICS=1
 
 # # unixodbc
@@ -179,6 +180,7 @@ export HOMEBREW_NO_ANALYTICS=1
 # ---[ Rosetta Emulation ]----------------------------------------------------
 ### !! NOTE: This assumes that 'homebrew' is installed for both native and rosetta modes !!
 ### !!       And cant take advantage 'direnv' for directory-based architecture specification
+# TODO: move to separate binfile
 native() {
   ### restart zsh process with arm64 (native) architecture
   if [[ $(sysctl -n sysctl.proc_translated) -eq 1 ]]; then
@@ -196,6 +198,7 @@ rosetta() {
 
 _rosetta_switcher() {
   ### allows direnv-based architecture determination by monitoring ROSETTA_MODE
+  # inspired by: https://hynek.me/til/automatic-rosetta-fish-direnv/
   if [[ -n "$ROSETTA_MODE" && "$ROSETTA_MODE" -eq 0 ]]; then
     native
   elif [[ -n "$ROSETTA_MODE" && "$ROSETTA_MODE" -eq 1 ]]; then
@@ -235,7 +238,7 @@ _rosetta_path() {
 
 _rosetta_prompt() {
   ### configure variable for p10k to display current rosetta mode
-  typeset -g prompt_arch
+  typeset -g prompt_rosettamode
   if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
     prompt_rosettamode='arm64 (Native)';
   else
@@ -251,7 +254,7 @@ set -A precmd_functions _rosetta_switcher _rosetta_path _rosetta_prompt "${precm
 prompt_rosettamode() {
   p10k segment -f 250 -i '💻' -t "${prompt_rosettamode//\%/%%}"
 }
-instant_prompt_rosettamode() {prompt_rosettamode;}
+instant_prompt_rosettamode() { prompt_rosettamode; }
 # hack prompt to show "rosettamode" at end of RIGHT_PROMPT_ELEMENTS
 # if specific location is required, modify ~/.p10k.zsh
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=rosettamode
@@ -261,7 +264,6 @@ POSTEDIT=$'\n\n\e[2A'
 
 ### make transient prompt work consistently when closing an SSH connection
 z4h bindkey z4h-eof             Ctrl+D
-setopt ignore_eof
 
 ### ---[ Define key bindings ]-------------------------------------------------
 ### For default keybindings, see
@@ -310,28 +312,30 @@ z4h bindkey z4h-cd-down         Shift+Down   # cd into a child directory
 # Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
 # requires `sudo chown $(whoami) /etc/odbcinst.ini`
 if [[ -f /etc/odbcinst.ini ]]; then
-  cat $HOMEBREW_PREFIX/etc/odbcinst.ini >! /etc/odbcinst.ini
+  cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
 fi
 
-### >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$("${HOME}/mambaforge/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "${HOME}/mambaforge/etc/profile.d/conda.sh" ]; then
-        . "${HOME}/mambaforge/etc/profile.d/conda.sh"  # commented out by conda initialize
-        # CONDA_CHANGEPS1=false conda activate base
-    else
-        export PATH="${HOME}/mambaforge/bin:$PATH"
-    fi
-fi
-unset __conda_setup
+source "$ZSH_CONFIG"/config/conda.zsh
+# ### >>> conda initialize >>>
+# # !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$("${HOME}/mambaforge/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
+# # shellcheck disable=SC2181
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "${HOME}/mambaforge/etc/profile.d/conda.sh" ]; then
+#         . "${HOME}/mambaforge/etc/profile.d/conda.sh"  # commented out by conda initialize
+#         # CONDA_CHANGEPS1=false conda activate base
+#     else
+#         export PATH="${HOME}/mambaforge/bin:$PATH"
+#     fi
+# fi
+# unset __conda_setup
 
-if [ -f "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh" ]; then
-    . "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh"  # commented out by conda initialize
-fi
-### <<< conda initialize <<<
+# if [ -f "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh" ]; then
+#     . "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh"  # commented out by conda initialize
+# fi
+# ### <<< conda initialize <<<
 
 
 ### uncomment to enable startup profiling

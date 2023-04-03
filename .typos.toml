@@ -9,5 +9,7 @@ iterm = "iterm"
 [files]
 extend-exclude = [
   ".typos.toml",
-  "*.sops.yaml"
+  "*.sops.yaml",
+  "*.terminal",
+  "macos_*_settings.sh"
 ]

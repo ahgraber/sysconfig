@@ -5,10 +5,10 @@ In its default settings, it relies on [zsh4humans](https://github.com/romkatv/zs
 
 Alternatively, alter the install script to use `zshrc` and `zshenv` which relies on
 [zcomet](https://github.com/agkozak/zcomet) for more granular control of your zsh environment.
-As these are not daily-driven, they are likely rough around the edges.
+As these are not daily-driven, they are likely rough around the edges.  For further reference, see [minimal zcomet config](https://github.com/romkatv/zsh-bench/tree/master/configs/zcomet/skel)
 
 > **Rosetta emulation** inherent in the z4hrc assumes/_requires_ `direnv` is installed in both native and emulated environments!
->
+> [ref](https://www.roguelynn.com/words/m1-dev-setup/)
 
 ## Quickstart
 

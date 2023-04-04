@@ -14,7 +14,7 @@ includes:
     taskfile: "./FontTasks.yaml"
     internal: true
   # standard:
-  #   taskfile: "../.taskfiles/StandardTasks.yaml"
+  #   taskfile: "../taskfiles/StandardTasks.yaml"
   #   aliases: [std]
   #   internal: true
 

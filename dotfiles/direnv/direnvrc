@@ -14,7 +14,7 @@ _rosetta() {
   ### set env var for _rosetta_switcher() function in .zshrc to pick up on
   if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
     export ROSETTA_MODE=1
-    # echo "Entering Rosetta mode..."
+    # echo "Entering Rosetta ..."
     # exec /usr/bin/arch -x86_64 /bin/zsh
   fi
 }

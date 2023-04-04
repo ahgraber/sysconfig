@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
+# shellcheck disable=SC2046
+set -- $(locale LC_MESSAGES)
+yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
+
+tell "This will remove all untagged local images."
+ask "Do you want to continue? (y/n)? [y] "
+read -r select
+if [[ "$select" =~ $yesexpr ]]; then
+  if [[ -n "$(command -v docker)" ]]; then
+    docker rmi "$(docker images | grep "^<none>" | awk "{print $3}")"
+  else
+    yell "Error: Docker not found!"
+    exit 1
+  fi
+fi

@@ -1,4 +1,4 @@
-# zsh configuration
+# System Configuration
 
 This repo is designed to quickly implement an intelligent standard zsh configuration.
 In its default settings, it relies on [zsh4humans](https://github.com/romkatv/zsh4humans).

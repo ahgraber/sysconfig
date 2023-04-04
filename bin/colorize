@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+# set -o nounset
+set -o pipefail
+# set -o xtrace
+
+usage () {
+  cat <<EOF
+Usage: $(basename "${BASH_SOURCE[0]}") [<color> <text>] [-h | --help ] [--show]
+
+  Colorize requested text with 'printf'.
+  Note: $(basename "${BASH_SOURCE[0]}") does not add a newline at the end (i.e., it acts as standard 'printf')
+
+Options:
+  color:            red, yellow, green, cyan, blue, purple, black, white, gray/grey
+  -h | --help       show this help and exit
+  --show            print sample of color options
+
+Example: '$(basename "${BASH_SOURCE[0]}") "blue" "I'm blue da ba dee da ba daa.\n"'
+EOF
+  exit
+}
+
+color="$1"
+text="$2"
+
+NC='\033[0m' # No Color
+BLACK='\033[0;30m'
+GRAY='\033[1;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;96m'
+WHITE='\033[1;97m'
+
+black() { printf "%b" "${BLACK}${1}${NC}"; }
+red() { printf "%b" "${RED}${1}${NC}"; }
+green() { printf "%b" "${GREEN}${1}${NC}"; }
+yellow() { printf "%b" "${YELLOW}${1}${NC}"; }
+blue() { printf "%b" "${BLUE}${1}${NC}"; }
+purple() { printf "%b" "${PURPLE}${1}${NC}"; }
+cyan() { printf "%b" "${CYAN}${1}${NC}"; }
+white() { printf "%b" "${WHITE}${1}${NC}"; }
+
+[[ -z "$color" ]] && usage
+case $color in
+  "-h" | "--help") usage ;;
+  "--show")
+    for _color in red yellow green cyan blue purple black white; do
+      printf "%s" "$(basename "${BASH_SOURCE[0]}"): "
+      eval "${_color} '\"${_color}\" \"The quick brown fox jumps over the lazy dog.\\\n\"\n'"
+    done
+    ;;
+  "black") black "${text}" ;;
+  "gray"|"grey") gray "${text}" ;;
+  "red") red "${text}" ;;
+  "green") green "${text}" ;;
+  "yellow") yellow "${text}" ;;
+  "blue") blue "${text}" ;;
+  "purple") purple "${text}" ;;
+  "cyan") cyan "${text}" ;;
+  "white") white "${text}" ;;
+  *) printf "%b" "${text}" ;;
+esac

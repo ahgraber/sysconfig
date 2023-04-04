@@ -32,8 +32,7 @@ report/
 *pytest*
 *cache*
 
-bin
-completions/*
+**/completions/*
 *.zwc
 
 # retain files

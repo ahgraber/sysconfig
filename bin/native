@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
+# shellcheck disable=SC2046
+set -- $(locale LC_MESSAGES)
+yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
+
+if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 1 ]]; then
+    warn "Entering Native mode ..."
+    # restart zsh process with arm64 (native) architecture
+    exec /usr/bin/arch -arm64 /bin/zsh
+  fi
+else
+  warn "This system is not running an Apple M-series processor; $0 is not a valid command"
+  exit 1
+fi

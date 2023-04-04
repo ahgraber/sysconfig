@@ -85,7 +85,7 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:*:-command-:*:*' group-order alias builtins functions commands
 
-# Don't complete uninteresting users...
+# Don't complete uninteresting ...
 zstyle ':completion:*:*:*:users' ignored-patterns \
   adm amanda apache avahi beaglidx bin cacti canna clamav daemon \
   dbus distcache dovecot fax ftp games gdm gkrellmd gopher \

@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-
 # ref: https://github.com/mathiasbynens/dotfiles/blob/master/.macos
 
 set -o errexit
 set -o nounset
 set -o pipefail
 
-echo "Applying macOS user settings..."
+tell "Applying macOS user ..."
 
 # Close any open System Preferences panes, to prevent them from overriding
 # settings we're about to change
@@ -14,7 +13,7 @@ osascript -e 'tell application "System Preferences" to quit'
 
 # Warn that some commands will not be run if the script is not run as root.
 if [[ $EUID -eq 0 ]]; then
-  printf "Running as root may prevent certain customization from apply to your user profile\n" | fold -s -w 120
+  warn "Running as root may prevent certain customization from apply to your user profile"
 fi
 
 
@@ -590,4 +589,4 @@ if [[ ! ($* == *--no-restart*) ]]; then
   done
 fi
 
-printf "Please log out and log back in to make all settings take effect.\n"
+tell "Please log out and log back in to make all settings take effect."

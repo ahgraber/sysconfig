@@ -6,7 +6,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-echo "Applying macOS system settings..."
+tell "Applying macOS system ..."
 
 # Close any open System Preferences panes, to prevent them from overriding
 # settings we're about to change
@@ -15,9 +15,9 @@ osascript -e 'tell application "System Preferences" to quit'
 # Warn that some commands will not be run if the script is not run as root.
 if [[ $EUID -ne 0 ]]; then
   RUN_AS_ROOT=false
-  printf "Certain commands will not be run without sudo privileges.\n"
-  printf "To run as root, run the same command prepended with 'sudo', for example:"
-  printf "$ sudo %s\n\n" "$0"
+  warn "Certain commands will not be run without sudo privileges."
+  warn "To run as root, run the same command prepended with 'sudo', for example:"
+  warn "$ sudo %s\n\n" "$0"
 else
   RUN_AS_ROOT=true
   # Update existing `sudo` timestamp until `.osx` has finished
@@ -98,4 +98,4 @@ if [[ ! ($* == *--no-restart*) ]]; then
   done
 fi
 
-printf "Please log out and log back in to make all settings take effect.\n"
+tell "Please log out and log back in to make all settings take effect."

@@ -74,9 +74,14 @@ z4h install conda-incubator/conda-zsh-completion || return
 # perform network I/O must be done above. Everything else is best done below.
 z4h init || return
 
-#--- set VIDs (Very Important Dirs) ------------------------------------------
-SYS_CONFIG="${SYS_CONFIG:-"$HOME/_sysconfig"}" && export SYS_CONFIG
-ZSH_CONFIG="${ZSH_CONFIG:-"$SYS_CONFIG/dotfiles/zsh"}" && export ZSH_CONFIG
+#--- set VIVs (Very Important Vars) ------------------------------------------
+# get absolute path for .zshrc and set ZSH_CONFIG dir
+ZSHRC="$(readlink "$HOME/.zshrc")" # && export ZSHRC
+ZSH_CONFIG="${ZSH_CONFIG:-$(dirname "$ZSHRC")}" && export ZSH_CONFIG
+
+# find sysconfig project dir
+# SYS_CONFIG="${SYS_CONFIG:-"$HOME"/_sysconfig}" && export SYS_CONFIG
+SYS_CONFIG="$("$ZSH_CONFIG"/functions/get_project_dir.sh "$ZSHRC")" && export SYS_CONFIG
 
 # ---[ Set shell options ]----------------------------------------------------
 z4h source "$ZSH_CONFIG"/config/options.zsh
@@ -124,6 +129,9 @@ export path
 typeset -U fpath
 fpath=("${fpath[@]:-}" "$ZSH_CONFIG/completions")
 export fpath
+autoload -U compinit
+compinit -i
+
 
 # ---[ Load/Source additional plugins/files ]---------------------------------
 ### load a plugin
@@ -181,20 +189,20 @@ export HOMEBREW_NO_ANALYTICS=1
 ### !! NOTE: This assumes that 'homebrew' is installed for both native and rosetta modes !!
 ### !!       And cant take advantage 'direnv' for directory-based architecture specification
 # TODO: move to separate binfile
-native() {
-  ### restart zsh process with arm64 (native) architecture
-  if [[ $(sysctl -n sysctl.proc_translated) -eq 1 ]]; then
-    echo "Entering Native mode..."
-    exec /usr/bin/arch -arm64 /bin/zsh
-  fi
-}
-rosetta() {
-  ### restart zsh process with x86_64 (rosetta/emulated) architecture
-  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
-    echo "Entering Rosetta mode..."
-    exec /usr/bin/arch -x86_64 /bin/zsh
-  fi
-}
+# native() {
+#   ### restart zsh process with arm64 (native) architecture
+#   if [[ $(sysctl -n sysctl.proc_translated) -eq 1 ]]; then
+#     echo "Entering Native mode ..."
+#     exec /usr/bin/arch -arm64 /bin/zsh
+#   fi
+# }
+# rosetta() {
+#   ### restart zsh process with x86_64 (rosetta/emulated) architecture
+#   if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+#     echo "Entering Rosetta mode ..."
+#     exec /usr/bin/arch -x86_64 /bin/zsh
+#   fi
+# }
 
 _rosetta_switcher() {
   ### allows direnv-based architecture determination by monitoring ROSETTA_MODE

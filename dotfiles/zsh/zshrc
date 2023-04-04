@@ -167,14 +167,14 @@ fi
 native() {
   ### restart zsh process with arm64 (native) architecture
   if [[ $(sysctl -n sysctl.proc_translated) -eq 1 ]]; then
-    echo "Entering Native mode..."
+    echo "Entering Native ..."
     exec /usr/bin/arch -arm64 /bin/zsh
   fi
 }
 rosetta() {
   ### restart zsh process with x86_64 (rosetta/emulated) architecture
   if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
-    echo "Entering Rosetta mode..."
+    echo "Entering Rosetta ..."
     exec /usr/bin/arch -x86_64 /bin/zsh
   fi
 }

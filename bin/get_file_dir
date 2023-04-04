@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
+# shellcheck disable=SC2046
+set -- $(locale LC_MESSAGES)
+yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
+
+# get parent dir if file or use dir if dir
+if [[ -d "$1" ]]; then
+  tell "$1"
+elif [[ -f "$1" ]]; then
+  dirname "$1"
+else
+  yell "Error: '$1' not detected as file or directory"
+  exit 1
+fi

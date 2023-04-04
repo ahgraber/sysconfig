@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
+# read from CLI
+PYCLEAN_PLACE="${1:-.}"
+
+# shellcheck disable=SC2046
+set -- $(locale LC_MESSAGES)
+yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
+
+tell "This will remove python compiled byte-code and mypy/pytest cache from $(realpath "$PYCLEAN_PLACE")."
+ask "Do you want to continue? (y/n)? [y] "
+read -r select
+if [[ "$select" =~ $yesexpr ]]; then
+  find "$PYCLEAN_PLACE" -type f -name "*.py[co]" -delete
+  find "$PYCLEAN_PLACE" -type d -name "__pycache__" -delete
+  find "$PYCLEAN_PLACE" -depth -type d -name ".mypy_cache" -exec rm -r "{}" +
+  find "$PYCLEAN_PLACE" -depth -type d -name ".pytest_cache" -exec rm -r "{}" +
+fi

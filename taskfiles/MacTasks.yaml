@@ -11,16 +11,16 @@ vars:
 
 includes:
   git:
-    taskfile: "../.taskfiles/GitTasks.yaml"
+    taskfile: "../taskfiles/GitTasks.yaml"
     internal: true
   pipx:
-    taskfile: "../.taskfiles/PipxTasks.yaml"
+    taskfile: "../taskfiles/PipxTasks.yaml"
     internal: true
   zsh:
-    taskfile: "../.taskfiles/ZshTasks.yaml"
+    taskfile: "../taskfiles/ZshTasks.yaml"
     internal: true
   # standard:
-  #   taskfile: "../.taskfiles/StandardTasks.yaml"
+  #   taskfile: "../taskfiles/StandardTasks.yaml"
   #   aliases: [std]
   #   internal: true
 

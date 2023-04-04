@@ -3,20 +3,20 @@ version: "3"
 
 includes:
   git:
-    taskfile: "./.taskfiles/GitTasks.yaml"
+    taskfile: "./taskfiles/GitTasks.yaml"
     # internal: true
   pipx:
-    taskfile: "./.taskfiles/PipxTasks.yaml"
+    taskfile: "./taskfiles/PipxTasks.yaml"
     # internal: true
   standard:
-    taskfile: "./.taskfiles/SetupTasks.yaml"
+    taskfile: "./taskfiles/SetupTasks.yaml"
     aliases: [std]
   zsh:
-    taskfile: "./.taskfiles/ZshTasks.yaml"
+    taskfile: "./taskfiles/ZshTasks.yaml"
     # internal: true
   ### os-specific
   mac:
-    taskfile: "./mac/SetupTasks.yaml"
+    taskfile: "./taskfiles/MacTasks.yaml"
     # internal: true
 
 # env:

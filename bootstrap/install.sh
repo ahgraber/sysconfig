@@ -87,6 +87,13 @@ read -r SYS_CONFIG
 SYS_CONFIG="${SYS_CONFIG:-"$HOME/_sysconfig"}" && export SYS_CONFIG
 ZSH_CONFIG="${ZSH_CONFIG:-"$SYS_CONFIG/dotfiles/zsh"}" && export ZSH_CONFIG
 
+# save SYS_CONFIG and ZSH_CONFIG to ~/.env
+touch "$HOME/.env"
+sed -i.bak '/^export SYS_CONFIG/d' "$HOME/.env" && rm -f "$HOME/.env.bak"
+echo "export SYS_CONFIG='$SYS_CONFIG'" >> "$HOME/.env"
+sed -i.bak '/^export ZSH_CONFIG/d' "$HOME/.env" && rm -f "$HOME/.env.bak"
+echo "export ZSH_CONFIG='$ZSH_CONFIG'" >> "$HOME/.env"
+
 # check for SYS_CONFIG
 if [[ ! -d "$SYS_CONFIG" ]]; then
   tell "Cloning into $SYS_CONFIG"

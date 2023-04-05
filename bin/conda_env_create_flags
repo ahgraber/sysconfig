@@ -6,7 +6,7 @@ set -o pipefail
 
 usage() {
   cat <<EOF
-Usage: $(basename "${BASH_SOURCE[0]}") [-h] -n ENV_NAME [ [-p VERSION] [-l PACKAGES] | -y FILE ]
+Usage: $(basename "$0")") [-h] -n ENV_NAME [ [-p VERSION] [-l PACKAGES] | -y FILE ]
 Create a new conda ENV_NAME with optional Python version and packages.
 
 Options:
@@ -18,7 +18,7 @@ Options:
                         or commas '-l pandas,numpy'
   -y FILE               Path to environment.yaml to install packages (optional).
 
-Example: $(basename "${BASH_SOURCE[0]}") -n myenv -p 3.10.* -l 'numpy pandas'
+Example: $(basename "$0")") -n myenv -p 3.10.* -l 'numpy pandas'
 EOF
 return 1
 }

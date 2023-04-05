@@ -8,17 +8,17 @@ set -o pipefail
 
 usage () {
   cat <<EOF
-Usage: $(basename "${BASH_SOURCE[0]}") [<color> <text>] [-h | --help ] [--show]
+Usage: $(basename "$0") [-h | --help ] [--show] <color> <text>
 
   Colorize requested text with 'printf'.
-  Note: $(basename "${BASH_SOURCE[0]}") does not add a newline at the end (i.e., it acts as standard 'printf')
+  Note: $(basename "$0")") does not add a newline at the end (i.e., it acts as standard 'printf')
 
 Options:
-  color:            red, yellow, green, cyan, blue, purple, black, white, gray/grey
+  color             red, yellow, green, cyan, blue, purple, black, white, gray/grey
   -h | --help       show this help and exit
   --show            print sample of color options
 
-Example: '$(basename "${BASH_SOURCE[0]}") "blue" "I'm blue da ba dee da ba daa.\n"'
+Example: '$(basename "$0") "blue" "I'm blue da ba dee da ba daa.\n"'
 EOF
   exit
 }
@@ -51,7 +51,7 @@ case $color in
   "-h" | "--help") usage ;;
   "--show")
     for _color in red yellow green cyan blue purple black white; do
-      printf "%s" "$(basename "${BASH_SOURCE[0]}"): "
+      printf "%s" "$(basename "$0"): "
       eval "${_color} '\"${_color}\" \"The quick brown fox jumps over the lazy dog.\\\n\"\n'"
     done
     ;;

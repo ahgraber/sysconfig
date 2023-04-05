@@ -6,8 +6,17 @@ set -o errexit
 set -o pipefail
 # set -o xtrace
 
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <text>
+  Print $(colorize red 'red text') with newline and redirect to stderr.  Intended as error message.
+EOF
+  exit
+}
+[[ -z "$1" ]] && usage
+
 if [[ -n "$(command -v fold)" ]]; then
-  >&2 colorize red "${1}\n" | fold -s -w 120  # redirect to stderr
+  >&2 colorize red "${1}\n" | fold -s -w 120
 else
-  >&2 colorize red "${1}\n"  # redirect to stderr
+  >&2 colorize red "${1}\n"
 fi

@@ -8,23 +8,26 @@ set -o pipefail
 
 usage () {
   cat << EOF
-Usage: $(basename "$0") <path>
-  Return directory if path is dir; parent directory if path is file
+Usage: $(basename "$0") <response>
+  Return true if response is affirmative
 EOF
   exit
 }
 [[ -z "$1" ]] && usage
 
+RESPONSE="$1"
+# echo "$RESPONSE"
+
 # shellcheck disable=SC2046
 set -- $(locale LC_MESSAGES)
 yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
 
-# get parent dir if file or use dir if dir
-if [[ -d "$1" ]]; then
-  tell "$1"
-elif [[ -f "$1" ]]; then
-  dirname "$1"
+# if affirmative response, return 0, else return 1
+# use like '[[ $(is_yes "$response") ]] && ...'
+if [[ "$RESPONSE" =~ $yesexpr || "$RESPONSE" =~ $yesword ]]; then
+  # echo "0"
+  exit 0
 else
-  yell "Error: '$1' not detected as file or directory"
+  # echo "1"
   exit 1
 fi

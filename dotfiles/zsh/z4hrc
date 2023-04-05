@@ -75,13 +75,17 @@ z4h install conda-incubator/conda-zsh-completion || return
 z4h init || return
 
 #--- set VIVs (Very Important Vars) ------------------------------------------
+z4h source "${HOME}/.env"
+
 # get absolute path for .zshrc and set ZSH_CONFIG dir
 ZSHRC="$(readlink "$HOME/.zshrc")" # && export ZSHRC
 ZSH_CONFIG="${ZSH_CONFIG:-$(dirname "$ZSHRC")}" && export ZSH_CONFIG
 
 # find sysconfig project dir
 # SYS_CONFIG="${SYS_CONFIG:-"$HOME"/_sysconfig}" && export SYS_CONFIG
-SYS_CONFIG="$("$ZSH_CONFIG"/functions/get_project_dir.sh "$ZSHRC")" && export SYS_CONFIG
+SYS_CONFIG="${SYS_CONFIG:-$("$ZSH_CONFIG"/functions/get_project_dir.sh "$ZSHRC")}" && export SYS_CONFIG
+
+GIT_DIR="${GIT_DIR:-"$HOME"/_Git}" && export GIT_DIR
 
 # ---[ Set shell options ]----------------------------------------------------
 z4h source "$ZSH_CONFIG"/config/options.zsh

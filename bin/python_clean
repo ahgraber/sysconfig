@@ -6,8 +6,16 @@ set -o nounset
 set -o pipefail
 # set -o xtrace
 
-# read from CLI
-PYCLEAN_PLACE="${1:-.}"
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <path>
+  Remove python compiled byte-code and mypy/pytest cache from provided directory
+EOF
+  exit
+}
+[[ -z "$1" ]] && usage
+
+PYCLEAN_PLACE=$(get_file_dir "$1")
 
 # shellcheck disable=SC2046
 set -- $(locale LC_MESSAGES)

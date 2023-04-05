@@ -6,6 +6,15 @@ set -o errexit
 set -o pipefail
 # set -o xtrace
 
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <text>
+  Print $(colorize yellow 'yellow text') with newline.  Intended as warning.
+EOF
+  exit
+}
+[[ -z "$1" ]] && usage
+
 if [[ -n "$(command -v fold)" ]]; then
   colorize yellow "${1}\n" | fold -s -w 120
 else

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+# set -o nounset
+set -o pipefail
+# set -o xtrace
+
+# ------------------------------------------------------------------------
+# https://github.com/client9/shlib - portable posix shell functions
+# Public domain - http://unlicense.org
+# https://github.com/client9/shlib/blob/master/LICENSE.md
+# but credit (and pull requests) appreciated.
+# ------------------------------------------------------------------------
+
+usage () {
+  cat << EOF
+Usage: $(basename "$0")
+  Create a temp directory and return its location --
+  If TMPDIR is set, then create it if necessary.
+  If not set, make one with 'mktemp -d'
+EOF
+  exit
+}
+[[ "$1" == "-h" || "$1" == "--help" ]] && usage
+
+[[ -z "$TMPDIR" ]] && TMPDIR="$(mktemp -d)"
+mkdir -p "${TMPDIR}"
+echo "${TMPDIR}"

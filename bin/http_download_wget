@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+# set -o nounset
+set -o pipefail
+# set -o xtrace
+
+# ------------------------------------------------------------------------
+# https://github.com/client9/shlib - portable posix shell functions
+# Public domain - http://unlicense.org
+# https://github.com/client9/shlib/blob/master/LICENSE.md
+# but credit (and pull requests) appreciated.
+# ------------------------------------------------------------------------
+#
+# unable to get server response code in a portable manner
+# busybox wget (used on alpine linux) does not support "--server-response"
+#
+
+is_command wget || yell "wget not found."
+
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <local_file> <source_url> [ header ]
+  Use wget to download file to local_file from source_url (while providing optional header)
+
+  Optional header:      HTTP header in the form "foo: bar"
+EOF
+  exit
+}
+[[ -z "$1" ]] && usage
+
+local_file=$1
+source_url=$2
+header=$3
+if [ -z "$header" ]; then
+  wget -q -O "$local_file" "$source_url"
+else
+  wget -q --header "$header" -O "$local_file" "$source_url"
+fi

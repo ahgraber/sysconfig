@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+# set -o nounset
+set -o pipefail
+# set -o xtrace
+
+# ------------------------------------------------------------------------
+# https://github.com/client9/shlib - portable posix shell functions
+# Public domain - http://unlicense.org
+# https://github.com/client9/shlib/blob/master/LICENSE.md
+# but credit (and pull requests) appreciated.
+# ------------------------------------------------------------------------
+
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <local_file> <source_url> [ header ]
+  Download file to local_file from source_url (while providing optional header)
+
+  Optional header:      HTTP header in the form "foo: bar"
+EOF
+  exit
+}
+[[ -z "$1" ]] && usage
+
+tell "http_download $2"
+if is_command curl; then
+  http_download_curl "$@"
+  exit
+elif is_command wget; then
+  http_download_wget "$@"
+  exit
+fi
+# yell "http_download unable to find wget or curl"
+exit 1

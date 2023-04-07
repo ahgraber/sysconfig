@@ -111,8 +111,6 @@
   "terminal.integrated.shellIntegration.enabled": true,
   "vs-kubernetes": {
     "vs-kubernetes.crd-code-completion": "disabled",
-    "vs-kubernetes.knownKubeconfigs": ["/Users/mithras/_Git/homelab-gitops-k3s/kubeconfig"],
-    "vs-kubernetes.kubeconfig": "/Users/mithras/_Git/homelab-gitops-k3s/kubeconfig",
     "vscode-kubernetes.helm-path.mac": "/opt/homebrew/bin/helm",
     "vscode-kubernetes.kubectl-path.mac": "/opt/homebrew/bin/kubectl"
   },

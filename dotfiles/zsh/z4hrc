@@ -85,7 +85,7 @@ ZSH_CONFIG="${ZSH_CONFIG:-$(dirname "$ZSHRC")}" && export ZSH_CONFIG
 # SYS_CONFIG="${SYS_CONFIG:-"$HOME"/_sysconfig}" && export SYS_CONFIG
 SYS_CONFIG="${SYS_CONFIG:-$("$ZSH_CONFIG"/functions/get_project_dir.sh "$ZSHRC")}" && export SYS_CONFIG
 
-GIT_DIR="${GIT_DIR:-"$HOME"/_Git}" && export GIT_DIR
+CODE_DIR="${CODE_DIR:-"$HOME"/_code}" && export CODE_DIR
 
 # ---[ Set shell options ]----------------------------------------------------
 z4h source "$ZSH_CONFIG"/config/options.zsh

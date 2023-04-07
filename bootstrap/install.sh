@@ -163,17 +163,39 @@ done
 # copy/link direnvrc
 if [[ -z "$(command -v direnv)" ]]; then
   ask "Direnv not found.  Configure anyway? (y/n)? [y] "
-  read -r direnv_select
-  direnv_select=${direnv_select:-"y"}
-  if [[ "$direnv_select" =~ $yesexpr ]]; then
-    mkdir -p "$HOME/.config/direnv"
-  fi
+  read -r direnv_install
+  direnv_install=${direnv_install:-"y"}
+else
+  # default
+  direnv_install="y"
+fi
+if [[ "$direnv_install" =~ $yesexpr ]]; then
+  mkdir -p "$HOME/.config/direnv"
   # if exists as file, back up
   [[ -f "$HOME/.config/direnv/direnvrc" ]] && mv "$HOME/.config/direnv/direnvrc" "$HOME/.config/direnv/direnvrc.$(date +%Y%m%d)"
   # if exists as link, unlink
   [[ -L "$HOME/.config/direnv/direnvrc" ]] && unlink "$HOME/.config/direnv/direnvrc"
   # make link
   ln -sf "$SYS_CONFIG/dotfiles/direnv/direnvrc" "$HOME/.config/direnv/direnvrc"
+fi
+
+
+# copy/link global taskfile
+if [[ -z "$(command -v task)" ]]; then
+  ask "Go-Task not found.  Configure anyway? (y/n)? [y] "
+  read -r task_install
+  task_install=${task_install:-"y"}
+else
+  task_install="y"
+fi
+if [[ "$task_install" =~ $yesexpr ]]; then
+  mkdir -p "$HOME/.config/direnv"
+  # if exists as file, back up
+  [[ -f "$HOME/Taskfile.yaml" ]] && mv "$HOME/Taskfile.yaml" "$HOME/Taskfile.yaml.$(date +%Y%m%d)"
+  # if exists as link, unlink
+  [[ -L "$HOME/Taskfile.yaml" ]] && unlink "$HOME/Taskfile.yaml"
+  # make link
+  ln -sf "$SYS_CONFIG/Taskfile.yaml" "$HOME/Taskfile.yaml"
 fi
 
 # copy git config files

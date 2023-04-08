@@ -189,13 +189,15 @@ else
   task_install="y"
 fi
 if [[ "$task_install" =~ $yesexpr ]]; then
-  mkdir -p "$HOME/.config/direnv"
   # if exists as file, back up
   [[ -f "$HOME/Taskfile.yaml" ]] && mv "$HOME/Taskfile.yaml" "$HOME/Taskfile.yaml.$(date +%Y%m%d)"
+  [[ -d "$HOME/.taskfiles" ]] && mv "$HOME/.taskfiles" "$HOME/.taskfiles.$(date +%Y%m%d)"
   # if exists as link, unlink
   [[ -L "$HOME/Taskfile.yaml" ]] && unlink "$HOME/Taskfile.yaml"
+  [[ -L "$HOME/.taskfiles" ]] && unlink "$HOME/.taskfiles"
   # make link
-  ln -sf "$SYS_CONFIG/Taskfile.yaml" "$HOME/Taskfile.yaml"
+  ln -sf "$SYS_CONFIG/dotfiles/task/Taskfile.yaml" "$HOME/Taskfile.yaml"
+  ln -sf "$SYS_CONFIG/dotfiles/task/taskfiles" "$HOME/.taskfiles"
 fi
 
 # copy git config files

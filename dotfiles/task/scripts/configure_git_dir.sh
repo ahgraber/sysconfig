@@ -17,16 +17,16 @@ ask "Separate git repositories from Documents? (y/n)? [y] "
 read -r git_select
 git_select=${git_select:-"y"}
 if [[ "$git_select" =~ $yesexpr ]]; then
-  ask "Directory name for git repositories folder (to be located in $HOME) ['_Git']: "
-  read -r git_dir
-  git_dir=${git_dir:-"_Git"}
-  tell "Creating '$HOME/$git_dir' directory"
-  mkdir -p "$HOME/$git_dir"
+  ask "Directory name for git repositories folder (to be located in $HOME) ['_code']: "
+  read -r CODE_DIR
+  CODE_DIR=${CODE_DIR:-"_code"}
+  tell "Creating '$HOME/$CODE_DIR' directory"
+  mkdir -p "$HOME/$CODE_DIR"
 
-  # save GIT_DIR ~/.env
+  # save CODE_DIR ~/.env
   touch "$HOME/.env"
-  sed -i.bak '/^export GIT_DIR/d' "$HOME/.env" && rm -f "$HOME/.env.bak"
-  echo "export GIT_DIR='$git_dir'" >> "$HOME/.env"
+  sed -i.bak '/^export CODE_DIR/d' "$HOME/.env" && rm -f "$HOME/.env.bak"
+  echo "export CODE_DIR='$CODE_DIR'" >> "$HOME/.env"
 
 else
   tell "Skipping git folder setup."

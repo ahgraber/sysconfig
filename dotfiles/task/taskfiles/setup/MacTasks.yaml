@@ -1,28 +1,27 @@
 ---
 version: "3"
 
-vars:
-  PROJECT_DIR:
-    sh: "git rev-parse --show-toplevel"
-  SCRIPTS_DIR: "{{.PROJECT_DIR}}/scripts"
-
-# env:
-#   KUBECONFIG: "{{.PROJECT_DIR}}/kubeconfig"
-
 includes:
   git:
-    taskfile: "../taskfiles/GitTasks.yaml"
+    taskfile: "../GitTasks.yaml"
     internal: true
   pipx:
-    taskfile: "../taskfiles/PipxTasks.yaml"
+    taskfile: "../PipxTasks.yaml"
     internal: true
   zsh:
-    taskfile: "../taskfiles/ZshTasks.yaml"
+    taskfile: "../ZshTasks.yaml"
     internal: true
   # standard:
   #   taskfile: "../taskfiles/StandardTasks.yaml"
   #   aliases: [std]
   #   internal: true
+
+vars:
+  SYS_CONFIG:
+    sh: 'echo "$SYS_CONFIG"'
+  BIN_DIR: "/usr/local/bin"
+  CODE_DIR:
+    sh: 'echo "$CODE_DIR"'
 
 tasks:
   default:
@@ -92,9 +91,3 @@ tasks:
       - for quicklook in "$HOME"/Library/QuickLook/*.qlgenerator; do xattr -cr "$quicklook"; done
       - qlmanage -r > /dev/null
       - qlmanage -r cache > /dev/null
-
-  onedrive:
-    desc: This will back up your current ~/Desktop and ~/Documents folders and replace with links to OneDrive locations
-    silent: true
-    cmds:
-      - bash {{.SCRIPTS_DIR}}/symlink_onedrive.sh

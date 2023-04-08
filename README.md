@@ -12,14 +12,14 @@ As these are not daily-driven, they are likely rough around the edges.  For furt
 
 ## Quickstart
 
-The following script will autoinstall the default configuration by:
+The install script (below) will autoinstall the default configuration by:
 
-- cloning this repo to `~/.zshconfig`
+- cloning this repo to `~/_sysconfig` (or configured location)
 - installing [prerequisites](./scripts/prerequisites.sh) and required fonts
 - symlinking [dotfiles](./dotfiles/) to home directory
 
 ```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ahgraber/zshconfig/HEAD/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ahgraber/sysconfig/HEAD/install.sh)"
 ```
 
 ## Manual Configuration
@@ -114,3 +114,8 @@ cat <<EOF > $HOME/.config/direnv/direnv.toml
 prefix = [ "$HOME/GitHub" ]) # whitelist `GitHub` dir
 EOF
 ```
+
+### task
+
+[task](https://taskfile.dev/) is a task runner / build tool that provides
+a simple command line interface to logical tasks, defined as bash commands in `taskfile.yaml`.

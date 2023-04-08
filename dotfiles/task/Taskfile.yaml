@@ -3,19 +3,19 @@ version: "3"
 
 includes:
   git:
-    taskfile: "./dotfiles/task/taskfiles/GitTasks.yaml"
+    taskfile: "./.taskfiles/GitTasks.yaml"
     # internal: true
     aliases: [g]
   pipx:
-    taskfile: "./dotfiles/task/taskfiles/PipxTasks.yaml"
+    taskfile: "./.taskfiles/PipxTasks.yaml"
     # internal: true
   zsh:
-    taskfile: "./dotfiles/task/taskfiles/ZshTasks.yaml"
+    taskfile: "./.taskfiles/ZshTasks.yaml"
     # internal: true
 
-  sysconfig:
-    taskfile: "./dotfiles/task/taskfiles/setup/SysconfigTasks.yaml"
-    internal: true
+  # sysconfig:
+  #   taskfile: "./.taskfiles/setup/SysconfigTasks.yaml"
+  #   internal: true
 
 # env:
 #   KUBECONFIG: "{{.PROJECT_DIR}}/kubeconfig"

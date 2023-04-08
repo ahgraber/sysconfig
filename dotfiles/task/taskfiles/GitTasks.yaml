@@ -2,7 +2,7 @@
 version: "3"
 
 vars:
-  GIT_DIR: "${HOME}/_git"
+  CODE_DIR: "${HOME}/_code"
   PROJECT_DIR:
     sh: "git rev-parse --show-toplevel"
   SCRIPTS_DIR: "{{.PROJECT_DIR}}/scripts"
@@ -14,10 +14,10 @@ tasks:
       - task: create-git-dir
 
   create-git-dir:
-    desc: Ensure standard "_git" directory exists
+    desc: Ensure standard "_code" directory exists
     silent: true
     cmds:
-      - mkdir -p "${HOME}/_git"
+      - mkdir -p "${HOME}/_code"
 
   clone-update:
     desc: Clone or update

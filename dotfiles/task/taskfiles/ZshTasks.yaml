@@ -10,7 +10,7 @@ vars:
   PROJECT_DIR:
     sh: "git rev-parse --show-toplevel"
   BIN_DIR: "/usr/local/bin"
-  GIT_DIR: "${HOME}/_git"
+  CODE_DIR: "${HOME}/_code"
 
 tasks:
   default:

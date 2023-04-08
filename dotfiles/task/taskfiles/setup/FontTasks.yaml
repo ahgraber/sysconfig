@@ -11,7 +11,7 @@ vars:
 
 includes:
   git:
-    taskfile: "./FontTasks.yaml"
+    taskfile: "../GitTasks.yaml"
     internal: true
   # standard:
   #   taskfile: "../taskfiles/StandardTasks.yaml"

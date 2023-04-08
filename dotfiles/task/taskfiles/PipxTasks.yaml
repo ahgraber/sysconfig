@@ -7,10 +7,11 @@ includes:
     internal: true
 
 vars:
-  PROJECT_DIR:
-    sh: "git rev-parse --show-toplevel"
+  SYS_CONFIG:
+    sh: 'echo "$SYS_CONFIG"'
   BIN_DIR: "/usr/local/bin"
-  GIT_DIR: "${HOME}/_git"
+  CODE_DIR:
+    sh: 'echo "$CODE_DIR"'
 
 tasks:
   default:
@@ -21,14 +22,13 @@ tasks:
   get-pipx:
     desc: Install most recent version of pipx
     silent: true
-    deps:
-      - task: git:shlib
     cmds:
-      - |
-        source shlib.sh && \
-        http_download {{.BIN_DIR}}/pipx https://github.com/pypa/pipx/releases/download/{{.PIPX_LATEST}}/pipx.pyz
+      - http_download {{.BIN_DIR}}/pipx https://github.com/pypa/pipx/releases/download/{{.PIPX_LATEST}}/pipx.pyz
       - chmod +x {{.BIN_DIR}}/pipx
       - pipx ensurepath
+    preconditions: # If a non-zero exit code is returned, the task errors without executing its commands.
+      - sh: "! is_command pipx"
+        msg: pipx found; skipping install # only run if pipx is not found
     vars:
       PIPX_LATEST: $(github_release pypa/pipx)
 

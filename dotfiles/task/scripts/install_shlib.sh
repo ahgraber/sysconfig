@@ -71,7 +71,7 @@
 # #       # - grep -q "source shlib.sh" ~/.zshrc || echo "source shlib.sh" >> ~/.bashrc
 # #       # - grep -q "source shlib.sh" ~/.zshrc || echo "source shlib.sh" >> ~/.zshrc
 # #     vars:
-# #       SHLIB_DEST: "{{.GIT_DIR}}/shlib"
+# #       SHLIB_DEST: "{{.CODE_DIR}}/shlib"
 
 # # # set all function files as executable
 

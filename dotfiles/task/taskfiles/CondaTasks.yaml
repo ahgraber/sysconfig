@@ -1,18 +1,17 @@
 ---
 version: "3"
 
-vars:
-  PROJECT_DIR:
-    sh: "git rev-parse --show-toplevel"
-  SCRIPTS_DIR: "{{.PROJECT_DIR}}/scripts"
-
-# env:
-#   KUBECONFIG: "{{.PROJECT_DIR}}/kubeconfig"
-
 includes:
   git:
-    taskfile: "../taskfiles/GitTasks.yaml"
+    taskfile: "./GitTasks.yaml"
     internal: true
+
+vars:
+  SYS_CONFIG:
+    sh: 'echo "$SYS_CONFIG"'
+  BIN_DIR: "/usr/local/bin"
+  CODE_DIR:
+    sh: 'echo "$CODE_DIR"'
 
 tasks:
   # default:
@@ -29,11 +28,17 @@ tasks:
       - rm Mambaforge-$(uname)-$(uname -m).sh
 
   env create:
-    desc: Create a new conda environment
+    desc: Create a new conda environment (prompted)
+    silent: true
+    cmds:
+      - conda_env_create
+
+  env create flags:
+    desc: Create a new conda environment (cli flags)
     summary: |
       Create a new conda environment with optional Python version and packages or from an environment.yaml file
       Usage: conda_env_create -n <env_name> [-p <python_version>] [-l <package list>] | [-r <environment_yaml>]
       Note: <package list> should be quoted and space-delimited or comma delimited
     silent: true
     cmds:
-      - bash {{.SCRIPTS_DIR}}/conda_env_create.sh {{.CLI_ARGS}}
+      - conda_env_create_flags

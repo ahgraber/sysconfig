@@ -24,4 +24,4 @@ EOF
 }
 [[ -z "$1" ]] && usage
 
-command -v "$1" >/dev/null
+command -v "$1" >/dev/null && exit 0 || exit 1

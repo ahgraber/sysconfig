@@ -9,14 +9,14 @@ set -o pipefail
 usage () {
   cat << EOF
 Usage: $(basename "$0") <text>
-  Print $(colorize blue 'blue text') without newline.  Intended as prefix to 'read' prompts
+  Print $(colorize purple 'purple text') without newline.  Intended as prefix to 'read' prompts
 EOF
   exit
 }
 [[ -z "$1" ]] && usage
 
 if [[ -n "$(command -v fold)" ]]; then
-  colorize blue "${1}" | fold -s -w 120  # queries are followed by 'read' command; do not need newline
+  colorize purple "${1}" | fold -s -w 120  # queries are followed by 'read' command; do not need newline
 else
-  colorize blue "${1}"  # queries are followed by 'read' command; do not need newline
+  colorize purple "${1}"  # queries are followed by 'read' command; do not need newline
 fi

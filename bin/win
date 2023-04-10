@@ -8,8 +8,8 @@ set -o pipefail
 
 usage () {
   cat << EOF
-Usage: $(basename "$0") <text>
-  Print $(colorize green 'green text') with newline.  Intended as success message.
+Usage: $(basename "$0") <message>
+  Print $(colorize green 'green text') with newline.  Intended for success messages.
 EOF
   exit
 }

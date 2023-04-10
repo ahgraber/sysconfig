@@ -15,13 +15,39 @@ set -o pipefail
 
 usage () {
   cat << EOF
-Usage: $(basename "$0") <command>
+Usage: $(basename "$0") [ options ] <command>
   Check if command is found.  Returns 0 if found.
+
+Options:
+  -h                    show help and exit
+  -v                    verbose output
 
 Example: '$(basename "$0") <command> && ...'
 EOF
   exit
 }
-[[ -z "$1" ]] && usage
 
-command -v "$1" >/dev/null && exit 0 || exit 1
+verbose=1
+while getopts "hv" opt; do
+  case ${opt} in
+    h ) usage ;;
+    v ) verbose=0 ;;
+    \? )
+      printf "Invalid option: %s" "$OPTARG" 1>&2
+      usage
+      ;;
+  esac
+done
+shift $((OPTIND -1)) # for any additional params
+
+[[ $# -lt 1 ]] && usage
+
+[[ -z "$1" ]] && { warn "Empty command"; exit 1; } || _command="$1"
+
+if _path="$(command -v "$_command")"; then
+  [[ "$verbose" -eq 0 ]] && win "$1 exists: $_path"
+  exit 0
+else
+  [[ "$verbose" -eq 0 ]] && warn "$1 does not exist"
+  exit 1
+fi

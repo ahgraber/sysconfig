@@ -38,10 +38,16 @@ Usage: $(basename "$0") <owner_repo> [ version ]
 EOF
   exit
 }
-[[ -z "$1" ]] && usage || owner_repo="$1"
-[[ -z "$2" ]] && version="latest" || version="$2"
+[[ $# -lt 1 ]] && usage
+
+[[ -z "$1" ]] && { warn "Empty owner_repo"; exit 1; } || owner_repo="$1"
+assert_contains "$owner_repo" "/" "Error: 'owner_repo' must contain '/' ==> (https://github.com/) OWNER / REPO"
+version="${2:-latest}"
+
 giturl="https://github.com/${owner_repo}/releases/${version}"
+
 json=$(http_copy "$giturl" "Accept:application/json")
+
 [[ -z "$json" ]] && exit 1
 version=$(echo "$json" | tr -s '\n' ' ' | sed 's/.*"tag_name":"//' | sed 's/".*//')
 [[ -z "$version" ]] && exit 1

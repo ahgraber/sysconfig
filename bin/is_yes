@@ -13,10 +13,8 @@ Usage: $(basename "$0") <response>
 EOF
   exit
 }
-[[ -z "$1" ]] && usage
-
-RESPONSE="$1"
-# echo "$RESPONSE"
+[[ $# -lt 1 ]] && usage
+[[ -z "$1" ]] && { warn "Empty response"; exit 1; } || response="$1"
 
 # shellcheck disable=SC2046
 set -- $(locale LC_MESSAGES)
@@ -24,7 +22,7 @@ yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
 
 # if affirmative response, return 0, else return 1
 # use like '[[ $(is_yes "$response") ]] && ...'
-if [[ "$RESPONSE" =~ $yesexpr || "$RESPONSE" =~ $yesword ]]; then
+if [[ "$response" =~ $yesexpr || "$response" =~ $yesword ]]; then
   # echo "0"
   exit 0
 else

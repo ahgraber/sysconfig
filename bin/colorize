@@ -22,6 +22,7 @@ Example: '$(basename "$0") "blue" "I'm blue da ba dee da ba daa.\n"'
 EOF
   exit
 }
+[[ $# -lt 1  || $# -gt 2 ]] && usage
 
 color="$1"
 text="$2"
@@ -35,6 +36,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 PURPLE='\033[0;95m'
+MAGENTA="$PURPLE"
 CYAN='\033[0;96m'
 WHITE='\033[1;97m'
 
@@ -44,6 +46,7 @@ green() { printf "%b" "${GREEN}${1}${NC}"; }
 yellow() { printf "%b" "${YELLOW}${1}${NC}"; }
 blue() { printf "%b" "${BLUE}${1}${NC}"; }
 purple() { printf "%b" "${PURPLE}${1}${NC}"; }
+magenta() { printf "%b" "${MAGENTA}${1}${NC}"; }
 cyan() { printf "%b" "${CYAN}${1}${NC}"; }
 white() { printf "%b" "${WHITE}${1}${NC}"; }
 
@@ -63,6 +66,7 @@ case $color in
   "yellow") yellow "${text}" ;;
   "blue") blue "${text}" ;;
   "purple") purple "${text}" ;;
+  "magenta") magenta "${text}" ;;
   "cyan") cyan "${text}" ;;
   "white") white "${text}" ;;
   *) printf "%b" "${text}" ;;

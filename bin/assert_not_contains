@@ -7,6 +7,11 @@ set -o pipefail
 # set -o xtrace
 
 # ------------------------------------------------------------------------
+# https://github.com/torokmark/assert.sh - provide assertions for shell scripts
+# Public domain - MIT License
+# https://github.com/torokmark/assert.sh/blob/main/LICENSE
+# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------
 # https://github.com/kward/shunit2 - provide assertions for shell scripts
 # Public domain - Apache License 2.0
 # https://github.com/kward/shunit2/blob/master/LICENSE
@@ -14,20 +19,19 @@ set -o pipefail
 
 usage () {
   cat << EOF
-Usage: $(basename "$0") [ options ] <condition> <expected> [ message ]
-  Assert a value or shell test condition is true
-  In shell, a value of 0 is true and a non-zero value is false.
+Usage: $(basename "$0") [ options ] <text> <search_term> [ message ]
+  Assert that text does not contain the search term
 
 Options:
   -h                    show help and exit
   -v                    verbose output
 
 Args:
-  condition: string:    integer value or shell condition statement
-  message:   string:    failure message [optional]
+  actual: string:     actual value
+  expected: string:   expected value
+  message: string:    failure message [optional]
 
-Example: '$(basename "$0") -v "[ -f '/non/existent/file' ]" "test failed"'
-Example: '$(basename "$0") 0 "This message should not be seen"'
+Example: '$(basename "$0") -v "Hello World!" "Hello"'
 EOF
   exit
 }
@@ -45,26 +49,24 @@ while getopts "hv" opt; do
 done
 shift $((OPTIND -1)) # for any additional params
 
-[[ $# -lt 1 || $# -gt 2 ]] && usage
+[[ $# -lt 2 || $# -gt 3 ]] && usage
 
-[[ -z "$1" ]] && { warn "Empty condition arg"; exit 1; } || condition="$1"
-msg="${2:-}"
+[[ -z "$1" ]] && { warn "Empty text arg"; exit 1; } || text="$1"
+[[ -z "$2" ]] && { warn "Empty search_term arg"; exit 1; } || search_term="$2"
+msg="${3:-}"
 status='fail'
 
-# check if integer
-if [[ "${condition}" =~ ^[0-9]+$ ]]; then
-  # Possible return value. Treating 0 as true, and non-zero as false.
-  [[ "${condition}" == 0 ]] && status='pass'
-else
-  eval "$condition" >/dev/null 2>&1 && status='pass'
+if [[ -n "${text##*"$search_term"*}" ]]; then
+# if echo "$text" | grep -F -- "$search_term" >/dev/null; then
+  status='pass'
 fi
 
 if [[ "$status" == 'pass' ]]; then
-  status_msg="PASS :: $(basename "$0") ('$condition')"
+  status_msg="PASS :: $(basename "$0") ('$text', '$search_term')"
   [[ "$verbose" -eq 0 ]] && win "$status_msg"
   exit 0
 else
-  status_msg="FAIL :: $(basename "$0") ('$condition')"
+  status_msg="FAIL :: $(basename "$0") ('$text', '$search_term')"
   if [[ -n "$msg" ]]; then
     yell "$status_msg :: $msg"
   elif [[ "$verbose" -eq 0 ]]; then

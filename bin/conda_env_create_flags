@@ -20,7 +20,7 @@ Options:
 
 Example: $(basename "$0")") -n myenv -p 3.10.* -l 'numpy pandas'
 EOF
-return 1
+  exit
 }
 
 ENV_NAME=""

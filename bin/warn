@@ -8,8 +8,8 @@ set -o pipefail
 
 usage () {
   cat << EOF
-Usage: $(basename "$0") <text>
-  Print $(colorize yellow 'yellow text') with newline.  Intended as warning.
+Usage: $(basename "$0") <message>
+  Print $(colorize yellow 'yellow text') with newline.  Intended for warnings.
 EOF
   exit
 }

@@ -6,15 +6,11 @@ set -o nounset
 set -o pipefail
 # set -o xtrace
 
-# shellcheck disable=SC2046
-set -- $(locale LC_MESSAGES)
-yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
-
 tell "This will remove all local branches that are not present in $(git rev-parse --show-toplevel) upstream/origin."
-ask "Do you want to continue? (y/n)? [y] "
+ask "Do you want to continue? (y/n)? [n] "
 read -r select
 
-if [[ "$select" =~ $yesexpr ]]; then
+if is_yes "${select:-n}"; then
   git fetch;
   git remote prune origin;
   git branch -vv | grep ': gone]' | grep -v "\*" | awk '{ print $1 }' | xargs git branch "${1:-'-d'}"

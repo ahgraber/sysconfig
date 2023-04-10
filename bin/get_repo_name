@@ -15,6 +15,6 @@ Example: '$(basename "$0") .'
 EOF
   exit
 }
-[[ -z "$1" ]] && usage
+[[ $# -lt 1 ]] && usage
 
 is_git_repo "$1" && git rev-parse --show-toplevel || exit 1

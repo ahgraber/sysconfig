@@ -8,8 +8,8 @@ set -o pipefail
 
 usage () {
   cat << EOF
-Usage: $(basename "$0") <text>
-  Print $(colorize purple 'purple text') without newline.  Intended as prefix to 'read' prompts
+Usage: $(basename "$0") <message>
+  Print $(colorize purple 'purple text') without newline.  Intended for prefix to 'read' prompts.
 EOF
   exit
 }

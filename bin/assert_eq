@@ -14,16 +14,20 @@ set -o pipefail
 
 usage () {
   cat << EOF
-Usage: $(basename "$0") <actual> <expected> [ message ]
+Usage: $(basename "$0") [ options ] <actual> <expected> [ message ]
   Assert that two values are equal to one another
+
+Options:
+  -h                    show help and exit
+  -v                    verbose output
 
 Args:
   actual: string:     actual value
   expected: string:   expected value
   message: string:    failure message [optional]
 
-Example: '$(basename "$0") -v "Hello" "Hello"
-Example: '$(basename "$0") "1" 1 "This message should not be seen"
+Example: '$(basename "$0") -v "Hello" "Hello"'
+Example: '$(basename "$0") "1" 1 "This message should not be seen"'
 EOF
   exit
 }
@@ -41,13 +45,10 @@ while getopts "hv" opt; do
 done
 shift $((OPTIND -1)) # for any additional params
 
-[[ $# -lt 2 || $# -gt 3 ]] && {
-  warn "Error: $(basename "$0") requires two or three arguments; $# given"
-  exit 1
-}
+[[ $# -lt 2 || $# -gt 3 ]] && usage
 
-actual="$1"
-expected="$2"
+[[ -z "$1" ]] && { warn "Empty actual arg"; exit 1; } || actual="$1"
+[[ -z "$2" ]] && { warn "Empty expected arg"; exit 1; } || expected="$2"
 msg="${3:-}"
 status='fail'
 

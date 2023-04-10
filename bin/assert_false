@@ -14,16 +14,20 @@ set -o pipefail
 
 usage () {
   cat << EOF
-Usage: $(basename "$0") <condition> <expected> [ message ]
+Usage: $(basename "$0") [ options ] <condition> <expected> [ message ]
   Assert a value or shell test condition is false
   In shell, a value of 0 is true and a non-zero value is false.
+
+Options:
+  -h                    show help and exit
+  -v                    verbose output
 
 Args:
   condition: string:    integer value or shell condition statement
   message:   string:    failure message [optional]
 
-Example: '$(basename "$0") -v "[ -f '/non/existent/file' ]" "This message should not be seen"
-Example: '$(basename "$0") 0 "test failed"
+Example: '$(basename "$0") -v "[ -f '/non/existent/file' ]" "This message should not be seen"'
+Example: '$(basename "$0") 0 "test failed"'
 EOF
   exit
 }
@@ -41,12 +45,9 @@ while getopts "hv" opt; do
 done
 shift $((OPTIND -1)) # for any additional params
 
-[[ $# -lt 1 || $# -gt 2 ]] && {
-  warn "Error: $(basename "$0") requires one or two arguments; $# given"
-  exit 1
-}
+[[ $# -lt 1 || $# -gt 2 ]] && usage
 
-condition="$1"
+[[ -z "$1" ]] && { warn "Empty condition arg"; exit 1; } || condition="$1"
 msg="${2:-}"
 status='fail'
 

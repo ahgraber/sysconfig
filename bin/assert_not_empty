@@ -14,8 +14,8 @@ set -o pipefail
 
 usage () {
   cat << EOF
-Usage: $(basename "$0") [ options ] <condition> <expected> [ message ]
-  Assert a value or shell test condition is true
+Usage: $(basename "$0") [ options ] <variable> [ message ]
+  Assert a variable is not empty
   In shell, a value of 0 is true and a non-zero value is false.
 
 Options:
@@ -26,8 +26,7 @@ Args:
   condition: string:    integer value or shell condition statement
   message:   string:    failure message [optional]
 
-Example: '$(basename "$0") -v "[ -f '/non/existent/file' ]" "test failed"'
-Example: '$(basename "$0") 0 "This message should not be seen"'
+Example: '$(basename "$0") "\$hello"'
 EOF
   exit
 }
@@ -47,24 +46,20 @@ shift $((OPTIND -1)) # for any additional params
 
 [[ $# -lt 1 || $# -gt 2 ]] && usage
 
-[[ -z "$1" ]] && { warn "Empty condition arg"; exit 1; } || condition="$1"
+variable="$1"
 msg="${2:-}"
 status='fail'
 
-# check if integer
-if [[ "${condition}" =~ ^[0-9]+$ ]]; then
-  # Possible return value. Treating 0 as true, and non-zero as false.
-  [[ "${condition}" == 0 ]] && status='pass'
-else
-  eval "$condition" >/dev/null 2>&1 && status='pass'
+if [[ -n "${variable:-}" ]]; then
+  status='pass'
 fi
 
 if [[ "$status" == 'pass' ]]; then
-  status_msg="PASS :: $(basename "$0") ('$condition')"
+  status_msg="PASS :: $(basename "$0") ('$variable')"
   [[ "$verbose" -eq 0 ]] && win "$status_msg"
   exit 0
 else
-  status_msg="FAIL :: $(basename "$0") ('$condition')"
+  status_msg="FAIL :: $(basename "$0") ('$variable')"
   if [[ -n "$msg" ]]; then
     yell "$status_msg :: $msg"
   elif [[ "$verbose" -eq 0 ]]; then

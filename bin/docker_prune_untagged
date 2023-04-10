@@ -6,18 +6,11 @@ set -o nounset
 set -o pipefail
 # set -o xtrace
 
-# shellcheck disable=SC2046
-set -- $(locale LC_MESSAGES)
-yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
+! is_command docker && { yell "Error: Docker not found!"; exit 1; }
 
-tell "This will remove all untagged local images."
-ask "Do you want to continue? (y/n)? [y] "
+warn "This will remove all untagged local images."
+ask "Do you want to continue? (y/n)? [n] "
 read -r select
-if [[ "$select" =~ $yesexpr ]]; then
-  if [[ -n "$(command -v docker)" ]]; then
-    docker rmi "$(docker images | grep "^<none>" | awk "{print $3}")"
-  else
-    yell "Error: Docker not found!"
-    exit 1
-  fi
+if is_yes "${select:-n}"; then
+  docker rmi "$(docker images | grep "^<none>" | awk "{print $3}")"
 fi

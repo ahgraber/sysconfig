@@ -13,17 +13,15 @@ Usage: $(basename "$0") <path>
 EOF
   exit
 }
-[[ -z "$1" ]] && usage
+[[ $# -lt 1 ]] && usage
 
-# shellcheck disable=SC2046
-set -- $(locale LC_MESSAGES)
-yesexpr="$1"; noexpr="$2"; yesword="$3"; noword="$4";
+[[ -z "$1" ]] && { warn "Empty path arg"; exit 1; } || _path="$1"
 
 # get parent dir if file or use dir if dir
-if [[ -d "$1" ]]; then
-  tell "$1"
-elif [[ -f "$1" ]]; then
-  dirname "$1"
+if [[ -d "$_path" ]]; then
+  realpath "$_path"
+elif [[ -f "$_path" ]]; then
+  dirname "$(realpath "$_path")"
 else
   yell "Error: '$1' not detected as file or directory"
   exit 1

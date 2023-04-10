@@ -134,9 +134,9 @@ fi
 
 cd "$ZSH_CONFIG" || exit
 
-tell "Installing ..."
-# shellcheck disable=SC1091
-source "$SYS_CONFIG"/bootstrap/prerequisites.sh
+# tell "Installing ..."
+# # shellcheck disable=SC1091
+# source "$SYS_CONFIG"/bootstrap/prerequisites.sh
 
 ### Note: if installed with Homebrew, completions should be detected automatically
 # echo "Prefilling local ..."
@@ -200,6 +200,7 @@ if [[ "$task_install" =~ $yesexpr ]]; then
   ln -sf "$SYS_CONFIG/dotfiles/task/taskfiles" "$HOME/.taskfiles"
 fi
 
+
 # copy git config files
 if [[ -f "$HOME/.gitconfig" ]]; then
   mv "$HOME/.gitconfig" "$HOME/.gitconfig.$(date +%Y%m%d)"
@@ -210,6 +211,7 @@ if [[ -f "$HOME/.gitattributes_global" ]]; then
   mv "$HOME/.gitattributes_global" "$HOME/.gitattributes_global.$(date +%Y%m%d)"
   cp "$SYS_CONFIG/dotfiles/git/gitattributes_global" "$HOME/.gitattributes_global"
 fi
+
 
 ask "Disconnect zshconfig from source repo? (y/n)? [y] "
 read -r git_select

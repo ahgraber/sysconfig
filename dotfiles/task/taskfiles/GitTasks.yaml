@@ -11,7 +11,7 @@ tasks:
   default:
     silent: true
     cmds:
-      - task: create-git-dir
+      # - task:
 
   create-git-dir:
     desc: Ensure standard "_code" directory exists
@@ -21,11 +21,15 @@ tasks:
 
   clone-update:
     desc: Clone or update
+    aliases:
+      - clone
+      - update
+      - cu
     silent: true
     cmds:
       - bash {{.SCRIPTS_DIR}}/git_clone_update.sh {{.CLI_ARGS}}
 
-  branch-clean:
+  branch clean:
     desc: Remove local branches not present in origin
     silent: true
     dir: "{{.USER_WORKING_DIR}}"

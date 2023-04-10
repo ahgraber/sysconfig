@@ -12,6 +12,7 @@ includes:
   zsh:
     taskfile: "./dotfiles/task/taskfiles/ZshTasks.yaml"
     # internal: true
+    aliases: [z]
 
   sysconfig:
     taskfile: "./dotfiles/task/taskfiles/setup/SysconfigTasks.yaml"
@@ -29,13 +30,9 @@ vars:
   TASK_SCRIPTS: "{{.SYS_CONFIG}}/dotfiles/task/scripts"
 
 tasks:
-  #   default:
-  #     silent: true
-  #     cmds:
-  #       - task: pull
-  #       - task: update
-  #       - task: upgrade
-  #       - task: switch
+  # default:
+  #   silent: true
+  # cmds:
 #   update:
 #     desc: Update the Nix channels
 #     silent: true

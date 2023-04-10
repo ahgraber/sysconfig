@@ -16,7 +16,7 @@ tasks:
   default:
     silent: true
     cmds:
-      - task:compinit
+      # -
 
   compinit:
     desc: Enable zsh and bash autocompletions

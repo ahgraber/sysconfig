@@ -30,11 +30,10 @@ tasks:
       - task: xcode-tools
       - task: rosetta
       - task: task git:create-git-dir
-      - task: task git:shlib
       # - task: task git:setup-config
       - task: fonts
-      - task: user-settings
       - task: system-settings
+      - task: user-settings
       - task: quicklook
       - task: onedrive
 
@@ -72,17 +71,17 @@ tasks:
     cmds:
       - cp {{.PROJECT_DIR}}/fonts/*.ttf "$HOME/Library/Fonts"
 
-  user-settings:
-    desc: Run user settings configuration script
-    silent: true
-    cmds:
-      - bash {{.SCRIPTS_DIR}}/macos_user_settings.sh
-
   system-settings:
     desc: Run system settings configuration script
     silent: true
     cmds:
-      - sudo bash {{.SCRIPTS_DIR}}/macos_system_settings.sh
+      - sudo bash {{.SCRIPTS_DIR}}/configure_macos_system_settings.sh
+
+  user-settings:
+    desc: Run user settings configuration script
+    silent: true
+    cmds:
+      - bash {{.SCRIPTS_DIR}}/configure_macos_user_settings.sh
 
   quicklook:
     desc: Allow any user-added quicklook plugins

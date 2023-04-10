@@ -19,7 +19,7 @@ tasks:
     cmds:
       - task: get-pipx
 
-  get-pipx:
+  _init:
     desc: Install most recent version of pipx
     silent: true
     cmds:
@@ -32,7 +32,7 @@ tasks:
     vars:
       PIPX_LATEST: $(github_release pypa/pipx)
 
-  install:
+  install defaults:
     desc: Install with pipx
     silent: true
     cmds:
@@ -41,6 +41,9 @@ tasks:
         for pkg in ${PACKAGES[@]}; do
           pipx install "$pkg";
         done;
+    preconditions:
+      - sh: "is_command pipx"
+        msg: pipx not found
     vars:
       PACKAGES: |
         ansible

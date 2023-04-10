@@ -1,0 +1,123 @@
+---
+version: "3"
+
+vars:
+  CODE_DIR: "${HOME}/_code"
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+  SCRIPTS_DIR: "{{.PROJECT_DIR}}/scripts"
+
+# ref:
+# - https://nixos.org/manual/nix/stable/command-ref/nix-env.html
+# - https://nixos.org/guides/nix-pills
+# - https://github.com/ianthehenry/sd-nix
+tasks:
+  # default:
+  #   silent: true
+  #   cmds:
+  #     -
+
+  _init_native:
+    desc: Bootstrap the home-manager configuration
+    silent: true
+    cmds:
+      - /usr/bin/arch -arm64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    prerequisites:
+      - sh: /usr/bin/arch -arm64 /bin/bash [[ -z $(command -v brew) && ! -f /opt/homebrew/Homebrew/bin/brew ]]
+        msg: "Native Homebrew already installed"
+
+  _init_rosetta:
+    desc: Bootstrap the home-manager configuration
+    silent: true
+    cmds:
+      - /usr/bin/arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    prerequisites:
+      - sh: /usr/bin/arch -x86_64 /bin/bash [[ -z $(command -v brew) && ! -f /usr/local/Homebrew/bin/brew ]]
+        msg: "Rosetta Homebrew already installed"
+#   channel add:
+#     desc: Add specified nix channel
+#     # silent: true
+#     cmds:
+#       - nix-channel --add {{.CLI_ARGS}}
+
+#   channel rm:
+#     desc: Remove specified nix channel
+#     aliases: ["channel remove"]
+#     # silent: true
+#     cmds:
+#       - nix-channel --remove {{.CLI_ARGS}}
+
+#   gc:
+#     desc: Garbage collect
+#     # silent: true
+#     cmds:
+#       - nix-collect-garbage -d
+
+#   info:
+#     desc: "Get info about a nix pkg (hint: -- nixpkgs.<name>)"
+#     # silent: true
+#     cmds:
+#       - nix-env --query-available --attr {{.CLI_ARGS}} --description
+
+#   install:
+#     desc: "Install a nix pkg (hint: -- nixpkgs.<name>)"
+#     # silent: true
+#     cmds:
+#       - nix-env --install --attr {{.CLI_ARGS}}
+
+#   list:
+#     desc: List installed nix pkgs
+#     summary: List installed nix pkgs available in the active Nix expression
+#     # silent: true
+#     cmds:
+#       - nix-env --query --available --status
+
+#   moreinfo:
+#     desc: "Get long description about a nix pkg (hint: -- nixpkgs.<name>)"
+#     # silent: true
+#     cmds:
+#       - |
+#         nix-env --query-available --attr {{.CLI_ARGS}} --json  \
+#         | jq -r '.[] | .name + " " + .meta.description,
+#                  "",
+#                  (.meta.longDescription | rtrimstr("\n"))'
+#     preconditions:
+#       - sh: "[[ -n $(command -v jq) ]] || return 1"
+#         msg: |
+#           'jq' is required
+
+#   outdated:
+#     desc: Show outdated nix pkgs
+#     # silent: true
+#     cmds:
+#       - nix-env --query --compare-versions
+
+#   uninstall:
+#     desc: "Uninstall a nix pkg (hint: -- <name>)"
+#     aliases: ["remove"]
+#     # silent: true
+#     cmds:
+#       - nix-env --uninstall {{.CLI_ARGS}}
+#       # TODO: validate that package is uninstalled
+
+#   update:
+#     desc: Update / upgrade specified nix pkgs
+#     aliases: ["upgrade"]
+#     # silent: true
+#     cmds:
+#       - nix-channel --update
+#       - nix-env --upgrade --attrs {{.CLI_ARGS}}
+
+#   update-all:
+#     desc: Update / upgrade all nix pkgs
+#     aliases: ["upgrade-all"]
+#     # silent: true
+#     cmds:
+#       - nix-channel --update
+#       - nix-env --upgrade
+
+# #   switch:
+# #     desc: Switch to the new configuration
+# #     silent: true
+# #     cmds:
+# #       - home-manager switch

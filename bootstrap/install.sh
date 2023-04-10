@@ -132,7 +132,7 @@ else
   fi
 fi
 
-cd "$ZSH_CONFIG" || exit
+# cd "$ZSH_CONFIG" || exit
 
 # tell "Installing ..."
 # # shellcheck disable=SC1091

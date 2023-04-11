@@ -10,8 +10,8 @@ setopt no_bg_nice               # disable background task deprioritization
 setopt c_bases                   # perform filename expansion on args to print,
                                 # echo, and printf commands, (vs treating as literal strings)
 setopt no_clobber               # force using `>!` to truncate / overwrite an existing file
-setopt correct                  # automatically suggest corrections for commands
-setopt correct_all              # automatically suggest corrections for all arguments
+setopt no_correct               # automatically suggest corrections for commands
+setopt no_correct_all           # automatically suggest corrections for all arguments
 setopt no_flow_control          # disable flow control (^S and ^Q) so that the terminal
                                 # doesn't freeze when the output is too fast
 setopt no_global_rcs            # disable sourcing of global zsh config files

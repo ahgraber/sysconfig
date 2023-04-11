@@ -2,10 +2,10 @@
 version: "3"
 
 vars:
-  CODE_DIR: "${HOME}/_code"
-  PROJECT_DIR:
-    sh: "git rev-parse --show-toplevel"
-  SCRIPTS_DIR: "{{.PROJECT_DIR}}/scripts"
+  SYS_CONFIG:
+    sh: 'echo "$SYS_CONFIG"'
+  SCRIPTS_DIR:
+    sh: 'echo "$SYS_CONFIG/dotfiles/task/scripts"'
 
 # ref:
 # - https://nixos.org/manual/nix/stable/command-ref/nix-env.html
@@ -18,22 +18,97 @@ tasks:
   #     -
 
   _init_native:
-    desc: Bootstrap the home-manager configuration
+    desc: Install native Homebrew
     silent: true
     cmds:
       - /usr/bin/arch -arm64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      - brew update
+      - brew upgrade
     prerequisites:
       - sh: /usr/bin/arch -arm64 /bin/bash [[ -z $(command -v brew) && ! -f /opt/homebrew/Homebrew/bin/brew ]]
         msg: "Native Homebrew already installed"
 
   _init_rosetta:
-    desc: Bootstrap the home-manager configuration
+    desc: Install rosetta Homebrew
     silent: true
     cmds:
       - /usr/bin/arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      - brew update
+      - brew upgrade
     prerequisites:
       - sh: /usr/bin/arch -x86_64 /bin/bash [[ -z $(command -v brew) && ! -f /usr/local/Homebrew/bin/brew ]]
         msg: "Rosetta Homebrew already installed"
+
+  _init_install:
+    desc: Install default packages with brew
+    silent: true
+    cmds:
+      - |
+        TAPS=({{.TAPS}})
+        for tap in "${TAPS[@]}"; do
+          brew tap "$tap";
+        done;
+        PACKAGES=({{.PACKAGES}})
+        for pkg in "${PACKAGES[@]}"; do
+          is_command "$pkg" || brew install --quiet "$pkg";
+        done;
+    preconditions:
+      - sh: "is_command brew"
+        msg: brew not found
+    vars:
+      TAPS: |
+        fluxcd/tap
+        mistertea/et
+        qmk/qmk
+        tavianator/tap
+      PACKAGES: |
+        age
+        bat
+        bat-extras
+        coreutils
+        direnv
+        exa
+        fd
+        fluxcd/tap/flux
+        fzf
+        gcc
+        git
+        git-credential-manager
+        git-filter-repo
+        gnu-sed
+        go
+        go-task
+        graphviz
+        gzip
+        hadolint
+        helm
+        htop
+        jq
+        kompose
+        kubeval
+        kustomize
+        mistertea/et/et
+        openssh
+        pre-commit
+        prettier
+        shellcheck
+        sops
+        ssh-copy-id
+        stern
+        tavianator/tap/bfs
+        thefuck
+        tldr
+        tmux
+        tokei
+        typos-cli
+        vivid
+        wget
+        yamllint
+        yarn
+        yq
+
+# TODO: uninstall direnv, task?
+
 #   channel add:
 #     desc: Add specified nix channel
 #     # silent: true

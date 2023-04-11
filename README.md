@@ -12,15 +12,25 @@ As these are not daily-driven, they are likely rough around the edges.  For furt
 
 ## Quickstart
 
-The install script (below) will autoinstall the default configuration by:
+The install script (below) will autoinstall the default configuration:
 
-- cloning this repo to `~/_sysconfig` (or configured location)
-- installing [prerequisites](./scripts/prerequisites.sh) and required fonts
-- symlinking [dotfiles](./dotfiles/) to home directory
+- clone this repo to `~/_sysconfig` (or configured location)
+<!-- - install [prerequisites](./scripts/prerequisites.sh) and required fonts -->
+- symlink [dotfiles](./dotfiles/) to home directory
+- install [task](https://taskfile.dev/)
 
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ahgraber/sysconfig/HEAD/install.sh)"
 ```
+
+## Next steps
+
+Use `task` to complete setup:
+
+- brew
+- pipx
+- nix
+- mac setup/configuration
 
 ## Manual Configuration
 

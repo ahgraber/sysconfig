@@ -2,10 +2,15 @@
 version: "3"
 
 vars:
-  CODE_DIR: "${HOME}/_code"
+  SYS_CONFIG:
+    sh: 'echo "$SYS_CONFIG"'
+  SCRIPTS_DIR:
+    sh: 'echo "$SYS_CONFIG/dotfiles/task/scripts"'
+
+  CODE_DIR:
+    sh: 'echo "$CODE_DIR"'
   PROJECT_DIR:
     sh: "git rev-parse --show-toplevel"
-  SCRIPTS_DIR: "{{.PROJECT_DIR}}/scripts"
 
 tasks:
   default:
@@ -13,13 +18,7 @@ tasks:
     cmds:
       # - task:
 
-  create-git-dir:
-    desc: Ensure standard "_code" directory exists
-    silent: true
-    cmds:
-      - mkdir -p "${HOME}/_code"
-
-  clone-update:
+  clone_update:
     desc: Clone or update
     aliases:
       - clone
@@ -29,7 +28,7 @@ tasks:
     cmds:
       - bash {{.SCRIPTS_DIR}}/git_clone_update.sh {{.CLI_ARGS}}
 
-  branch clean:
+  branch_clean:
     desc: Remove local branches not present in origin
     silent: true
     dir: "{{.USER_WORKING_DIR}}"
@@ -43,6 +42,13 @@ tasks:
         grep -v "\*" |                                  # exclude branches that have "*", indicating incomplete merge
         awk '{ print $1 }' |                            # extract the branch name
         xargs git branch {{.CLI_ARGS | default "-d"}}   # delete branch with -d (or -D if specified in call
+
+  project_dir:
+    desc: Get local path for current git repository
+    silent: true
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - "git rev-parse --show-toplevel"
 
   sync:
     desc: Sync current repo with upstream

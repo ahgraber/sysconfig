@@ -7,10 +7,10 @@ version: "3"
 #     internal: true
 
 vars:
-  PROJECT_DIR:
-    sh: "git rev-parse --show-toplevel"
-  BIN_DIR: "/usr/local/bin"
-  CODE_DIR: "${HOME}/_code"
+  SYS_CONFIG:
+    sh: 'echo "$SYS_CONFIG"'
+  ZSH_CONFIG:
+    sh: 'echo "$ZSH_CONFIG"'
 
 tasks:
   default:

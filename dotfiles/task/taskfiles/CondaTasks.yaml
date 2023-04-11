@@ -9,7 +9,6 @@ includes:
 vars:
   SYS_CONFIG:
     sh: 'echo "$SYS_CONFIG"'
-  BIN_DIR: "/usr/local/bin"
   CODE_DIR:
     sh: 'echo "$CODE_DIR"'
 
@@ -32,7 +31,7 @@ tasks:
       - sh: "! is_command mamba"
         msg: "mamba found; skipping install"
 
-  env create:
+  env_create:
     desc: Create a new conda environment (prompted)
     silent: true
     cmds:
@@ -41,7 +40,7 @@ tasks:
       - sh: "is_command conda_env_create"
         msg: "conda_env_create not found.  Is '_sysconfig/bin' in your path?"
 
-  env create flags:
+  env_create_flags:
     desc: Create a new conda environment (cli flags)
     summary: |
       Create a new conda environment with optional Python version and packages or from an environment.yaml file

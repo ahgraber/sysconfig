@@ -2,10 +2,10 @@
 version: "3"
 
 vars:
-  CODE_DIR: "${HOME}/_code"
-  PROJECT_DIR:
-    sh: "git rev-parse --show-toplevel"
-  SCRIPTS_DIR: "{{.PROJECT_DIR}}/scripts"
+  SYS_CONFIG:
+    sh: 'echo "$SYS_CONFIG"'
+  SCRIPTS_DIR:
+    sh: 'echo "$SYS_CONFIG/dotfiles/task/scripts"'
 
 # ref:
 # - https://nixos.org/manual/nix/stable/command-ref/nix-env.html
@@ -17,13 +17,13 @@ tasks:
   #   cmds:
   #     -
 
-  channel add:
+  channel_add:
     desc: Add specified nix channel
     # silent: true
     cmds:
       - nix-channel --add {{.CLI_ARGS}}
 
-  channel rm:
+  channel_rm:
     desc: Remove specified nix channel
     aliases: ["channel remove"]
     # silent: true
@@ -91,7 +91,7 @@ tasks:
       - nix-channel --update
       - nix-env --upgrade --attrs {{.CLI_ARGS}}
 
-  update-all:
+  update_all:
     desc: Update / upgrade all nix pkgs
     aliases: ["upgrade-all"]
     # silent: true

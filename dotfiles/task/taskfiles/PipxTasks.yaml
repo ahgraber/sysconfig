@@ -9,7 +9,7 @@ includes:
 vars:
   SYS_CONFIG:
     sh: 'echo "$SYS_CONFIG"'
-  BIN_DIR: "/usr/local/bin"
+  BIN_DIR: "$HOME/.local/bin"
   CODE_DIR:
     sh: 'echo "$CODE_DIR"'
 
@@ -32,7 +32,7 @@ tasks:
     vars:
       PIPX_LATEST: $(github_release pypa/pipx)
 
-  install defaults:
+  install_defaults:
     desc: Install with pipx
     silent: true
     cmds:

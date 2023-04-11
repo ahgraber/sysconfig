@@ -1,32 +1,8 @@
 ---
 version: "3"
 
-vars:
-  PROJECT_DIR:
-    sh: "git rev-parse --show-toplevel"
-  # KUBERNETES_DIR: "{{.PROJECT_DIR}}/kubernetes"
-
-# env:
-#   KUBECONFIG: "{{.PROJECT_DIR}}/kubeconfig"
-
-includes:
-  git:
-    taskfile: "../GitTasks.yaml"
-    internal: true
-  # standard:
-  #   taskfile: "../taskfiles/StandardTasks.yaml"
-  #   aliases: [std]
-  #   internal: true
-
 tasks:
   default:
-    silent: true
-    cmds:
-      - task: task git:create-git-dir
-      - task: task git:shlib
-      # - task: task git:setup-config
-
-  install:
     desc: Install font files
     silent: true
     cmds:

@@ -160,16 +160,17 @@ for file in "${dotfiles[@]}"; do
   ln -sf "$ZSH_CONFIG/$file" "$HOME/.${file/z4h/zsh}"
 done
 
+
 # copy/link direnvrc
 if [[ -z "$(command -v direnv)" ]]; then
   ask "Direnv not found.  Configure anyway? (y/n)? [y] "
-  read -r direnv_install
-  direnv_install=${direnv_install:-"y"}
+  read -r direnv_config
+  direnv_config=${direnv_config:-"y"}
 else
   # default
-  direnv_install="y"
+  direnv_config="y"
 fi
-if [[ "$direnv_install" =~ $yesexpr ]]; then
+if [[ "$direnv_config" =~ $yesexpr ]]; then
   mkdir -p "$HOME/.config/direnv"
   # if exists as file, back up
   [[ -f "$HOME/.config/direnv/direnvrc" ]] && mv "$HOME/.config/direnv/direnvrc" "$HOME/.config/direnv/direnvrc.$(date +%Y%m%d)"
@@ -180,15 +181,21 @@ if [[ "$direnv_install" =~ $yesexpr ]]; then
 fi
 
 
-# copy/link global taskfile
+# install Task
 if [[ -z "$(command -v task)" ]]; then
-  ask "Go-Task not found.  Configure anyway? (y/n)? [y] "
+  ask "Go-Task not found.  Install? (y/n)? [y]"
   read -r task_install
   task_install=${task_install:-"y"}
-else
-  task_install="y"
 fi
 if [[ "$task_install" =~ $yesexpr ]]; then
+  sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b "$HOME/.local/bin"
+fi
+# copy/link global taskfile
+ask "Configure Task? (y/n)? [y] "
+read -r task_config
+task_config=${task_config:-"y"}
+
+if [[ "$task_config" =~ $yesexpr ]]; then
   # if exists as file, back up
   [[ -f "$HOME/Taskfile.yaml" ]] && mv "$HOME/Taskfile.yaml" "$HOME/Taskfile.yaml.$(date +%Y%m%d)"
   [[ -d "$HOME/.taskfiles" ]] && mv "$HOME/.taskfiles" "$HOME/.taskfiles.$(date +%Y%m%d)"

@@ -28,7 +28,6 @@ includes:
 vars:
   SYS_CONFIG:
     sh: 'echo "$SYS_CONFIG"'
-  BIN_DIR: "/usr/local/bin"
   CODE_DIR:
     sh: 'echo "$CODE_DIR"'
   TASK_SCRIPTS: "{{.SYS_CONFIG}}/dotfiles/task/scripts"

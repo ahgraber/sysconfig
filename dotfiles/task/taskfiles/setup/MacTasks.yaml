@@ -19,9 +19,8 @@ includes:
 vars:
   SYS_CONFIG:
     sh: 'echo "$SYS_CONFIG"'
-  BIN_DIR: "/usr/local/bin"
-  CODE_DIR:
-    sh: 'echo "$CODE_DIR"'
+  SCRIPTS_DIR:
+    sh: 'echo "$SYS_CONFIG/dotfiles/task/scripts"'
 
 tasks:
   default:
@@ -37,7 +36,7 @@ tasks:
       - task: quicklook
       - task: onedrive
 
-  xcode-tools:
+  xcode:
     desc: Ensure xcode command line tools are installed
     silent: true
     cmds:
@@ -69,15 +68,15 @@ tasks:
     desc: Install font files
     silent: true
     cmds:
-      - cp {{.PROJECT_DIR}}/fonts/*.ttf "$HOME/Library/Fonts"
+      - cp {{.SYS_CONFIG}}/fonts/*.ttf "$HOME/Library/Fonts"
 
-  system-settings:
+  system_settings:
     desc: Run system settings configuration script
     silent: true
     cmds:
       - sudo bash {{.SCRIPTS_DIR}}/configure_macos_system_settings.sh
 
-  user-settings:
+  user_settings:
     desc: Run user settings configuration script
     silent: true
     cmds:

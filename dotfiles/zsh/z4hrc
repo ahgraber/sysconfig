@@ -191,14 +191,10 @@ alias rosetta='source "$SYS_CONFIG/bin/rosetta"'
 
 _rosetta_switcher() {
   ### allows direnv-based architecture determination by monitoring ROSETTA_MODE
-  # inspired by: https://hynek.me/til/automatic-rosetta-fish-direnv/
-  if [[ -n "$ROSETTA_MODE" && "$ROSETTA_MODE" -eq 0 ]]; then
-    source "$SYS_CONFIG/bin/native"
-  elif [[ -n "$ROSETTA_MODE" && "$ROSETTA_MODE" -eq 1 ]]; then
-    source "$SYS_CONFIG/bin/rosetta"
-  else
-    : # pass
-    # return 0
+  # inspired by: https://hynek.me/til/`auto`matic-rosetta-fish-direnv/
+  if [[ -n "${ROSETTA_MODE:-}" ]]; then
+    [[ "$ROSETTA_MODE" -eq 0 ]] && "$SYS_CONFIG/bin/native";
+    [[ "$ROSETTA_MODE" -eq 1 ]] && "$SYS_CONFIG/bin/rosetta";
   fi
 }
 

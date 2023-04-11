@@ -4,9 +4,15 @@
 alias aliasconfig="code ~/.aliases"
 alias zshconfig="code ~/.zshrc"
 # alias bashconfig="code ~/.bash_profile"  # or ~/.bashrc
+
 [[ -f ~/.p10k.zsh ]] && alias p10kconfig="code ~/.p10k.zsh"
 [[ -f ~/.p10k.zsh ]] && alias codeconfig="code ~/Library/Application\ Support/Code/User/settings.json"
-alias -s {py,pyc,ipynb,yml,yaml}=code
+
+# set file extensions to open by default in code
+alias -s '{md,ipynb,py,pyc,sh,zsh,yml,yaml}'=code
+
+alias native='source "$SYS_CONFIG/bin/native"'
+alias rosetta='source "$SYS_CONFIG/bin/rosetta"'
 
 alias c='clear'
 alias clr="clear"
@@ -14,10 +20,10 @@ alias clrbuf="printf '\ec\e[3J'"
 alias clear_buffer="printf '\ec\e[3J'"
 
 if [[ -z  $(command -v exa) ]]; then
-  alias ls="ls -Gp"
-  alias la="ls -AGp"
-  alias ll="ls -lAGp"
-  # alias lt="tree -C -L 3"
+  alias ls='ls -Gp'
+  alias la='ls -AGp'
+  alias ll='ls -lAGp'
+  # alias lt='tree -C -L 3'
 else
   alias exa='exa -F --group-directories-first'
   alias l1='exa -1 --no-icons' # one entry per line

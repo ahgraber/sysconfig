@@ -223,6 +223,10 @@ _rosetta_path() {
   export path
   export manpath
   export infopath
+
+  # Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
+  # requires `sudo touch /etc/odbcinst.ini && sudo chown $(whoami) /etc/odbcinst.ini`
+  [[ -f "$HOMEBREW_PREFIX"/etc/odbcinst.ini ]] && cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
 }
 
 _rosetta_prompt() {
@@ -300,9 +304,9 @@ z4h bindkey z4h-cd-down         Shift+Down   # cd into a child directory
 
 # Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
 # requires `sudo chown $(whoami) /etc/odbcinst.ini`
-if [[ -f /etc/odbcinst.ini ]]; then
-  cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
-fi
+# if [[ -f /etc/odbcinst.ini ]]; then
+#   cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
+# fi
 
 source "$ZSH_CONFIG"/config/conda.zsh
 # ### >>> conda initialize >>>

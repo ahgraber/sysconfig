@@ -1,0 +1,4 @@
+*.ipynb filter=nbstrip_full
+* text=auto eol=lf
+*.{bat[bB][aA][tT]} eol=crlf
+*.{cmd[cC][mM][dD]} eol=crlf

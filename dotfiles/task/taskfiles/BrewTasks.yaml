@@ -1,0 +1,198 @@
+---
+version: "3"
+
+vars:
+  SYS_CONFIG:
+    sh: 'echo "$SYS_CONFIG"'
+  SCRIPTS_DIR:
+    sh: 'echo "$SYS_CONFIG/dotfiles/task/scripts"'
+
+# ref:
+# - https://nixos.org/manual/nix/stable/command-ref/nix-env.html
+# - https://nixos.org/guides/nix-pills
+# - https://github.com/ianthehenry/sd-nix
+tasks:
+  # default:
+  #   silent: true
+  #   cmds:
+  #     -
+
+  _init_native:
+    desc: Install native Homebrew
+    silent: true
+    cmds:
+      - /usr/bin/arch -arm64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      - brew update
+      - brew upgrade
+    prerequisites:
+      - sh: /usr/bin/arch -arm64 /bin/bash [[ -z $(command -v brew) && ! -f /opt/homebrew/Homebrew/bin/brew ]]
+        msg: "Native Homebrew already installed"
+
+  _init_rosetta:
+    desc: Install rosetta Homebrew
+    silent: true
+    cmds:
+      - /usr/bin/arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      - brew update
+      - brew upgrade
+    prerequisites:
+      - sh: /usr/bin/arch -x86_64 /bin/bash [[ -z $(command -v brew) && ! -f /usr/local/Homebrew/bin/brew ]]
+        msg: "Rosetta Homebrew already installed"
+
+  _init_install:
+    desc: Install default packages with brew
+    silent: true
+    cmds:
+      - |
+        TAPS=({{.TAPS}})
+        for tap in "${TAPS[@]}"; do
+          brew tap "$tap";
+        done;
+        PACKAGES=({{.PACKAGES}})
+        for pkg in "${PACKAGES[@]}"; do
+          is_command "$pkg" || brew install --quiet "$pkg";
+        done;
+    preconditions:
+      - sh: "is_command brew"
+        msg: brew not found
+    vars:
+      TAPS: |
+        fluxcd/tap
+        mistertea/et
+        qmk/qmk
+        tavianator/tap
+      PACKAGES: |
+        age
+        bat
+        bat-extras
+        coreutils
+        direnv
+        exa
+        fd
+        fluxcd/tap/flux
+        fzf
+        gcc
+        git
+        git-credential-manager
+        git-filter-repo
+        gnu-sed
+        go
+        go-task
+        graphviz
+        gzip
+        hadolint
+        helm
+        htop
+        jq
+        kompose
+        kubeval
+        kustomize
+        mistertea/et/et
+        openssh
+        pre-commit
+        prettier
+        shellcheck
+        sops
+        ssh-copy-id
+        stern
+        tavianator/tap/bfs
+        thefuck
+        tldr
+        tmux
+        tokei
+        typos-cli
+        vivid
+        wget
+        yamllint
+        yarn
+        yq
+
+# TODO: uninstall direnv, task?
+
+#   channel add:
+#     desc: Add specified nix channel
+#     # silent: true
+#     cmds:
+#       - nix-channel --add {{.CLI_ARGS}}
+
+#   channel rm:
+#     desc: Remove specified nix channel
+#     aliases: ["channel remove"]
+#     # silent: true
+#     cmds:
+#       - nix-channel --remove {{.CLI_ARGS}}
+
+#   gc:
+#     desc: Garbage collect
+#     # silent: true
+#     cmds:
+#       - nix-collect-garbage -d
+
+#   info:
+#     desc: "Get info about a nix pkg (hint: -- nixpkgs.<name>)"
+#     # silent: true
+#     cmds:
+#       - nix-env --query-available --attr {{.CLI_ARGS}} --description
+
+#   install:
+#     desc: "Install a nix pkg (hint: -- nixpkgs.<name>)"
+#     # silent: true
+#     cmds:
+#       - nix-env --install --attr {{.CLI_ARGS}}
+
+#   list:
+#     desc: List installed nix pkgs
+#     summary: List installed nix pkgs available in the active Nix expression
+#     # silent: true
+#     cmds:
+#       - nix-env --query --available --status
+
+#   moreinfo:
+#     desc: "Get long description about a nix pkg (hint: -- nixpkgs.<name>)"
+#     # silent: true
+#     cmds:
+#       - |
+#         nix-env --query-available --attr {{.CLI_ARGS}} --json  \
+#         | jq -r '.[] | .name + " " + .meta.description,
+#                  "",
+#                  (.meta.longDescription | rtrimstr("\n"))'
+#     preconditions:
+#       - sh: "[[ -n $(command -v jq) ]] || return 1"
+#         msg: |
+#           'jq' is required
+
+#   outdated:
+#     desc: Show outdated nix pkgs
+#     # silent: true
+#     cmds:
+#       - nix-env --query --compare-versions
+
+#   uninstall:
+#     desc: "Uninstall a nix pkg (hint: -- <name>)"
+#     aliases: ["remove"]
+#     # silent: true
+#     cmds:
+#       - nix-env --uninstall {{.CLI_ARGS}}
+#       # TODO: validate that package is uninstalled
+
+#   update:
+#     desc: Update / upgrade specified nix pkgs
+#     aliases: ["upgrade"]
+#     # silent: true
+#     cmds:
+#       - nix-channel --update
+#       - nix-env --upgrade --attrs {{.CLI_ARGS}}
+
+#   update-all:
+#     desc: Update / upgrade all nix pkgs
+#     aliases: ["upgrade-all"]
+#     # silent: true
+#     cmds:
+#       - nix-channel --update
+#       - nix-env --upgrade
+
+# #   switch:
+# #     desc: Switch to the new configuration
+# #     silent: true
+# #     cmds:
+# #       - home-manager switch

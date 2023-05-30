@@ -1,0 +1,54 @@
+---
+version: "3"
+
+includes:
+  git:
+    taskfile: "./GitTasks.yaml"
+    internal: true
+
+vars:
+  SYS_CONFIG:
+    sh: 'echo "$SYS_CONFIG"'
+  CODE_DIR:
+    sh: 'echo "$CODE_DIR"'
+
+tasks:
+  # default:
+  #   silent: true
+  #   cmds:
+  #     - ...
+
+  _init:
+    desc: Install mambaforge
+    silent: true
+    cmds:
+      - curl -L -O https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh
+      - bash Mambaforge-$(uname)-$(uname -m).sh -b -f -p $HOME/mambaforge
+      - rm Mambaforge-$(uname)-$(uname -m).sh
+    preconditions:
+      - sh: "! is_command conda"
+        msg: "conda found; skipping install"
+      - sh: "! is_command mamba"
+        msg: "mamba found; skipping install"
+
+  env_create:
+    desc: Create a new conda environment (prompted)
+    silent: true
+    cmds:
+      - conda_env_create
+    preconditions:
+      - sh: "is_command conda_env_create"
+        msg: "conda_env_create not found.  Is '_sysconfig/bin' in your path?"
+
+  env_create_flags:
+    desc: Create a new conda environment (cli flags)
+    summary: |
+      Create a new conda environment with optional Python version and packages or from an environment.yaml file
+      Usage: conda_env_create -n <env_name> [-p <python_version>] [-l <package list>] | [-r <environment_yaml>]
+      Note: <package list> should be quoted and space-delimited or comma delimited
+    silent: true
+    cmds:
+      - conda_env_create_flags
+    preconditions:
+      - sh: "is_command conda_env_create_flags"
+        msg: "conda_env_create_flags not found.  Is '_sysconfig/bin' in your path?"

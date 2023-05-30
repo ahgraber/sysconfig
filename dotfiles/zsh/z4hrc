@@ -1,0 +1,335 @@
+#!/usr/bin/env zsh
+
+# shellcheck shell=bash
+# shellcheck source=/dev/null
+# shellcheck disable=SC2034,SC2154,SC2317
+
+###-----------------------------------------------------------------------####
+# Personal Zsh configuration file.
+# Keep all shell customization and configuration
+# (including exported environment variables such as PATH)
+# in this file or in files source by it.
+#
+# Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md.
+###-----------------------------------------------------------------------####
+
+### Uncomment to enable startup profiling (also at end of .zshrc!)
+# zmodload zsh/zprof
+
+### Periodic auto-update on Zsh startup: 'ask' or 'no'.
+### You can manually run `z4h update` to update everything.
+zstyle ':z4h:'                                auto-update       'ask'
+zstyle ':z4h:'                                auto-update-days  '28'
+
+### Move prompt to the bottom when zsh starts and on Ctrl+L.
+zstyle ':z4h:'                                prompt-at-bottom  'yes'
+### Open new tabs/windows in the same directory as the current tab
+zstyle ':z4h:'                                propagate-cwd     'yes'
+zstyle ':z4h:'                                prompt-height      4
+### Enable iTerm2 integration
+zstyle ':z4h:'                                iterm2-integration      'no'
+### Enable shell integrations
+zstyle ':z4h:'                                term-shell-integration  'yes'
+
+### Autocompletion settings
+zstyle ':z4h:autosuggestions'                 forward-char      'partial-accept'
+zstyle ':z4h:autosuggestions'                 end-of-line       'partial-accept'
+
+### Completion settings
+# shellcheck disable=SC2086,SC2296
+zstyle ':completion:*'                        list-colors       ${(s.:.)LS_COLORS}
+zstyle ':completion:*'                        sort              false
+zstyle ':completion:*:ls:*'                   list-dirs-first   true
+### Improve completions for ssh based on ~/.ssh/config hosts list
+zstyle ':completion:*:ssh:argument-1:'        tag-order         hosts users
+zstyle ':completion:*:scp:argument-rest:'     tag-order         hosts files users
+zstyle ':completion:*:(ssh|scp|rdp):*:hosts'  hosts
+
+### Enable direnv to automatically source .envrc files.
+# if [[ "$(command -v direnv)" ]]; then
+zstyle ':z4h:direnv'                        enable            'yes'
+zstyle ':z4h:direnv:success'                notify            'yes'
+# fi
+
+### Recursively traverse directories when TAB-completing files.
+zstyle ':z4h:fzf-complete'                    recurse-dirs      'no'
+zstyle ':z4h:fzf-complete'                    fzf-bindings      tab:repeat
+zstyle ':z4h:fzf-dir-history'                 fzf-bindings      tab:repeat
+
+### Configure automatic teleportation of z4h over ssh
+### "Whitelist/Blacklist" modes determined by default
+zstyle ':z4h:ssh:*'                           enable            'no'   # default
+# zstyle ':z4h:ssh:example-hostname1'         enable            'yes'  # specified host
+### Send these files over to the remote host when connecting over ssh to the enabled hosts.
+# zstyle ':z4h:ssh:*'                           send-extra-files  '~/.nanorc' '~/.env.zsh'
+
+### Clone additional Git repositories from GitHub.
+### `z4h install` must come before `z4h init`; Cloned files can be used after `z4h init`.
+z4h install ohmyzsh/ohmyzsh || return
+z4h install conda-incubator/conda-zsh-completion || return
+
+# Install or update core components (fzf, zsh-autosuggestions, etc.) and
+# initialize Zsh. After this point console I/O is unavailable until Zsh
+# is fully initialized. Everything that requires user interaction or can
+# perform network I/O must be done above. Everything else is best done below.
+z4h init || return
+
+#--- set VIVs (Very Important Vars) ------------------------------------------
+z4h source "${HOME}/.env"
+
+# ### these should be handled by sourcing ~/.env
+# # get absolute path for .zshrc and set ZSH_CONFIG dir
+# my_zshrc="$(readlink "$HOME/.zshrc")" # && export my_zshrc
+# ZSH_CONFIG="${ZSH_CONFIG:-$(dirname "$my_zshrc")}" && export ZSH_CONFIG
+# # find sysconfig project dir
+# SYS_CONFIG="${SYS_CONFIG:-$("$ZSH_CONFIG"/functions/get_project_dir.sh "$my_zshrc")}" && export SYS_CONFIG
+# # set code dir
+# CODE_DIR="${CODE_DIR:-"$HOME"/_code}" && export CODE_DIR
+
+# ---[ Set shell options ]----------------------------------------------------
+z4h source "$ZSH_CONFIG"/config/options.zsh
+
+# ---[ Path Configuration ]---------------------------------------------------
+### -U means "unique" -- i.e., deduplicate
+typeset -U base_path
+typeset -U prefix_path
+typeset -U path
+typeset -U manpath
+typeset -U infopath
+
+### enforce mostly-standard ordering of path (reinsert these at front of path)
+set -A path '/usr/local/bin' '/usr/local/sbin' '/usr/bin' '/bin' '/usr/sbin' '/sbin' "${path[@]:-}"
+### save as 'base_path' for future reference
+base_path=("${path[@]}")
+
+# ### Add system pythons to path?
+# pythons=("$HOME/Library/Python/3.7/bin" "$HOME/Library/Python/3.8/bin" "$HOME/Library/Python/3.9/bin")
+# set -A path "${pythons[@]:-}" "${path[@]:-}"
+
+### Set prefix_path for things that should always be first-in-path
+prefix_path=(.)
+
+### Higher priorities are higher in this section
+# config
+prefix_path=("${prefix_path[@]:-}" "$SYS_CONFIG/bin" "${HOME}/.local/bin")
+
+# conda/mamba
+[[ -n "$(command -v conda)" ]] && \
+  prefix_path=("${prefix_path[@]:-}" "${CONDA_PREFIX}/bin" "${HOME}/mambaforge/condabin" "${HOME}/mambaforge/bin")
+
+# rancher desktop
+[[ -d ~/.rd ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.rd/bin")
+
+# kubectl plugins
+[[ -d ~/.krew ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.krew/bin")
+
+set -A path "${prefix_path[@]}" "${path[@]}"
+export path
+
+typeset -U fpath
+fpath=("${fpath[@]:-}" "$ZSH_CONFIG/completions")
+export fpath
+autoload -U compinit
+compinit -i
+
+
+# ---[ Load/Source additional plugins/files ]---------------------------------
+### load a plugin
+# `z4h load`:   ohmyzsh/ohmyzsh/plugins/emoji
+### source an individual file
+# `z4h source`: ohmyzsh/ohmyzsh/lib/diagnostics.zsh
+
+# Source additional local files if they exist.
+# z4h source "${HOME}/.env.zsh"
+z4h source "${HOME}/.aliases"
+z4h source "${HOME}/.aliases.local"
+# if [[ -d "${HOME}/.fonts" ]]; then
+#   for sh in "${HOME}"/.fonts/*.sh; do
+#     z4h source "$sh"
+#   done
+# fi
+
+[[ -n "$(command -v thefuck)" ]] && eval "$(thefuck --alias)"
+[[ -n "$(command -v vivid)" ]] && LS_COLORS="$(vivid generate one-dark)" && export LS_COLORS
+
+z4h load -c esc/conda-zsh-completion
+z4h load -c ohmyzsh/ohmyzsh/plugins/gitfast            # git completions
+z4h load -c ohmyzsh/ohmyzsh/plugins/safe-paste         # prevent pasted code from running
+# z4h source -c ohmyzsh/ohmyzsh/lib/clipboard.zsh
+
+### load local functions
+### 'fzf' will detect based on filename + underscore (try 'conda_' + TAB)
+z4h source -c "$ZSH_CONFIG/functions/clipboard.zsh"
+
+# z4h source -c "$HOME/.ZSH_CONFIG/config/corrections.zsh"
+
+### Autoload functions.
+autoload -Uz zmv
+
+### Define functions and completions.
+md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" || return; }
+compdef _directories md
+compdef _default open
+
+# ---[ Export environmental variables ]---------------------------------------
+export GPG_TTY=$TTY
+export LANG=en_US.UTF-8
+export PAGER=less
+export HOMEBREW_NO_ANALYTICS=1
+
+# # unixodbc
+# export LDFLAGS="-L/opt/homebrew/Cellar/unixodbc/2.3.9_1/lib ${LDFLAGS}"
+# export CPPFLAGS="-I/opt/homebrew/Cellar/unixodbc/2.3.9_1/include ${CPPFLAGS}"
+# # openblas
+# export LDFLAGS="-L/opt/homebrew/opt/openblas/lib ${LDFLAGS}"
+# export CPPFLAGS="-I/opt/homebrew/opt/openblas/include ${CPPFLAGS}"
+# export OPENBLAS="$(brew --prefix openblas)"
+
+# ---[ Rosetta Emulation ]----------------------------------------------------
+alias native='source "$SYS_CONFIG/bin/native"'
+alias rosetta='source "$SYS_CONFIG/bin/rosetta"'
+
+_rosetta_switcher() {
+  ### allows direnv-based architecture determination by monitoring ROSETTA_MODE
+  # inspired by: https://hynek.me/til/`auto`matic-rosetta-fish-direnv/
+  if [[ -n "${ROSETTA_MODE:-}" ]]; then
+    [[ "$ROSETTA_MODE" -eq 0 ]] && "$SYS_CONFIG/bin/native";
+    [[ "$ROSETTA_MODE" -eq 1 ]] && "$SYS_CONFIG/bin/rosetta";
+  fi
+}
+
+_rosetta_path() {
+  ### manage architecture-/rosetta-based path updates (especially for homebrew)
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+    # alias brew='/opt/homebrew/bin/brew';
+    brew() { /opt/homebrew/bin/brew $@; };
+    # eval "$(/opt/homebrew/bin/brew shellenv)"
+    export HOMEBREW_PREFIX="/opt/homebrew";
+    export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+    export HOMEBREW_REPOSITORY="/opt/homebrew/Homebrew";
+  else
+    # alias brew='/usr/local/bin/brew';
+    brew() { /usr/local/bin/brew $@; };
+    # eval "$(/usr/local/bin/brew shellenv)"
+    export HOMEBREW_PREFIX="/usr/local";
+    export HOMEBREW_CELLAR="/usr/local/Cellar";
+    export HOMEBREW_REPOSITORY="/usr/local/Homebrew";
+    export HOMEBREW_SHELLENV_PREFIX="/usr/local";
+  fi
+
+  set -A path "${prefix_path[@]}" "$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin" "${path[@]}"
+  set -A manpath "$HOMEBREW_PREFIX/share/man" "${manpath[@]:-}"
+  set -A infopath "$HOMEBREW_PREFIX/share/info" "${infopath[@]:-}"
+  export path
+  export manpath
+  export infopath
+
+  # Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
+  # requires `sudo touch /etc/odbcinst.ini && sudo chown $(whoami) /etc/odbcinst.ini`
+  [[ -f "$HOMEBREW_PREFIX"/etc/odbcinst.ini ]] && cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
+}
+
+_rosetta_prompt() {
+  ### configure variable for p10k to display current rosetta mode
+  typeset -g prompt_rosettamode
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+    prompt_rosettamode='arm64 (Native)';
+  else
+    prompt_rosettamode='x86_64 (Rosetta)';
+  fi
+}
+
+# prepend _rosetta_* to precmd functions (need to run *prior* to p10k precmd_functions)
+set -A precmd_functions _rosetta_switcher _rosetta_path _rosetta_prompt "${precmd_functions[@]:-}"
+
+# ---[ Prompt Configuration ]-------------------------------------------------
+# add arch to p10k
+prompt_rosettamode() {
+  p10k segment -f 250 -i '💻' -t "${prompt_rosettamode//\%/%%}"
+}
+instant_prompt_rosettamode() { prompt_rosettamode; }
+# hack prompt to show "rosettamode" at end of RIGHT_PROMPT_ELEMENTS
+# if specific location is required, modify ~/.p10k.zsh
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=rosettamode
+
+### Smooth rendering with two-line prompt with an empty line before it
+POSTEDIT=$'\n\n\e[2A'
+
+### make transient prompt work consistently when closing an SSH connection
+z4h bindkey z4h-eof             Ctrl+D
+
+### ---[ Define key bindings ]-------------------------------------------------
+### For default keybindings, see
+### Ref: https://github.com/romkatv/zsh4humans/blob/v5/fn/-z4h-init-zle
+
+### Keyboard type: 'mac' or 'pc'.
+zstyle ':z4h:bindkey' keyboard  'mac'
+
+z4h bindkey undo                Ctrl+/
+z4h bindkey redo                Alt+/
+### mimic mac-standard key nav
+z4h bindkey beginning-of-line   Ctrl+Left
+z4h bindkey end-of-line         Ctrl+Right
+z4h bindkey z4h-backward-word   Alt+Left
+z4h bindkey z4h-forward-word    Alt+Right
+
+### use system clipboard as kill buffer
+# paste command
+bindkey     '^y'                pb-yank                     # Ctrl + Y
+bindkey     '^Y'                pb-yank                     # Ctrl + Y
+# cut commands
+bindkey     '^u'                pb-kill-whole-line          # Ctrl + U
+bindkey     '^U'                pb-kill-whole-line          # Ctrl + U
+bindkey     '^k'                pb-kill-line                # Ctrl + K
+bindkey     '^K'                pb-kill-line                # Ctrl + K
+bindkey     '^[[3;5~'           pb-kill-line                # Ctrl + Delete
+bindkey     '^w'                pb-backward-kill-word       # Ctrl + W
+bindkey     '^W'                pb-backward-kill-word       # Ctrl + W
+bindkey     '^[d'               pb-kill-word                # Alt + D
+bindkey     '^[D'               pb-kill-word                # Alt + D
+# empty kill buffer
+bindkey     '^X^K'              pb-kill-buffer              # Ctrl + X, Ctrl + K
+# mark with ctrl+space, use Esc+W to mark region end
+bindkey     '^[w'  pb-copy-region-as-kill-deactivate-mark   # Alt + W
+bindkey     '^[W'  pb-copy-region-as-kill-deactivate-mark   # Alt + W
+
+### shift + arrows does directory navigation
+z4h bindkey z4h-cd-back         Shift+Left   # cd into the previous directory
+z4h bindkey z4h-cd-forward      Shift+Right  # cd into the next directory
+z4h bindkey z4h-cd-up           Shift+Up     # cd into the parent directory
+z4h bindkey z4h-cd-down         Shift+Down   # cd into a child directory
+
+
+# ---[ User Configuration ]---------------------------------------------------
+
+# Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
+# requires `sudo chown $(whoami) /etc/odbcinst.ini`
+# if [[ -f /etc/odbcinst.ini ]]; then
+#   cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
+# fi
+
+source "$ZSH_CONFIG"/config/conda.zsh
+# ### >>> conda initialize >>>
+# # !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$("${HOME}/mambaforge/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
+# # shellcheck disable=SC2181
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "${HOME}/mambaforge/etc/profile.d/conda.sh" ]; then
+#         . "${HOME}/mambaforge/etc/profile.d/conda.sh"  # commented out by conda initialize
+#         # CONDA_CHANGEPS1=false conda activate base
+#     else
+#         export PATH="${HOME}/mambaforge/bin:$PATH"
+#     fi
+# fi
+# unset __conda_setup
+
+# if [ -f "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh" ]; then
+#     . "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh"  # commented out by conda initialize
+# fi
+# ### <<< conda initialize <<<
+
+
+### uncomment to enable startup profiling
+# zprof

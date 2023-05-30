@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
+tell "This will remove all local branches that are not present in $(git rev-parse --show-toplevel) upstream/origin."
+ask "Do you want to continue? (y/n)? [n] "
+read -r select
+
+if is_yes "${select:-n}"; then
+  git fetch;
+  git remote prune origin;
+  git branch -vv | grep ': gone]' | grep -v "\*" | awk '{ print $1 }' | xargs git branch "${1:-'-d'}"
+fi

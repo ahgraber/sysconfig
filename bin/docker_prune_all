@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
+! is_command docker && { yell "Error: Docker not found!"; exit 1; }
+
+warn "This will remove all containers, images, networks, and volumes!"
+ask "Do you want to continue? (y/n)? [n] "
+read -r select
+# if [[ "$select" =~ $yesexpr ]]; then
+if is_yes "${select:-n}"; then
+  docker container prune -f;
+  docker image prune -f;
+  docker network prune -f;
+  docker volume prune -f;
+fi

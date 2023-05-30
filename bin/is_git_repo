@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+# set -o nounset
+set -o pipefail
+# set -o xtrace
+
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <path>
+  Return true if path is a git repo
+
+Example: '$(basename "$0") . && echo "Repo found!"'
+EOF
+  exit
+}
+[[ -z "$1" ]] && usage || _path="$1"
+
+[[ "$(cd "$_path"; git rev-parse --is-inside-work-tree)" == "true" ]] && exit 0 || exit 1

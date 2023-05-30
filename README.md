@@ -1,26 +1,36 @@
-# zsh configuration
+# System Configuration
 
 This repo is designed to quickly implement an intelligent standard zsh configuration.
 In its default settings, it relies on [zsh4humans](https://github.com/romkatv/zsh4humans).
 
 Alternatively, alter the install script to use `zshrc` and `zshenv` which relies on
 [zcomet](https://github.com/agkozak/zcomet) for more granular control of your zsh environment.
-As these are not daily-driven, they are likely rough around the edges.
+As these are not daily-driven, they are likely rough around the edges.  For further reference, see [minimal zcomet config](https://github.com/romkatv/zsh-bench/tree/master/configs/zcomet/skel)
 
 > **Rosetta emulation** inherent in the z4hrc assumes/_requires_ `direnv` is installed in both native and emulated environments!
->
+> [ref](https://www.roguelynn.com/words/m1-dev-setup/)
 
 ## Quickstart
 
-The following script will autoinstall the default configuration by:
+The install script (below) will autoinstall the default configuration:
 
-- cloning this repo to `~/.zshconfig`
-- installing [prerequisites](./scripts/prerequisites.sh) and required fonts
-- symlinking [dotfiles](./dotfiles/) to home directory
+- clone this repo to `~/_sysconfig` (or configured location)
+<!-- - install [prerequisites](./scripts/prerequisites.sh) and required fonts -->
+- symlink [dotfiles](./dotfiles/) to home directory
+- install [task](https://taskfile.dev/)
 
 ```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ahgraber/zshconfig/HEAD/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ahgraber/sysconfig/HEAD/install.sh)"
 ```
+
+## Next steps
+
+Use `task` to complete setup:
+
+- brew
+- pipx
+- nix
+- mac setup/configuration
 
 ## Manual Configuration
 
@@ -114,3 +124,8 @@ cat <<EOF > $HOME/.config/direnv/direnv.toml
 prefix = [ "$HOME/GitHub" ]) # whitelist `GitHub` dir
 EOF
 ```
+
+### task
+
+[task](https://taskfile.dev/) is a task runner / build tool that provides
+a simple command line interface to logical tasks, defined as bash commands in `taskfile.yaml`.

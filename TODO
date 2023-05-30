@@ -1,0 +1,19 @@
+# TODO
+
+1. Task integration
+
+2. "pluggable" zsh config --
+   1. https://github.com/thoughtbot/dotfiles
+   2. https://github.com/renemarc/dotfiles (especially cross-platform options)
+
+3. add functions to `/bin`
+
+4. Mac setup -- see https://github.com/driesvints/dotfiles
+
+5. Figure out install/bootstrap process
+   1. [copier]()?
+   2. how to configure initial "SYS_CONFIG" var
+
+## Next Gen
+
+1. Nix

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+# set -o nounset
+set -o pipefail
+# set -o xtrace
+
+# ------------------------------------------------------------------------
+# https://github.com/client9/shlib - portable posix shell functions
+# Public domain - http://unlicense.org
+# https://github.com/client9/shlib/blob/master/LICENSE.md
+# but credit (and pull requests) appreciated.
+# ------------------------------------------------------------------------
+
+is_command curl || yell "curl not found."
+
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <local_file> <source_url> [ header ]
+  Use curl to download file to local_file from source_url (while providing optional header)
+
+  Optional header:      HTTP header in the form "foo: bar"
+EOF
+  exit
+}
+[[ $# -lt 1 || $# -gt 3 ]] && usage
+
+[[ -z "$1" ]] && { warn "Empty local_file"; exit 1; } || local_file="$1"
+[[ -z "$2" ]] && { warn "Empty source_url"; exit 1; } || source_url="$2"
+header=$3
+
+if [ -z "$header" ]; then
+  cmd=$(curl -w '%{http_code}' -sL -o "$local_file" "$source_url")
+else
+  cmd=$(curl -w '%{http_code}' -sL -H "$header" -o "$local_file" "$source_url")
+fi
+if [ "$cmd" != "200" ]; then
+  yell "http_download_curl received HTTP status $cmd"
+  exit 1
+fi
+exit 0

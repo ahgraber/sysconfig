@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
+! is_command docker && { yell "Error: Docker not found!"; exit 1; }
+
+warn "This will remove all untagged local images."
+ask "Do you want to continue? (y/n)? [n] "
+read -r select
+if is_yes "${select:-n}"; then
+  docker rmi "$(docker images | grep "^<none>" | awk "{print $3}")"
+fi

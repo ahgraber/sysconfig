@@ -1,0 +1,40 @@
+---
+version: "3"
+
+includes:
+  git:
+    taskfile: "../GitTasks.yaml"
+    internal: true
+  mac:
+    taskfile: "./MacTasks.yaml"
+    internal: true
+
+vars:
+  SYS_CONFIG:
+    sh: 'echo "$SYS_CONFIG"'
+  SCRIPTS_DIR:
+    sh: 'echo "$SYS_CONFIG/dotfiles/task/scripts"'
+
+tasks:
+  #   default:
+  #     silent: true
+  #     cmds:
+  #       - task:
+
+  code_dir:
+    desc: Create code dir
+    silent: true
+    cmds:
+      - bash {{.SCRIPTS_DIR}}/configure_git_dir.sh
+
+  onedrive:
+    desc: This will back up your current ~/Desktop and ~/Documents folders and replace with links to OneDrive locations
+    silent: true
+    cmds:
+      - bash {{.SCRIPTS_DIR}}/symlink_onedrive.sh
+
+  sync:
+    desc: Clone or update this repo
+    silent: true
+    cmds:
+      - task git:clone-update -- -s https://github.com/ahgraber/setup-config.git -d "{{.SYS_CONFIG}}"

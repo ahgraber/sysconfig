@@ -1,0 +1,37 @@
+#!/usr/bin/env/bash
+
+_native() {
+  ### direnv runs as a separate bash shell that updates the zsh environment
+  ### instead of trying to manipulate rosetta mode directly,
+  ### set env var for _rosetta_switcher() function in .zshrc to pick up on
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 1 ]]; then
+    export ROSETTA_MODE=0
+  fi
+}
+_rosetta() {
+  ### direnv runs as a separate bash shell that updates the zsh environment
+  ### instead of trying to manipulate rosetta mode directly,
+  ### set env var for _rosetta_switcher() function in .zshrc to pick up on
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+    export ROSETTA_MODE=1
+    # echo "Entering Rosetta ..."
+    # exec /usr/bin/arch -x86_64 /bin/zsh
+  fi
+}
+_mamba() {
+  ### direnv runs as a separate bash shell that updates the zsh environment
+  ### instead of manipulating conda in bash subshell,
+  ### set CONDA_DEFAULT_ENV for conda to pick up on in once we reenter zsh
+  if [ -n "$1" ]; then
+    export CONDA_DEFAULT_ENV="$1"
+  else
+    (>&2 echo No environment specified);
+    exit 1;
+  fi;
+}
+
+### NOTE: the problem with layouts is only once can be used at a time
+### Better to use both _native/_rosetta and _mamba to set environment as needed
+layout_native() { _native; }
+layout_rosetta() { _rosetta; }
+layout_mamba() { _mamba $@; }

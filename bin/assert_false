@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+# set -o nounset
+set -o pipefail
+# set -o xtrace
+
+# ------------------------------------------------------------------------
+# https://github.com/kward/shunit2 - provide assertions for shell scripts
+# Public domain - Apache License 2.0
+# https://github.com/kward/shunit2/blob/master/LICENSE
+# ------------------------------------------------------------------------
+
+usage () {
+  cat << EOF
+Usage: $(basename "$0") [ options ] <condition> <expected> [ message ]
+  Assert a value or shell test condition is false
+  In shell, a value of 0 is true and a non-zero value is false.
+
+Options:
+  -h                    show help and exit
+  -v                    verbose output
+
+Args:
+  condition: string:    integer value or shell condition statement
+  message:   string:    failure message [optional]
+
+Example: '$(basename "$0") -v "[ -f '/non/existent/file' ]" "This message should not be seen"'
+Example: '$(basename "$0") 0 "test failed"'
+EOF
+  exit
+}
+
+verbose=1
+while getopts "hv" opt; do
+  case ${opt} in
+    h ) usage ;;
+    v ) verbose=0 ;;
+    \? )
+      printf "Invalid option: %s" "$OPTARG" 1>&2
+      usage
+      ;;
+  esac
+done
+shift $((OPTIND -1)) # for any additional params
+
+[[ $# -lt 1 || $# -gt 2 ]] && usage
+
+[[ -z "$1" ]] && { warn "Empty condition arg"; exit 1; } || condition="$1"
+msg="${2:-}"
+status='fail'
+
+# check if integer
+if [[ "${condition}" =~ ^[0-9]+$ ]]; then
+  # Possible return value. Treating 0 as true, and non-zero as false.
+  [[ "${condition}" != 0 ]] && status='pass'
+else
+  if eval "$condition" >/dev/null 2>&1; then
+    # a call that works fails
+    status='fail'
+  else
+    status='pass'
+  fi
+fi
+
+if [[ "$status" == 'pass' ]]; then
+  status_msg="PASS :: $(basename "$0") ('$condition')"
+  [[ "$verbose" -eq 0 ]] && win "$status_msg"
+  exit 0
+else
+  status_msg="FAIL :: $(basename "$0") ('$condition')"
+  if [[ -n "$msg" ]]; then
+    yell "$status_msg :: $msg"
+  elif [[ "$verbose" -eq 0 ]]; then
+    yell "$status_msg"
+  fi
+  exit 1
+fi

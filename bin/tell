@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+# set -o nounset
+set -o pipefail
+# set -o xtrace
+
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <message>
+  Print $(colorize blue 'blue text') with newline.  Intended for status updates.
+EOF
+  exit
+}
+[[ -z "$1" ]] && usage
+
+if [[ -n "$(command -v fold)" ]]; then
+  colorize blue "${1}\n" | fold -s -w 120
+else
+  colorize blue "${1}\n"
+fi

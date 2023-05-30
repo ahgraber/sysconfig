@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0")") [-h] -n ENV_NAME [ [-p VERSION] [-l PACKAGES] | -y FILE ]
+Create a new conda ENV_NAME with optional Python version and packages.
+
+Options:
+  -h                    Show this help message and exit.
+  -n ENV_NAME           Name of the new conda ENV_NAME (required).
+  -p PYTHON VERSION     Python version to install (optional, default 3.10).
+  -l PACKAGE LIST       List of packages to install (optional).
+                        Use quotes with spaces '-l "pandas numpy"'
+                        or commas '-l pandas,numpy'
+  -y FILE               Path to environment.yaml to install packages (optional).
+
+Example: $(basename "$0")") -n myenv -p 3.10.* -l 'numpy pandas'
+EOF
+  exit
+}
+
+ENV_NAME=""
+PYTHON_VERSION="3.10.*"
+PKGS=()
+YAML_FILE=""
+
+# Parse arguments
+while getopts "hn:p:l:y:" opt; do
+  case ${opt} in
+    h )
+      usage
+      ;;
+    n )
+      ENV_NAME="$OPTARG"
+      ;;
+    p )
+      PYTHON_VERSION="$OPTARG"
+      ;;
+    l )
+      IFS=', ' read -r -a PKGS <<< "$OPTARG"
+      ;;
+    y )
+      YAML_FILE="$OPTARG"
+      ;;
+
+    : )
+      printf "Invalid option: %s requires an argument" "$OPTARG" 1>&2
+      usage
+      ;;
+    \? )
+      printf "Invalid option: %s" "$OPTARG" 1>&2
+      usage
+      ;;
+
+  esac
+done
+shift $((OPTIND -1)) # for any additional params
+
+### logic check(s)
+if [[ -z "$ENV_NAME" ]]; then
+  printf "Error: '-n ENV_NAME' is required. \n" 1>&2
+  exit 1
+fi
+
+if [[ -n "${PKGS[*]-}" && -n "$YAML_FILE" ]]; then
+  printf "Error: Only one of -l (package list) or -y (environment.yaml) can be provided. \n" 1>&2
+  exit 1
+fi
+
+# Check if conda is installed
+if [[ -z $(command -v conda) || ! -f "$(conda info --base)/bin/activate" ]]; then
+  printf "'conda' not found. Please install conda before running this script. \n"
+  exit 1
+fi
+
+# use mamba if it exists
+if [[ -n $(command -v mamba) ]]; then
+    conda() {
+      mamba "$@"
+    }
+fi
+
+# enable "conda activate" in non-interactive shell ENV_NAME (i.e., this script)
+activate() {
+  # shellcheck disable=SC1091  # allow non-included paths
+  source "$(conda info --base)/bin/activate" && conda activate "$@"
+}
+
+# Prep architecture-based env
+CONDA_SUBDIR=""
+if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
+  archcheck=$(/usr/bin/arch)
+  case "$archcheck" in
+    arm64)
+      CONDA_SUBDIR="osx-arm64"
+    ;;
+    i386|x86_64)
+      CONDA_SUBDIR="osx-64"
+      printf "--- NOTE: Prepending 'x86_' to ENV_NAME name ---\n"
+      ENV_NAME="x86_$ENV_NAME"
+    ;;
+    *)
+      printf "Unexpected architecture %s detected" "$archcheck"
+      return 1
+    ;;
+  esac
+fi
+
+# initialize ENV_NAME
+printf "Creating ENV_NAME %s with python version %s ...\n" "$ENV_NAME" "$PYTHON_VERSION"
+
+# configure with specified conda_subdir
+if [[ -n "$CONDA_SUBDIR" ]]; then
+  {
+    CONDA_SUBDIR="$CONDA_SUBDIR" conda create --name "$ENV_NAME" --quiet --yes python="$PYTHON_VERSION"
+    activate "$ENV_NAME"  # ensure correct environment
+    conda env config vars set CONDA_SUBDIR="$CONDA_SUBDIR" --name "$ENV_NAME" > /dev/null # quietmode
+  }
+else
+  conda create --name "$ENV_NAME" --quiet --yes python="$PYTHON_VERSION"
+fi
+
+# Install from ENV_NAME.yaml if provided
+if [[ -n "$YAML_FILE" ]]; then
+  printf "Attempting to recreate from ENV_NAME file at %s\n" "$YAML_FILE"
+  {
+    activate "$ENV_NAME"  # ensure correct ENV_NAME & prior changes applied
+    conda env update --name "$ENV_NAME" --file "$YAML_FILE" --quiet  # no "--yes " for "env update"
+  }
+else
+  printf "Pinning python version %s...\n" "$PYTHON_VERSION"
+  {
+    activate "$ENV_NAME"  # ensure correct ENV_NAME & prior changes applied
+    conda config --env --append pinned_packages "python=$PYTHON_VERSION"
+  }
+fi
+
+if [[ -n "${PKGS[*]}" ]]; then
+  printf "Installing packages: %s\n" "${PKGS[@]}"
+  {
+    activate "$ENV_NAME"  # ensure correct ENV_NAME & prior changes applied
+    conda install --name "$ENV_NAME" --quiet --yes "${PKGS[@]}"
+  }
+fi
+
+activate "$ENV_NAME"  # ensure correct ENV_NAME & prior changes applied

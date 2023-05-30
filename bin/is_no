@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <response>
+  Return true if response is negative
+EOF
+  exit
+}
+[[ $# -lt 1 ]] && usage
+[[ -z "$1" ]] && { warn "Empty response"; exit 1; } || response="$1"
+
+# shellcheck disable=SC2046
+set -- $(locale LC_MESSAGES)
+yesexpr="$1"; noexpr="$2"; yesword="$3"; noexpr="$4";
+
+# if negative response, return 0, else return 1
+# use like '[[ $(is_no "$response") ]] && ...'
+if [[ "$response" =~ $noexpr || "$response" =~ $noexpr ]]; then
+  # echo "0"
+  exit 0
+else
+  # echo "1"
+  exit 1
+fi

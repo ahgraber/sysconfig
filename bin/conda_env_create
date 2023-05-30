@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# defaults
+_PYTHON_VERSION="3.10.*"
+CONDA_SUBDIR=""
+PKGS=()
+
+# enable "conda activate" in non-interactive shell env_name (i.e., this script)
+activate() {
+  # shellcheck disable=SC1091  # allow non-included paths
+  source "$(conda info --base)/bin/activate" && conda activate "$@"
+}
+
+ask "Environment name: "
+read -r  env_name
+[[ -z "$env_name" ]] && { yell "Error: Environment name must be provided!"; exit 1; }
+
+# Prep architecture-based env
+if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
+  ask "emulate x86 CPU (Rosetta mode) (y/n)? [n] "
+  read -r  emulate
+  if is_yes "${emulate:-n}"; then
+    CONDA_SUBDIR="osx-64"
+    env_name="x86_$env_name"
+    warn "NOTE Prepending 'x86_' to environment name: ${env_name}"
+  else
+    CONDA_SUBDIR="osx-arm64"
+  fi
+fi
+
+# shellcheck disable=SC2143
+[[ -n "$(conda env list | grep -w "$env_name")" ]] && { yell "Error: Environment name already exists!"; exit 1; }
+
+ask "Python version (default 3.10.*): "
+read -r python_version
+python_version=${python_version:-"$_PYTHON_VERSION"}
+
+tell "Creating environment ${env_name} with python version ${python_version} ..."
+if [[ -n "$CONDA_SUBDIR" ]]; then
+  {
+    CONDA_SUBDIR="$CONDA_SUBDIR" conda create --name "$env_name" --quiet --yes python="$python_version" > /dev/null
+    activate "$env_name"  # ensure correct environment
+    conda env config vars set CONDA_SUBDIR="$CONDA_SUBDIR" --name "$env_name" > /dev/null # quietmode
+  }
+else
+  conda create --name "$env_name" --quiet --yes python="$python_version" > /dev/null
+fi
+
+tell "Pinning python version ${python_version} ..."
+{
+  activate "$env_name"  # ensure correct env_name & prior changes applied
+  conda config --env --append pinned_packages "python=$python_version"
+}
+
+ask "Use existing environment.yaml (y/n)? [n] "
+read -r use_yaml
+if is_yes "${use_yaml:-n}"; then
+  ask "Path to environment.yaml: "
+  read -r yaml_file
+  if [[ -f "$yaml_file" ]]; then
+    tell "Attempting to recreate from file at ${yaml_file} ..."
+    {
+      activate "$env_name"  # ensure correct env_name & prior changes applied
+      conda env update --name "$env_name" --file "$yaml_file" --quiet  # no "--yes " for "env update"
+    }
+  fi
+
+else
+  ask "Provide comma-separated list of packages to install (e.g., numpy,pandas,scikit-learn): "
+  IFS=', ' read -r -a PKGS
+  if [[ -n "${PKGS[*]}" ]]; then
+    tell "Installing packages: "
+    tell "${PKGS[*]}"
+    {
+      activate "$env_name"  # ensure correct env_name & prior changes applied
+      conda install --name "$env_name" --quiet --yes "${PKGS[@]}"
+    }
+  fi
+fi
+
+activate "$env_name"  # ensure correct env_name & prior changes applied
+tell "Environment ${env_name} created.  Remember to activate before using!"

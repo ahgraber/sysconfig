@@ -1,0 +1,276 @@
+#!/usr/bin/env zsh
+
+# shellcheck shell=bash
+# shellcheck source=/dev/null
+
+# Clone zcomet if necessary
+if [[ ! -f ${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh ]]; then
+  command git clone https://github.com/agkozak/zcomet.git "${ZDOTDIR:-${HOME}}/.zcomet/bin"
+fi
+
+# Activate Powerlevel10k Instant Prompt.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+source "${ZDOTDIR:-${HOME}}/.zcomet/bin/zcomet.zsh"
+
+#--- set VIDs (Very Important Dirs) ------------------------------------------
+SYS_CONFIG="${SYS_CONFIG:-"$HOME/._sysconfig"}" && export SYS_CONFIG
+ZSH_CONFIG="${ZSH_CONFIG:-"$SYS_CONFIG/dotfiles/zsh"}" && export ZSH_CONFIG
+
+# ---[ Path Configuration ]---------------------------------------------------
+
+### -U means "unique" -- i.e., deduplicate
+typeset -U base_path
+typeset -U prefix_path
+typeset -U path
+typeset -U manpath
+typeset -U infopath
+
+### enforce mostly-standard ordering of path (reinsert these at front of path)
+set -A path '/usr/local/bin' '/usr/local/sbin' '/usr/bin' '/bin' '/usr/sbin' '/sbin' "${path[@]:-}"
+### save as 'base_path' for future reference
+base_path=("${path[@]}")
+
+# ### Add system pythons to path?
+# pythons=("$HOME/Library/Python/3.7/bin" "$HOME/Library/Python/3.8/bin" "$HOME/Library/Python/3.9/bin")
+# set -A path "${pythons[@]:-}" "${path[@]:-}"
+
+### Set prefix_path for things that should always be first-in-path
+prefix_path=(.)
+
+### Higher priorities are higher in this section
+# config
+prefix_path=("${prefix_path[@]:-}" "$ZSH_CONFIG/bin")
+
+# pipx
+[[ -n $(command -v pipx) ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.local/bin")
+
+# conda/mamba
+[[ -n $(command -v conda) ]] && \
+  prefix_path=("${prefix_path[@]:-}" "${CONDA_PREFIX}/bin" "${HOME}/mambaforge/condabin" "${HOME}/mambaforge/bin")
+
+# rancher desktop
+[[ -d ~/.rd ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.rd/bin")
+
+# kubectl plugins
+# [[ -d ~/.krew ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.krew/bin")
+
+set -A path "${prefix_path[@]}" "${path[@]}"
+export path
+
+typeset -U fpath
+[[ -n "$ZSH_CONFIG" ]] && fpath=("${fpath[@]:-}" "$ZSH_CONFIG/zsh/completions")
+export fpath
+
+### set options
+[[ -n "$(command -v thefuck)" ]] && eval $(thefuck --alias)
+[[ -n "$(command -v vivid)" ]] && export LS_COLORS="$(vivid generate one-dark)"
+# completion
+export CASE_SENSITIVE="true"
+export HYPHEN_INSENSITIVE="true"
+# correction
+export ENABLE_CORRECTION="true"
+# autosuggestions
+export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+# keymap
+bindkey -e
+
+# ---[ Load/Source additional plugins/files ]---------------------------------
+# does order matter?
+zcomet load romkatv/powerlevel10k
+
+### settings from OMZ
+# zcomet snippet OMZ::lib/clipboard.zsh
+zcomet snippet OMZ::lib/compfix.zsh
+
+# zcomet snippet OMZ::lib/completion.zsh
+# zcomet snippet OMZ::lib/correction.zsh
+# zcomet snippet OMZ::lib/history.zsh
+
+### additional plugins
+zcomet load esc/conda-zsh-completion           # conda completions
+zcomet load ohmyzsh plugins/direnv             # enable direnv
+
+# zcomet load ohmyzsh plugins/fd                 # fd completions
+# zcomet load ohmyzsh plugins/fzf                # fzf completions
+zcomet load ohmyzsh plugins/gitfast            # git completions
+zcomet load ohmyzsh plugins/safe-paste         # prevent pasted code from running
+# zcomet load ohmyzsh plugins/terraform          # terraform completions
+
+# add homebrew completions
+[[ -n "$(command -v brew)" ]] \
+  && fpath=($(brew --prefix)/share/zsh/site-functions "${fpath[@]:-}") #\
+  # && zcomet load $(brew --prefix)/share/zsh/site-functions
+# zcomet load "$ZSH_CONFIG/dotfiles/zsh/completions"          # watch local dir for completions; homebrew auto adds completions
+zcomet load "$ZSH_CONFIG/dotfiles/zsh/functions"            # watch local dir for functions
+
+### must be loaded late after all other modules that provide completion definitions
+zcomet load zsh-users/zsh-completions
+
+### Run compinit and compile its cache
+zcomet compinit
+
+# NOTE: fzf-tab needs to be loaded after compinit, but before plugins that wrap widgets,
+# such as zsh-autosuggestions or fast-syntax-highlighting!!
+zcomet load Aloxaf/fzf-tab
+source "$HOME/.zcomet/repos/Aloxaf/fzf-tab/fzf-tab.plugin.zsh"
+
+# zcomet load joshskidmore/zsh-fzf-history-search
+# zcomet load chitoku-k/fzf-zsh-completions
+
+# order must be: syntax-highlighting, history-substr-search, autosuggestions (see zprezto docs)
+zcomet load ohmyzsh plugins/colorize           # multilanguage syntax highlighting
+zcomet load zsh-users/zsh-syntax-highlighting
+zcomet load zsh-users/zsh-history-substring-search
+zcomet load zsh-users/zsh-autosuggestions
+
+zcomet snippet "$ZSH_CONFIG/dotfiles/zsh/functions/clipboard.zsh"
+# zcomet snippet "$HOME/.ZSH_CONFIG/dotfiles/zsh/functions/conda.zsh"
+# zcomet snippet "$HOME/.ZSH_CONFIG/dotfiles/zsh/functions/docker.zsh"
+# zcomet snippet "$HOME/.ZSH_CONFIG/dotfiles/zsh/functions/env.zsh"
+# zcomet snippet "$HOME/.ZSH_CONFIG/dotfiles/zsh/functions/git.zsh"
+# zcomet snippet "$HOME/.ZSH_CONFIG/dotfiles/zsh/functions/python.zsh"
+
+### custom settings
+for zsh in "$ZSH_CONFIG"/dotfiles/zsh/config/*.zsh; do
+  # source lib files
+  zcomet snippet "$zsh"
+done
+# setopt menu_complete            # on ambiguous completion, autoinsert first and rotate through with tab
+enable-fzf-tab
+
+### load p10k config
+# source $ZSH_CACHE_DIR/powerlevel10k/powerlevel10k.zsh-theme
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+### Source additional local files if they exist.
+[[ -f ~/env.zsh ]] && source ~/env.zsh
+[[ -f ~/.aliases ]] && source ~/.aliases
+
+if [[ -f ~/.aliases.local ]]; then
+  source ~/.aliases.local
+else
+  touch ~/.aliases.local
+fi
+
+if [[ -d ~/.fonts ]]; then
+  for sh in ~/.fonts/*.sh; do
+    source $sh
+  done
+fi
+
+# ---[ Rosetta Emulation ]----------------------------------------------------
+### !! NOTE: This assumes that 'homebrew' is installed for both native and rosetta modes !!
+### !!       And cant take advantage 'direnv' for directory-based architecture specification
+native() {
+  ### restart zsh process with arm64 (native) architecture
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 1 ]]; then
+    echo "Entering Native ..."
+    exec /usr/bin/arch -arm64 /bin/zsh
+  fi
+}
+rosetta() {
+  ### restart zsh process with x86_64 (rosetta/emulated) architecture
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+    echo "Entering Rosetta ..."
+    exec /usr/bin/arch -x86_64 /bin/zsh
+  fi
+}
+
+_rosetta_switcher() {
+  ### allows direnv-based architecture determination by monitoring ROSETTA_MODE
+  if [[ -n "$ROSETTA_MODE" && "$ROSETTA_MODE" -eq 0 ]]; then
+    native
+  elif [[ -n "$ROSETTA_MODE" && "$ROSETTA_MODE" -eq 1 ]]; then
+    rosetta
+  else
+    : # pass
+    # return 0
+  fi
+}
+
+_rosetta_path() {
+  ### manage architecture-/rosetta-based path updates (especially for homebrew)
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+    # alias brew='/opt/homebrew/bin/brew';
+    brew() { /opt/homebrew/bin/brew $@; };
+    # eval "$(/opt/homebrew/bin/brew shellenv)"
+    export HOMEBREW_PREFIX="/opt/homebrew";
+    export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+    export HOMEBREW_REPOSITORY="/opt/homebrew/Homebrew";
+  else
+    # alias brew='/usr/local/bin/brew';
+    brew() { /usr/local/bin/brew $@; };
+    # eval "$(/usr/local/bin/brew shellenv)"
+    export HOMEBREW_PREFIX="/usr/local";
+    export HOMEBREW_CELLAR="/usr/local/Cellar";
+    export HOMEBREW_REPOSITORY="/usr/local/Homebrew";
+    export HOMEBREW_SHELLENV_PREFIX="/usr/local";
+  fi
+
+  set -A path "${prefix_path[@]}" "$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin" "${path[@]}"
+  set -A manpath "$HOMEBREW_PREFIX/share/man" "${manpath[@]:-}"
+  set -A infopath "$HOMEBREW_PREFIX/share/info" "${infopath[@]:-}"
+  export path
+  export manpath
+  export infopath
+}
+
+_rosetta_prompt() {
+  ### configure variable for p10k to display current rosetta mode
+  typeset -g prompt_arch
+  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+    prompt_rosettamode='arm64 (Native)';
+  else
+    prompt_rosettamode='x86_64 (Rosetta)';
+  fi
+}
+
+# prepend _rosetta_* to precmd functions (need to run *prior* to p10k precmd_functions)
+set -A precmd_functions _rosetta_switcher _rosetta_path _rosetta_prompt "${precmd_functions[@]:-}"
+
+# ---[ Prompt Configuration ]-------------------------------------------------
+# add arch to p10k
+prompt_rosettamode() {
+  p10k segment -f 250 -i '💻' -t "${prompt_rosettamode//\%/%%}"
+}
+instant_prompt_rosettamode() {prompt_rosettamode;}
+# hack prompt to show "rosettamode" at end of RIGHT_PROMPT_ELEMENTS
+# if specific location is required, modify ~/.p10k.zsh
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=rosettamode
+
+
+### ---[ Define key bindings ]-------------------------------------------------
+# completed above
+# source "$ZSH_CONFIG/lib/keybindings.zsh"
+
+# ---[ User Configuration ]---------------------------------------------------
+
+# Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
+# requires `sudo chown $(whoami) /etc/odbcinst.ini`
+if [[ -f /etc/odbcinst.ini ]]; then
+  cat $HOMEBREW_PREFIX/etc/odbcinst.ini >! /etc/odbcinst.ini
+fi
+
+source "$ZSH_CONFIG"/dotfiles/zsh/config/conda.zsh
+# ### >>> conda initialize >>>
+# # !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$("${HOME}/mambaforge/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "${HOME}/mambaforge/etc/profile.d/conda.sh" ]; then
+#         . "${HOME}/mambaforge/etc/profile.d/conda.sh"  # commented out by conda initialize
+#         # CONDA_CHANGEPS1=false conda activate base
+#     else
+#         export PATH="${HOME}/mambaforge/bin:$PATH"
+#     fi
+# fi
+# unset __conda_setup
+
+# if [ -f "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh" ]; then
+#     . "/Users/${USERNAME}/mambaforge/etc/profile.d/mamba.sh"  # commented out by conda initialize
+# fi
+# ### <<< conda initialize <<<

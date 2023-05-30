@@ -1,0 +1,9 @@
+---
+version: "3"
+
+tasks:
+  default:
+    desc: Install font files
+    silent: true
+    cmds:
+      - cp ./fonts/*.ttf "$HOME/Library/Fonts"

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <path>
+  Remove python compiled byte-code and mypy/pytest cache from provided directory
+EOF
+  exit
+}
+[[ -z "$1" ]] && usage
+
+_path=$(get_file_dir "$1")
+
+tell "This will remove python compiled byte-code and mypy/pytest cache from $_path."
+ask "Do you want to continue? (y/n)? [n] "
+read -r select
+if is_yes "${select:-n}"; then
+  find "$_path" -type f -name "*.py[co]" -delete
+  find "$_path" -type d -name "__pycache__" -delete
+  find "$_path" -depth -type d -name ".mypy_cache" -exec rm -r "{}" +
+  find "$_path" -depth -type d -name ".pytest_cache" -exec rm -r "{}" +
+fi

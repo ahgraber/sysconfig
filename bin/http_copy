@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034 # don't warn for unused variables
+
+set -o errexit
+# set -o nounset
+set -o pipefail
+# set -o xtrace
+
+# ------------------------------------------------------------------------
+# https://github.com/client9/shlib - portable posix shell functions
+# Public domain - http://unlicense.org
+# https://github.com/client9/shlib/blob/master/LICENSE.md
+# but credit (and pull requests) appreciated.
+# ------------------------------------------------------------------------
+
+usage () {
+  cat << EOF
+Usage: $(basename "$0") <source_url> [ header ]
+  Copy URL contents to stdout ("needed since curl is broken")
+
+  Optional header:      HTTP header in the form "foo: bar"
+EOF
+  exit
+}
+[[ $# -lt 1 || $# -gt 2 ]] && usage
+
+tmp=$(mktemp)
+http_download "${tmp}" "$1" "$2" || exit 1
+body=$(cat "$tmp")
+rm -f "${tmp}"
+echo "$body"

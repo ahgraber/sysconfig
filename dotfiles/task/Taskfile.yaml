@@ -3,23 +3,23 @@ version: "3"
 
 includes:
   conda:
-    taskfile: "./.taskfiles/CondaTasks.yaml"
+    taskfile: "./taskfiles/CondaTasks.yaml"
     # internal: true
     aliases: [mamba]
   git:
-    taskfile: "./.taskfiles/GitTasks.yaml"
+    taskfile: "./taskfiles/GitTasks.yaml"
     # internal: true
     aliases: [g]
   pipx:
-    taskfile: "./.taskfiles/PipxTasks.yaml"
+    taskfile: "./taskfiles/PipxTasks.yaml"
     # internal: true
   zsh:
-    taskfile: "./.taskfiles/ZshTasks.yaml"
+    taskfile: "./taskfiles/ZshTasks.yaml"
     # internal: true
     aliases: [z]
 
   # sysconfig:
-  #   taskfile: "./.taskfiles/setup/SysconfigTasks.yaml"
+  #   taskfile: "./taskfiles/setup/SysconfigTasks.yaml"
   #   internal: true
 
 # env:

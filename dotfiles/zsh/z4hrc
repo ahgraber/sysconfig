@@ -121,7 +121,7 @@ prefix_path=("${prefix_path[@]:-}" "$SYS_CONFIG/bin" "${HOME}/.local/bin")
 [[ -d ~/.rd ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.rd/bin")
 
 # kubectl plugins
-# [[ -d ~/.krew ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.krew/bin")
+[[ -d ~/.krew ]] && prefix_path=("${prefix_path[@]:-}" "${HOME}/.krew/bin")
 
 set -A path "${prefix_path[@]}" "${path[@]}"
 export path

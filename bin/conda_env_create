@@ -19,12 +19,6 @@ activate() {
 ask "Environment name: "
 read -r  env_name
 [[ -z "$env_name" ]] && { yell "Error: Environment name must be provided!"; exit 1; }
-# shellcheck disable=SC2143
-[[ -n "$(conda env list | grep -w "$env_name")" ]] && { yell "Error: Environment name already exists!"; exit 1; }
-
-ask "Python version (default 3.10.*): "
-read -r python_version
-python_version=${python_version:-"$_PYTHON_VERSION"}
 
 # Prep architecture-based env
 if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
@@ -38,6 +32,13 @@ if [[ "$(sysctl -a | grep machdep.cpu.brand_string)" == *Apple* ]]; then
     CONDA_SUBDIR="osx-arm64"
   fi
 fi
+
+# shellcheck disable=SC2143
+[[ -n "$(conda env list | grep -w "$env_name")" ]] && { yell "Error: Environment name already exists!"; exit 1; }
+
+ask "Python version (default 3.10.*): "
+read -r python_version
+python_version=${python_version:-"$_PYTHON_VERSION"}
 
 tell "Creating environment ${env_name} with python version ${python_version} ..."
 if [[ -n "$CONDA_SUBDIR" ]]; then

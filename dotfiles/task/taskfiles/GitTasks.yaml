@@ -6,11 +6,8 @@ vars:
     sh: 'echo "$SYS_CONFIG"'
   SCRIPTS_DIR:
     sh: 'echo "$SYS_CONFIG/dotfiles/task/scripts"'
-
   CODE_DIR:
     sh: 'echo "$CODE_DIR"'
-  PROJECT_DIR:
-    sh: "git rev-parse --show-toplevel"
 
 tasks:
   default:

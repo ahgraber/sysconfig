@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+"""Uses direnv to run script to update .env file based on source file.
+
+Run in local dir's `.envrc` with
+
+.. code-block:: bash
+    /usr/bin/python3 "${HOME}/_sysconfig/bin/update_envvars" "${HOME}/.envvars" .env
+"""
+
+import argparse
+from collections import OrderedDict
+from pathlib import Path
+
+# Create an ArgumentParser object
+parser = argparse.ArgumentParser(description='Update tmpvars with envvars if keys exist')
+
+# Add command-line arguments for envvars and tmpvars
+parser.add_argument('source', type=str, help='Path to source file')
+parser.add_argument('dest', type=str, help='Path to dest file')
+
+# Parse the command-line arguments
+args = parser.parse_args()
+
+# Read the contents of envvars and tmpvars files
+source_file = Path(args.source)
+with source_file.open(mode="r") as src:
+    src_in = src.readlines()
+src_dict = OrderedDict(line.strip().split('=',1) for line in src_in if line.__contains__("="))
+
+dest_file = Path(args.dest)
+if dest_file.is_file():
+  with (
+      source_file.open(mode="r") as src,
+      dest_file.open(mode="r") as dst
+      ):
+      dst_in = dst.readlines()
+  dst_dict = OrderedDict(line.strip().split('=',1) for line in dst_in if line.__contains__("="))
+
+  # update dst with new values where applicable
+  dst_dict.update({k: v for k, v in src_dict.items() if k in dst_dict})
+  dst_out = []
+  for line in dst_in:
+      key = line.strip().split('=',1)[0]
+      if key in dst_dict:
+          dst_out.append(f"{key}={dst_dict[key]}")
+      else:
+          dst_out.append(line.strip()) # otherwise end up double-newline-ing
+
+else:
+    # if dest does not exist and we are calling this function, assume we want to replicate source
+    dst_out = [line.strip() for line in src_in]
+
+# write to file
+with dest_file.open(mode="w") as dst:
+    dst.writelines('\n'.join(dst_out))
+
+#%%
+
+# #%% [markdown]
+# # update .env file with keys if key is updated
+# while IFS="=" read -r key value; do
+#   escaped=$(sed -e 's|[&\\/]|\\&|g; s|$/\\|' -e '$s|\\$/|' <<<"$REPL")
+#   sed -i'' "s|^($key)=.*$|$key=$escaped|" .env
+# done < "${HOME}/.envvars"

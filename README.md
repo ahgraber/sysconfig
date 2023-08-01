@@ -20,7 +20,7 @@ The install script (below) will autoinstall the default configuration:
 - install [task](https://taskfile.dev/)
 
 ```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ahgraber/sysconfig/HEAD/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ahgraber/sysconfig/HEAD/bootstrap/install.sh)"
 ```
 
 ## Next steps

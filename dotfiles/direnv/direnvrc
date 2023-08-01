@@ -30,6 +30,12 @@ _mamba() {
   fi;
 }
 
+
+update_envvars() {
+  /usr/bin/python3 "${HOME}/_sysconfig/bin/update_envvars" "${HOME}/.envvars" "$1"
+
+}
+
 ### NOTE: the problem with layouts is only once can be used at a time
 ### Better to use both _native/_rosetta and _mamba to set environment as needed
 layout_native() { _native; }

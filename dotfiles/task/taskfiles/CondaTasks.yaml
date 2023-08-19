@@ -13,10 +13,10 @@ vars:
     sh: 'echo "$CODE_DIR"'
 
 tasks:
-  # default:
-  #   silent: true
-  #   cmds:
-  #     - ...
+  default:
+    silent: true
+    cmds:
+      - task -l
 
   _init:
     desc: Install mambaforge

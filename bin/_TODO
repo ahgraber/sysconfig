@@ -3,9 +3,6 @@ https://dberkholz.com/2011/04/07/bash-shell-scripting-libraries/
 https://github.com/juan131/bash-libraries/blob/master/lib/liblog.bash
 https://github.com/awesome-lists/awesome-bash
 
-assertions:
-https://github.com/torokmark/assert.sh
-https://github.com/kward/shunit2/blob/master/shunit2
 
 error handling:
 https://stackoverflow.com/questions/30078281/raise-error-in-a-bash-script

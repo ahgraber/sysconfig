@@ -29,15 +29,10 @@ vars:
   TASK_SCRIPTS: "{{.SYS_CONFIG}}/dotfiles/task/scripts"
 
 tasks:
-  # default:
-  #   silent: true
-  # cmds:
-#   update:
-#     desc: Update the Nix channels
-#     silent: true
-#     cmds:
-#       - nix-channel --update
-
+  default:
+    silent: true
+    cmds:
+      - task -l
 #   upgrade:
 #     desc: Upgrade Nix packages
 #     silent: true

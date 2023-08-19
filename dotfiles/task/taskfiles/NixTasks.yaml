@@ -12,10 +12,25 @@ vars:
 # - https://nixos.org/guides/nix-pills
 # - https://github.com/ianthehenry/sd-nix
 tasks:
-  # default:
+  default:
+    silent: true
+    cmds:
+      - task -l
+
+  # _init:
+  #   desc: Bootstrap the home-manager configuration
   #   silent: true
   #   cmds:
-  #     -
+  #     - curl -L https://nixos.org/nix/install | sh
+  #     # TODO: if $(uname_os)
+  #     - source $HOME/.nix-profile/etc/profile.d/nix.sh
+  #     - export NIX_PATH=${NIX_PATH:+$NIX_PATH:}$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels
+  #     - nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+  #     - task: update
+  #     - nix-shell '<home-manager>' -A install
+  #     - task: switch
+  #     - echo "$HOME/.nix-profile/bin/zsh" | sudo tee -a /etc/shells
+  #     - chsh -s $HOME/.nix-profile/bin/zsh
 
   channel_add:
     desc: Add specified nix channel
@@ -83,38 +98,26 @@ tasks:
       - nix-env --uninstall {{.CLI_ARGS}}
       # TODO: validate that package is uninstalled
 
-  update:
-    desc: Update / upgrade specified nix pkgs
-    aliases: ["upgrade"]
-    # silent: true
-    cmds:
-      - nix-channel --update
-      - nix-env --upgrade --attrs {{.CLI_ARGS}}
+  ### "'it is known' that nix-env --upgrade is a bad idea": https://ianthehenry.com/posts/how-to-learn-nix/ambiguous-packages/
+  # update:
+  #   desc: Update / upgrade specified nix pkgs
+  #   aliases: ["upgrade"]
+  #   # silent: true
+  #   cmds:
+  #     - nix-channel --update
+  #     - nix-env --upgrade --leq --attrs {{.CLI_ARGS}}
 
-  update_all:
-    desc: Update / upgrade all nix pkgs
-    aliases: ["upgrade-all"]
-    # silent: true
-    cmds:
-      - nix-channel --update
-      - nix-env --upgrade
-#   switch:
-#     desc: Switch to the new configuration
-#     silent: true
-#     cmds:
-#       - home-manager switch
+  ### "'it is known' that nix-env --upgrade is a bad idea": https://ianthehenry.com/posts/how-to-learn-nix/ambiguous-packages/
+  # update_all:
+  #   desc: Update / upgrade all nix pkgs
+  #   aliases: ["upgrade-all"]
+  #   # silent: true
+  #   cmds:
+  #     - nix-channel --update
+  #     - nix-env --upgrade --leq
 
-#   bootstrap:
-#     desc: Bootstrap the home-manager configuration
-#     silent: true
-#     cmds:
-#       - curl -L https://nixos.org/nix/install | sh
-#       # TODO: if $(uname_os)
-#       - source $HOME/.nix-profile/etc/profile.d/nix.sh
-#       - export NIX_PATH=${NIX_PATH:+$NIX_PATH:}$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels
-#       - nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-#       - task: update
-#       - nix-shell '<home-manager>' -A install
-#       - task: switch
-#       - echo "$HOME/.nix-profile/bin/zsh" | sudo tee -a /etc/shells
-#       - chsh -s $HOME/.nix-profile/bin/zsh
+  # switch:
+  #   desc: Switch to the new configuration
+  #   silent: true
+  #   cmds:
+  #     - home-manager switch

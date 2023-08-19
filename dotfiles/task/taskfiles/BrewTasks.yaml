@@ -12,10 +12,10 @@ vars:
 # - https://nixos.org/guides/nix-pills
 # - https://github.com/ianthehenry/sd-nix
 tasks:
-  # default:
-  #   silent: true
-  #   cmds:
-  #     -
+  default:
+    silent: true
+    cmds:
+      - task -l
 
   _init_native:
     desc: Install native Homebrew

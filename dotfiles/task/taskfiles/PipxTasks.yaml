@@ -17,7 +17,7 @@ tasks:
   default:
     silent: true
     cmds:
-      - task: get-pipx
+      - task -l
 
   _init:
     desc: Install most recent version of pipx

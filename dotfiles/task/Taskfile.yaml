@@ -33,6 +33,10 @@ vars:
   TASK_SCRIPTS: "{{.SYS_CONFIG}}/dotfiles/task/scripts"
 
 tasks:
+  default:
+    silent: true
+    cmds:
+      - task -l
   #   default:
   #     silent: true
   #     cmds:

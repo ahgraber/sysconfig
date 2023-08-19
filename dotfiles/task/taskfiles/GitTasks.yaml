@@ -13,7 +13,7 @@ tasks:
   default:
     silent: true
     cmds:
-      # - task:
+      - task -l
 
   clone_update:
     desc: Clone or update

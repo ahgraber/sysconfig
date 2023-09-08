@@ -99,6 +99,8 @@ typeset -U infopath
 
 ### enforce mostly-standard ordering of path (reinsert these at front of path)
 set -A path '/usr/local/bin' '/usr/local/sbin' '/usr/bin' '/bin' '/usr/sbin' '/sbin' "${path[@]:-}"
+### ensure native homebrew is at front of path
+set -A path '/opt/homebrew/bin' '/opt/homebrew/sbin' "${path[@]:-}"
 ### save as 'base_path' for future reference
 base_path=("${path[@]}")
 
@@ -201,15 +203,13 @@ _rosetta_switcher() {
 _rosetta_path() {
   ### manage architecture-/rosetta-based path updates (especially for homebrew)
   if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
-    # alias brew='/opt/homebrew/bin/brew';
-    brew() { /opt/homebrew/bin/brew $@; };
+    # brew() { /opt/homebrew/bin/brew $@; };
     # eval "$(/opt/homebrew/bin/brew shellenv)"
     export HOMEBREW_PREFIX="/opt/homebrew";
     export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
     export HOMEBREW_REPOSITORY="/opt/homebrew/Homebrew";
   else
-    # alias brew='/usr/local/bin/brew';
-    brew() { /usr/local/bin/brew $@; };
+    # brew() { /usr/local/bin/brew $@; };
     # eval "$(/usr/local/bin/brew shellenv)"
     export HOMEBREW_PREFIX="/usr/local";
     export HOMEBREW_CELLAR="/usr/local/Cellar";
@@ -229,28 +229,29 @@ _rosetta_path() {
   [[ -f "$HOMEBREW_PREFIX"/etc/odbcinst.ini ]] && cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
 }
 
-_rosetta_prompt() {
-  ### configure variable for p10k to display current rosetta mode
-  typeset -g prompt_rosettamode
-  if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
-    prompt_rosettamode='arm64 (Native)';
-  else
-    prompt_rosettamode='x86_64 (Rosetta)';
-  fi
-}
+# _rosetta_prompt() {
+#   ### configure variable for p10k to display current rosetta mode
+#   typeset -g prompt_rosettamode
+#   if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
+#     prompt_rosettamode='arm64 (Native)';
+#   else
+#     prompt_rosettamode='x86_64 (Rosetta)';
+#   fi
+# }
 
 # prepend _rosetta_* to precmd functions (need to run *prior* to p10k precmd_functions)
-set -A precmd_functions _rosetta_switcher _rosetta_path _rosetta_prompt "${precmd_functions[@]:-}"
+# set -A precmd_functions _rosetta_switcher _rosetta_path _rosetta_prompt "${precmd_functions[@]:-}"
+set -A precmd_functions _rosetta_switcher _rosetta_path "${precmd_functions[@]:-}"
 
-# ---[ Prompt Configuration ]-------------------------------------------------
-# add arch to p10k
-prompt_rosettamode() {
-  p10k segment -f 250 -i '💻' -t "${prompt_rosettamode//\%/%%}"
-}
-instant_prompt_rosettamode() { prompt_rosettamode; }
-# hack prompt to show "rosettamode" at end of RIGHT_PROMPT_ELEMENTS
-# if specific location is required, modify ~/.p10k.zsh
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=rosettamode
+# # ---[ Prompt Configuration ]-------------------------------------------------
+# # add arch to p10k
+# prompt_rosettamode() {
+#   p10k segment -f 250 -i '💻' -t "${prompt_rosettamode//\%/%%}"
+# }
+# instant_prompt_rosettamode() { prompt_rosettamode; }
+# # hack prompt to show "rosettamode" at end of RIGHT_PROMPT_ELEMENTS
+# # if specific location is required, modify ~/.p10k.zsh
+# POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=rosettamode
 
 ### Smooth rendering with two-line prompt with an empty line before it
 POSTEDIT=$'\n\n\e[2A'

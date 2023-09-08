@@ -67,7 +67,7 @@ tasks:
         bat-extras
         coreutils
         direnv
-        exa
+        eza
         fd
         fluxcd/tap/flux
         fzf

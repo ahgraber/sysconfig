@@ -22,9 +22,9 @@ zstyle ':fzf-tab:*' show-group brief                    # show header only if mu
 # set list-colors to enable filename colorizing
 # shellcheck disable=SC2086,SC2296
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-# preview directory's content with exa when completing cd
+# preview directory's content with eza when completing cd
 # shellcheck disable=SC2016 # use single quotes
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 # switch group using `,` and `.`
 zstyle ':fzf-tab:*' switch-group ',' '.'
 

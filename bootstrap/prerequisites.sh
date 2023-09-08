@@ -106,7 +106,7 @@ fi
 # fi
 # [[ -n $(command -v bat) ]] || brew install bat
 # [[ -n $(command -v direnv) ]] || brew install direnv
-# [[ -n $(command -v exa) ]] || brew install exa
+# [[ -n $(command -v eza) ]] || brew install eza
 # [[ -n $(command -v fd) ]] || brew install fd
 # [[ -n $(command -v git) ]] || brew install git
 # [[ -n $(command -v task) ]] || brew install go-task

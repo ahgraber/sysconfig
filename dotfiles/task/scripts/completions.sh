@@ -19,10 +19,10 @@
     -fsSL https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose \
     -o "$ZSH_CONFIG/completions/_docker-compose"
 
-# exa
-[[ -n $(command -v exa) ]] && \
+# eza
+[[ -n $(command -v eza) ]] && \
     curl \
-    -fsSL https://raw.githubusercontent.com/ogham/exa/master/completions/zsh/_exa \
+    -fsSL https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza \
     -o "$ZSH_CONFIG/completions/_exa"
 
 # fd
@@ -57,7 +57,7 @@ fi
 
 
 
-# for cmd in bat exa fd flux task; do
+# for cmd in bat eza fd flux task; do
 #   # Homebrew ships broken completions for kubectl, so we use our own even
 #   # if _comps[kubectl] is set.
 #   #

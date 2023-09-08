@@ -23,7 +23,7 @@
 [[ -n $(command -v eza) ]] && \
     curl \
     -fsSL https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza \
-    -o "$ZSH_CONFIG/completions/_exa"
+    -o "$ZSH_CONFIG/completions/_eza"
 
 # fd
 [[ -n $(command -v fd) ]] && \

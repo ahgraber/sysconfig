@@ -20,6 +20,10 @@ insert_final_newline = false
 trim_trailing_whitespace = false
 max_line_length = 240
 
+[*.nix]
+indent_style = space
+indent_size = 2
+
 [*.py]
 indent_style = space
 indent_size = 4

@@ -127,7 +127,11 @@ set -A path "${prefix_path[@]}" "${path[@]}"
 export path
 
 typeset -U fpath
-fpath=("${fpath[@]:-}" "$ZSH_CONFIG/completions")
+fpath=("${fpath[@]:-}" "$ZSH_CONFIG/completions") 
+[[ -f /opt/homebrew/bin/brew ]] && \
+  fpath=("${fpath[@]:-}" "/opt/homebrew/share/zsh-completions" "/opt/homebrew/share/zsh/site-functions")
+[[ -f /usr/local/bin/brew ]] && \
+  fpath=("${fpath[@]:-}" "/usr/local/share/zsh-completions" "/usr/local/share/zsh/site-functions")
 export fpath
 autoload -U compinit
 compinit -i
@@ -207,7 +211,6 @@ _rosetta_path() {
     export HOMEBREW_PREFIX="/opt/homebrew";
     export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
     export HOMEBREW_REPOSITORY="/opt/homebrew/Homebrew";
-    fpath=("${fpath[@]:-}" "/opt/homebrew/share/zsh-completions" "/opt/homebrew/share/zsh/site-functions")
   else
     # alias brew='/usr/local/bin/brew';
     brew() { /usr/local/bin/brew $@; };
@@ -216,7 +219,6 @@ _rosetta_path() {
     export HOMEBREW_CELLAR="/usr/local/Cellar";
     export HOMEBREW_REPOSITORY="/usr/local/Homebrew";
     export HOMEBREW_SHELLENV_PREFIX="/usr/local";
-    fpath=("${fpath[@]:-}" "/usr/local/share/zsh-completions" "/usr/local/share/zsh/site-functions")
   fi
 
   set -A path "${prefix_path[@]}" "$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin" "${path[@]}"
@@ -225,16 +227,13 @@ _rosetta_path() {
   export path
   export manpath
   export infopath
-  export fpath
-  autoload -U compinit
-  compinit -i
   # Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
   # requires `sudo touch /etc/odbcinst.ini && sudo chown $(whoami) /etc/odbcinst.ini`
   [[ -f "$HOMEBREW_PREFIX"/etc/odbcinst.ini ]] && cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
 }
 
 _rosetta_prompt() {
-  ### configure variable for p10k to display current rosetta mode
+  ### configure global variable for p10k to display current rosetta mode
   typeset -g prompt_rosettamode
   if [[ $(sysctl -n sysctl.proc_translated) -eq 0 ]]; then
     prompt_rosettamode='arm64 (Native)';
@@ -308,9 +307,9 @@ z4h bindkey z4h-cd-down         Shift+Down   # cd into a child directory
 
 # Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
 # requires `sudo chown $(whoami) /etc/odbcinst.ini`
-# if [[ -f /etc/odbcinst.ini ]]; then
-#   cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
-# fi
+if [[ -f /etc/odbcinst.ini ]]; then
+  cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
+fi
 
 source "$ZSH_CONFIG"/config/conda.zsh
 # ### >>> conda initialize >>>

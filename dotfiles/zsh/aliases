@@ -19,25 +19,25 @@ alias clr="clear"
 alias clrbuf="printf '\ec\e[3J'"
 alias clear_buffer="printf '\ec\e[3J'"
 
-if [[ -z  $(command -v exa) ]]; then
+if [[ -z  $(command -v eza) ]]; then
   alias ls='ls -Gp'
   alias la='ls -AGp'
   alias ll='ls -lAGp'
   # alias lt='tree -C -L 3'
 else
-  alias exa='exa -F --group-directories-first'
-  alias l1='exa -1 --no-icons' # one entry per line
-  alias ls='exa'
-  alias la='exa -a'
-  alias lg='exa -alg' # show character markings for files: https://github.com/ogham/exa/issues/151
-  alias ll='exa -lbG --git'
-  alias llm='exa -lbG --git --sort=modified'
-  alias lt='exa --tree'
+  alias eza='eza -F --group-directories-first'
+  alias l1='eza -1 --no-icons' # one entry per line
+  alias ls='eza'
+  alias la='eza -a'
+  alias lg='eza -alg' # show character markings for files: https://github.com/ogham/eza/issues/151
+  alias ll='eza -lbG --git'
+  alias llm='eza -lbG --git --sort=modified'
+  alias lt='eza --tree'
   # adding "i" outputs icons
   alias lsi='ls --icons'
   alias lai='la --icons'
   alias lgi='lg --icons'
-  alias lti='exa --tree --icons'
+  alias lti='eza --tree --icons'
 fi
 
 alias h='history'               # Prints your command history

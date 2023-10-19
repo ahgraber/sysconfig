@@ -128,8 +128,6 @@ export path
 
 typeset -U fpath
 fpath=("${fpath[@]:-}" "$ZSH_CONFIG/completions")
-[[ -n "$(command -v brew)" ]] && \
-  fpath=("${fpath[@]:-}" "/usr/local/share/zsh-completions" "/usr/local/share/zsh/site-functions")
 export fpath
 autoload -U compinit
 compinit -i
@@ -209,6 +207,7 @@ _rosetta_path() {
     export HOMEBREW_PREFIX="/opt/homebrew";
     export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
     export HOMEBREW_REPOSITORY="/opt/homebrew/Homebrew";
+    fpath=("${fpath[@]:-}" "/opt/homebrew/share/zsh-completions" "/opt/homebrew/share/zsh/site-functions")
   else
     # alias brew='/usr/local/bin/brew';
     brew() { /usr/local/bin/brew $@; };
@@ -217,6 +216,7 @@ _rosetta_path() {
     export HOMEBREW_CELLAR="/usr/local/Cellar";
     export HOMEBREW_REPOSITORY="/usr/local/Homebrew";
     export HOMEBREW_SHELLENV_PREFIX="/usr/local";
+    fpath=("${fpath[@]:-}" "/usr/local/share/zsh-completions" "/usr/local/share/zsh/site-functions")
   fi
 
   set -A path "${prefix_path[@]}" "$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin" "${path[@]}"
@@ -225,7 +225,9 @@ _rosetta_path() {
   export path
   export manpath
   export infopath
-
+  export fpath
+  autoload -U compinit
+  compinit -i
   # Dynamically set /etc/odbcinst.ini if it exists based on terminal environment
   # requires `sudo touch /etc/odbcinst.ini && sudo chown $(whoami) /etc/odbcinst.ini`
   [[ -f "$HOMEBREW_PREFIX"/etc/odbcinst.ini ]] && cat "$HOMEBREW_PREFIX"/etc/odbcinst.ini >! /etc/odbcinst.ini
